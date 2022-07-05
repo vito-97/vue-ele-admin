@@ -1,3 +1,7 @@
+import { Loading } from 'element-ui'
+
+const setting = require('@/settings')
+
 /**
  * Created by PanJiaChen on 16/11/18.
  */
@@ -45,7 +49,9 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -354,4 +360,73 @@ export function removeClass(ele, cls) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
     ele.className = ele.className.replace(reg, ' ')
   }
+}
+
+/**
+ * 深度获取值
+ * @param key
+ * @param data
+ * @param def
+ * @returns {string|*[]}
+ */
+export function deepVal(key, data, def = '') {
+  if (!data || !Object.keys(data).length) {
+    return def
+  }
+
+  const keys = key.split('.').filter(v => v.toString().trim() !== '')
+  const len = keys.length
+  if (len === 0) {
+    return def
+  }
+
+  let val = deepClone(data)
+
+  for (var k of keys) {
+    if (val && typeof val[k] !== 'undefined') {
+      val = val[k]
+    } else {
+      return def
+    }
+  }
+
+  return val
+}
+
+export function formatFileSize(value) {
+  if (!value) {
+    return '0 Bytes'
+  }
+  const unitArr = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  var index = 0
+  var srcsize = parseFloat(value)
+  index = Math.floor(Math.log(srcsize) / Math.log(1024))
+  var size = srcsize / Math.pow(1024, index)
+  size = size.toFixed(2)
+  return size + unitArr[index]
+}
+
+let loading
+
+export function showLoading(msg = 'loading...') {
+  loading = Loading.service({
+    fullscreen: true,
+    lock: true,
+    text: msg,
+    spinner: 'el-icon-loading',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+}
+
+export function hideLoading() {
+  loading && loading.close()
+}
+
+/**
+ * 获取控制器名称
+ * @param index
+ * @returns {*|string}
+ */
+export function controlName(index) {
+  return setting.controlName[index] || ''
 }

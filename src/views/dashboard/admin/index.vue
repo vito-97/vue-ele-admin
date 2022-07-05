@@ -1,96 +1,95 @@
 <template>
   <div class="dashboard-editor-container">
-    <github-corner class="github-corner" />
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    <panel-group @handleSetLineChartData="handleSetLineChartData" :detail="detail"/>
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData" />
+    <el-row style="background:#fff;margin-bottom:32px;" :gutter="32">
+      <el-col :xs="24" :sm="24" :lg="12">
+        <div class="chart-wrapper">
+          <line-chart :chart-data="sumOrderMoneyWeek" :x-name="sumOrderMoneyWeekXName" name="近7天销售额"/>
+        </div>
+      </el-col>
+      <el-col :xs="24" :sm="24" :lg="12">
+        <div class="chart-wrapper">
+          <line-chart :chart-data="countOrderWeek" :x-name="countOrderWeekXName" name="近7天订单数" color="#3888fa"/>
+        </div>
+      </el-col>
     </el-row>
 
-    <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
+    <el-row style="background:#fff;margin-bottom:32px;" :gutter="32">
+      <el-col :xs="24" :sm="24" :lg="12">
         <div class="chart-wrapper">
-          <raddar-chart />
+          <line-chart :chart-data="sumOrderMoneyMonth" :x-name="sumOrderMoneyMonthXName" name="近12个月销售额"/>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
+      <el-col :xs="24" :sm="24" :lg="12">
         <div class="chart-wrapper">
-          <pie-chart />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
+          <line-chart :chart-data="countOrderMonth" :x-name="countOrderMonthXName" name="近12个月订单数" color="#3888fa"/>
         </div>
       </el-col>
     </el-row>
 
     <el-row :gutter="8">
-      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="padding-right:8px;margin-bottom:30px;">
-        <transaction-table />
-      </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-        <todo-list />
-      </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-        <box-card />
+      <el-col
+:xs="{span: 24}"
+:sm="{span: 24}"
+:md="{span: 24}"
+:lg="{span: 24}"
+:xl="{span: 24}"
+              style="padding-right:8px;margin-bottom:30px;">
+        <transaction-table :list="detail.order_list"/>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import GithubCorner from '@/components/GithubCorner'
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
-import RaddarChart from './components/RaddarChart'
-import PieChart from './components/PieChart'
-import BarChart from './components/BarChart'
 import TransactionTable from './components/TransactionTable'
-import TodoList from './components/TodoList'
-import BoxCard from './components/BoxCard'
-
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-}
+import { dashboard } from '@/api/dashboard'
 
 export default {
   name: 'DashboardAdmin',
   components: {
-    GithubCorner,
     PanelGroup,
     LineChart,
-    RaddarChart,
-    PieChart,
-    BarChart,
-    TransactionTable,
-    TodoList,
-    BoxCard
+    TransactionTable
   },
   data() {
     return {
-      lineChartData: lineChartData.newVisitis
+      detail: {},
+      countOrderWeek: [],
+      countOrderWeekXName: [],
+      sumOrderMoneyWeek: [],
+      sumOrderMoneyWeekXName: [],
+
+      countOrderMonth: [],
+      countOrderMonthXName: [],
+      sumOrderMoneyMonth: [],
+      sumOrderMoneyMonthXName: []
     }
   },
+  created() {
+    this.getDashboard()
+  },
   methods: {
+    getDashboard() {
+      return dashboard().then(res => {
+        this.detail = res.data
+        this.countOrderWeek = Object.values(res.data.count_order_week_list)
+        this.countOrderWeekXName = Object.keys(res.data.count_order_week_list)
+        this.sumOrderMoneyWeek = Object.values(res.data.sum_order_money_week_list)
+        this.sumOrderMoneyWeekXName = Object.keys(res.data.sum_order_money_week_list)
+
+        this.countOrderMonth = Object.values(res.data.count_order_month_list)
+        this.countOrderMonthXName = Object.keys(res.data.count_order_month_list)
+        this.sumOrderMoneyMonth = Object.values(res.data.sum_order_money_month_list)
+        this.sumOrderMoneyMonthXName = Object.keys(res.data.sum_order_money_month_list)
+      })
+    },
     handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+
     }
   }
 }
@@ -116,7 +115,7 @@ export default {
   }
 }
 
-@media (max-width:1024px) {
+@media (max-width: 1024px) {
   .chart-wrapper {
     padding: 8px;
   }

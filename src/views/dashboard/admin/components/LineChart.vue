@@ -1,15 +1,20 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}" />
+  <div :class="className" :style="{height:height,width:width}"/>
 </template>
 
 <script>
 import echarts from 'echarts'
+
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 
 export default {
   mixins: [resize],
   props: {
+    name: {
+      type: String,
+      default: '统计'
+    },
     className: {
       type: String,
       default: 'chart'
@@ -27,8 +32,16 @@ export default {
       default: true
     },
     chartData: {
-      type: Object,
+      type: Array,
       required: true
+    },
+    color: {
+      type: String,
+      default: '#FF005A'
+    },
+    xName: {
+      type: Array,
+      default: () => ['昨日', '今日', '七天', '月', '年']
     }
   },
   data() {
@@ -61,10 +74,10 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions(data) {
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: this.xName,
           boundaryGap: false,
           axisTick: {
             show: false
@@ -90,43 +103,24 @@ export default {
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          data: [this.name]
         },
         series: [{
-          name: 'expected', itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
-            }
-          },
-          smooth: true,
-          type: 'line',
-          data: expectedData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
-        {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
+          name: this.name,
           itemStyle: {
             normal: {
-              color: '#3888fa',
+              color: this.color,
               lineStyle: {
-                color: '#3888fa',
+                color: this.color,
                 width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
               }
             }
           },
-          data: actualData,
+          smooth: true,
+          type: 'line',
+          data: data,
           animationDuration: 2800,
-          animationEasing: 'quadraticOut'
+          animationEasing: 'cubicInOut'
         }]
       })
     }

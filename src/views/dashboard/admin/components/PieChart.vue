@@ -47,26 +47,23 @@ export default {
       this.chart.setOption({
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '{a} <br/>{b} : {c}台 ({d}%)'
         },
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          data: ['在线', '故障']
         },
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+            name: '设备状态',
             type: 'pie',
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
             data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
+              { value: 1000, name: '在线' },
+              { value: 24, name: '故障' }
             ],
             animationEasing: 'cubicInOut',
             animationDuration: 2600

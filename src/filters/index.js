@@ -66,3 +66,20 @@ export function toThousandFilter(num) {
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+/**
+ * 状态颜色
+ * @param status
+ * @returns {*}
+ */
+export function statusFilter(status) {
+  const statusMap = {
+    0: 'danger',
+    1: 'primary',
+    2: 'success',
+    3: 'info',
+    4: 'warning'
+  }
+  const k = status % 5
+  return statusMap[k]
+}
