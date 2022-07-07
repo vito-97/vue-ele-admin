@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :list="list"
       :list-label="listLabel"
@@ -35,8 +35,8 @@ export default {
         { name: '运营商', field: 'agent.nickname', type: 'tag' },
         { name: '使用时间', field: 'use_time', type: 'time' },
         { name: '过期时间', field: 'expire_time', type: 'time' },
-        { name: '是否使用', field: 'is_use', type: 'bool', opts: { active_text: '已使用', inactive_text: '未使用' }},
-        { name: '状态', field: 'status', label: true, type: 'tag', opts: {}},
+        { name: '是否使用', field: 'is_use', type: 'bool', opts: { active_text: '已使用', inactive_text: '未使用' } },
+        { name: '状态', field: 'status', label: true, type: 'tag', opts: {} },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]
     }

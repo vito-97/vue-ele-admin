@@ -393,6 +393,11 @@ export function deepVal(key, data, def = '') {
   return val
 }
 
+/**
+ * 格式化大小
+ * @param value
+ * @returns {string}
+ */
 export function formatFileSize(value) {
   if (!value) {
     return '0 Bytes'
@@ -429,4 +434,14 @@ export function hideLoading() {
  */
 export function controlName(index) {
   return setting.controlName[index] || ''
+}
+
+/**
+ * 转数组
+ * @param data
+ * @param string char
+ * @returns {*|*[]}
+ */
+export function toArray(data, char = ',') {
+  return Array.isArray(data) ? data : (typeof data === 'undefined' || data === '' ? [] : data.split(char))
 }

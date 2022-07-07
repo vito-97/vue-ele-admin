@@ -24,11 +24,11 @@
             :label="col.name"
             :prop="col.field"
             :required="col.opts.required"
-            :error="error[col.field]"
+            :error="error && error[col.field] || ''"
             :label-width="col.width"
           >
             <!--          插槽-->
-            <slot :name="col.slot || col.field">
+            <slot :name="col.slot || col.field" :form-data="formData" :col="col">
 
               <template v-if="items[col.type]">
                 <component
@@ -62,7 +62,7 @@
 
 <script>
 import visible from '@/utils/mixin/visible'
-import { deepVal } from '@/utils'
+import { deepVal, toArray } from '@/utils'
 
 // 使用require引入所有组件
 const itemsCom = {}
@@ -212,7 +212,15 @@ export default {
         // 设置表单数据
         if (item.field && (typeof this.formData[item.field] === 'undefined' || this.formData[item.field] === '')) {
           const value = typeof item.value === 'undefined' ? '' : item.value
-          this.$set(this.formData, item.field, deepVal(item.field, this.detail, value))
+          let formDataValue = deepVal(item.field, this.detail, value)
+
+          if (item.type === 'checkbox') {
+            formDataValue = toArray(formDataValue).map(it => {
+              return isNaN(Number(it)) ? it : Number(it)
+            })
+          }
+
+          this.$set(this.formData, item.field, formDataValue)
         }
         // 需要获取详情的标签数据
         if (item.label) {
@@ -230,20 +238,24 @@ export default {
 
         // 默认选中第一个
         if (item.label && this.formData[item.field] === '' && Object.keys(item.list).length) {
-          let keys = Object.keys(item.list)
+          if (item.type === 'checkbox') {
+            this.$set(this.formData, item.field, [])
+          } else {
+            let keys = Object.keys(item.list)
 
-          if (Array.isArray(item.list)) {
-            keys = keys.map(v => Number(v))
-          }
-
-          const key = keys.length ? keys[0] : null
-
-          if (key !== null) {
-            let value = item.opts.label_value ? item.list[key][item.opts.label_value] : key
-            if (Number.isInteger(Number(value))) {
-              value = Number(value)
+            if (Array.isArray(item.list)) {
+              keys = keys.map(v => Number(v))
             }
-            this.$set(this.formData, item.field, value)
+
+            const key = keys.length ? keys[0] : null
+
+            if (key !== null) {
+              let value = item.opts.label_value ? item.list[key][item.opts.label_value] : key
+              if (Number.isInteger(Number(value))) {
+                value = Number(value)
+              }
+              this.$set(this.formData, item.field, value)
+            }
           }
         }
 
@@ -276,7 +288,7 @@ export default {
           }
 
           if (!hasRequiredRule) {
-            rules[it.field].unshift({ required: true, message: `请设置${it.name}`, trigger: 'blur' })
+            rules[it.field].unshift({ required: true, message: `请设置${it.name}`, trigger: ['blur', 'change'] })
           }
         }
       })

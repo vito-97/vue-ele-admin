@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :list="list"
       :list-label="listLabel"
@@ -57,7 +57,7 @@ export default {
           type: this.checkAuth('change') ? 'switch' : 'tag',
           opts: {}
         },
-        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {}},
+        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         { name: '使用状态', field: 'state', label: true, type: 'tag', opts: {}, width: 90 },
         { name: '坐标', field: 'position', width: 150 },
         { name: '地址', field: 'address', width: 150 },

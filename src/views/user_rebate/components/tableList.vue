@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :list="list"
       :list-label="listLabel"
@@ -38,7 +38,7 @@ export default {
         { name: '用户', field: 'user.nickname' },
         { name: '已购买数量', field: 'buy_total' },
         { name: 'VIP', field: 'is_vip', type: 'switch' },
-        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {}},
+        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         { name: '备注', field: 'mark', type: 'content' },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]

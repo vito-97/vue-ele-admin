@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :list="list"
       :list-label="listLabel"
@@ -65,7 +65,7 @@ export default {
       columns: [
         { name: '名称', field: 'name', width: 150, type: 'tag' },
         { name: '优惠金额', field: 'amount', width: 150, type: 'tag', after: '元' },
-        { name: '满减金额', field: 'full_minus', before: '￥', type: 'tag', opts: { type: 'danger' }},
+        { name: '满减金额', field: 'full_minus', before: '￥', type: 'tag', opts: { type: 'danger' } },
         { name: '发放数量', field: 'total' },
         { name: '限制领取', field: 'limit' },
         { name: '已领取量', field: 'issued_total', after: '张' },
@@ -75,7 +75,7 @@ export default {
         { name: '领取时间', field: 'get_time' },
         { name: '使用时间', field: 'use_time' },
         { name: '领取有效期', field: 'coupon_day' },
-        { name: '状态', field: 'status', label: true, type: 'tag', opts: {}},
+        { name: '状态', field: 'status', label: true, type: 'tag', opts: {} },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]
     }

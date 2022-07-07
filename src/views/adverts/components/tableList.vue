@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :list="list"
       :list-label="listLabel"
@@ -34,7 +34,7 @@ export default {
         { name: '图片', field: 'image', type: 'image', width: 150 },
         { name: '链接', field: 'link', type: 'link', width: 150 },
         { name: '运营商', field: 'agent.nickname' },
-        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {}},
+        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]
     }

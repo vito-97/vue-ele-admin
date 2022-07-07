@@ -45,7 +45,8 @@ const tableMixin = {
   },
   data() {
     return {
-      lastQuery: {}
+      lastQuery: {},
+      params: {}
     }
   },
   components: { customTable },
@@ -65,6 +66,10 @@ const tableMixin = {
       }
 
       return api
+    },
+    // 查询条件
+    queryParams() {
+      return { ...this.params, ...this.query }
     }
   },
   methods: {

@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :list="list"
       :list-label="listLabel"
@@ -33,6 +33,7 @@ import CURD from '@/api/curd'
 export default {
   data() {
     return {
+      params: { module: 'admin' },
       headBtn: [
         {
           name: '刷新权限',

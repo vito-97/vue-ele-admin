@@ -1,11 +1,13 @@
-import { deepVal } from '@/utils'
+import { deepVal, toArray } from '@/utils'
 
 const formItemMixin = {
   data() {
     return {
       // 默认配置
       opts: {},
-      originValue: ''
+      originValue: '',
+      formDataValue: '',
+      formDataValueType: ''
     }
   },
   props: {
@@ -13,7 +15,10 @@ const formItemMixin = {
       type: Object
     },
     formData: {
-      type: Object
+      type: Object,
+      default: () => {
+        return {}
+      }
     },
     column: {
       type: Object
@@ -52,6 +57,20 @@ const formItemMixin = {
       return this.col.field
     }
   },
+  watch: {
+    formData: {
+      immediate: true,
+      handler(formData, oldFormData) {
+        if (!oldFormData || typeof oldFormData[this.field] === 'undefined' || formData[this.field] != oldFormData[this.field]) {
+          let val = formData[this.field] || ''
+          if (this.formDataValueType === 'array') {
+            val = this.toArray(val)
+          }
+          this.formDataValue = val
+        }
+      }
+    }
+  },
   created() {
     this.originValue = deepVal(this.field, this.detail)
   },
@@ -78,6 +97,14 @@ const formItemMixin = {
      */
     updateValue(val) {
       this.formData[this.col.field] = val
+    },
+    /**
+     * 转换为数组
+     * @param data
+     * @returns {*|*[]}
+     */
+    toArray(data) {
+      return toArray(data)
     }
   }
 }

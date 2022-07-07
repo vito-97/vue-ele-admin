@@ -193,7 +193,7 @@ module.exports = {
     'prefer-const': 'off',//关闭CONST校验
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'object-curly-spacing': [2, 'always', {
-      objectsInObjects: false
+      objectsInObjects: true
     }],
     'array-bracket-spacing': [2, 'never']
   }

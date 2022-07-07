@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :selectable="selectable"
       :deletable="deletable"
@@ -38,12 +38,12 @@ export default {
         { name: '运营商', field: 'agent.nickname', width: 150 },
         { name: '套餐名称', field: 'product_snap.name' },
         { name: '设备号', field: 'device.device_no' },
-        { name: '充值金额', field: 'money', before: '￥', type: 'tag', opts: { type: 'primary' }},
-        { name: '充值流量', field: 'flow', after: 'L', type: 'tag', opts: { type: 'success' }},
-        { name: '订单金额', field: 'price', before: '￥', type: 'tag', opts: { type: 'primary' }},
-        { name: '支付金额', field: 'pay_price', before: '￥', type: 'tag', opts: { type: 'danger' }},
-        { name: '状态', field: 'status', label: true, type: 'tag', opts: {}},
-        { name: '退款金额', field: 'refund_money', before: '￥', type: 'tag', opts: { type: 'warning' }},
+        { name: '充值金额', field: 'money', before: '￥', type: 'tag', opts: { type: 'primary' } },
+        { name: '充值流量', field: 'flow', after: 'L', type: 'tag', opts: { type: 'success' } },
+        { name: '订单金额', field: 'price', before: '￥', type: 'tag', opts: { type: 'primary' } },
+        { name: '支付金额', field: 'pay_price', before: '￥', type: 'tag', opts: { type: 'danger' } },
+        { name: '状态', field: 'status', label: true, type: 'tag', opts: {} },
+        { name: '退款金额', field: 'refund_money', before: '￥', type: 'tag', opts: { type: 'warning' } },
         { name: '订单号', field: 'order_no', width: 200 },
         { name: '第三方订单号', field: 'outer_trade_no', width: 200 },
         { name: '订单类型', field: 'type', label: true },

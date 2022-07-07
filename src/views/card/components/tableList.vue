@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :list="list"
       :list-label="listLabel"
@@ -34,7 +34,7 @@ export default {
         { name: '余额', field: 'money', type: 'tag', opts: { type: 'danger' }, before: '￥' },
         { name: '用户', field: 'agent.nickname' },
         { name: '使用时间', field: 'use_time', type: 'time' },
-        { name: '状态', field: 'status', label: true, type: 'tag', opts: {}},
+        { name: '状态', field: 'status', label: true, type: 'tag', opts: {} },
         { name: '备注', field: 'mark', type: 'content' },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]

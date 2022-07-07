@@ -1,17 +1,17 @@
 <template>
   <el-checkbox-group
-v-model="formData[col.field]"
-                     :disabled="col.opts.disabled"
-                     :min="col.opts.min"
-                     :max="col.opts.max"
-                     :text-color="col.opts.text_color"
+    v-model="formData[col.field]"
+    :indeterminate="col.opts.indeterminate"
+    :disabled="col.opts.disabled"
+    :min="col.opts.min"
+    :max="col.opts.max"
+    :text-color="col.opts.text_color"
   >
     <el-checkbox
-:label="getListItemValue(it,i)"
-                 :value="getListItemValue(it,i)"
-                 :name="col.field"
-                 v-for="(it,i) in col.list"
-:key="i">
+      :label="getListItemValue(it,i)"
+      :name="col.field"
+      v-for="(it,i) in col.list"
+      :key="i">
       {{ getListItemLabel(it, i) }}
     </el-checkbox>
   </el-checkbox-group>
@@ -25,13 +25,16 @@ export default {
   mixins: [formItemMixin],
   data() {
     return {
+      formDataValueType: 'array',
       opts: {
         min: 0,
-        max: 0,
-        text_color: null
+        max: Infinity,
+        text_color: null,
+        indeterminate: false
       }
     }
-  }
+  },
+  watch: {}
 }
 </script>
 

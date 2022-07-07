@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :list="list"
       :list-label="listLabel"
@@ -36,9 +36,9 @@ export default {
         { name: '已收款', field: 'amount', before: '￥' },
         { name: '已退款', field: 'refund_amount', before: '￥' },
         { name: '运营商', field: 'agent.nickname' },
-        { name: '公钥', field: 'public_key', type: 'content', opts: { title: '公钥' }},
-        { name: '私钥', field: 'private_key', type: 'content', opts: { title: '私钥' }},
-        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {}},
+        { name: '公钥', field: 'public_key', type: 'content', opts: { title: '公钥' } },
+        { name: '私钥', field: 'private_key', type: 'content', opts: { title: '私钥' } },
+        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]
     }

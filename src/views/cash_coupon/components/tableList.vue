@@ -2,7 +2,7 @@
   <div>
     <custom-table
       :columns="columns"
-      :query="query"
+      :query="queryParams"
       :searchable="searchable"
       :list="list"
       :list-label="listLabel"
@@ -76,7 +76,7 @@ export default {
         { name: '领取时间', field: 'get_time', width: 200 },
         { name: '使用时间', field: 'use_time', width: 200 },
         { name: '领取有效期', field: 'coupon_day' },
-        { name: '状态', field: 'status', label: true, type: 'tag', opts: {}},
+        { name: '状态', field: 'status', label: true, type: 'tag', opts: {} },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]
     }
