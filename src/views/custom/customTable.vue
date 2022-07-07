@@ -21,14 +21,22 @@
         <slot name="after-control-button" :selection="selection"></slot>
       </el-button-group>
       <div class="search-group-box" v-if="searchable && hasCurdAuth('index')">
-        <el-input
-          v-model="keyword"
-          placeholder="请输入关键词"
-          name="keyword"
-          :clearable="true"
-          size="mini"
-          @input="onKwInput"></el-input>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="onSearch">搜索</el-button>
+        <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
+          <el-form-item>
+            <el-input
+              v-model="keyword"
+              :placeholder="searchPlaceholder"
+              name="keyword"
+              :clearable="true"
+              @input="onKwInput">
+            </el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" @click="onSearch">
+              {{ searchBtnText }}
+            </el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </div>
     <el-table
@@ -321,6 +329,16 @@ export default {
     searchable: {
       type: Boolean,
       default: true
+    },
+    // 搜索框描述
+    searchPlaceholder: {
+      type: String,
+      default: '请输入关键词'
+    },
+    // 搜索按钮名称
+    searchBtnText: {
+      type: String,
+      default: '搜索'
     },
     // 查询条件
     query: {

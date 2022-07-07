@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div :class="{pointer:isOutStr}" @click="onClick">{{ subVal }}</div>
+    <div :class="{pointer:isOutStr}" @click.stop="onClick">{{ subVal }}</div>
     <div class="" v-if="isOutStr">
       <el-dialog :title="opt.title" :visible.sync="visible">
-        <div class="table-content-box">{{ val }}</div>
+        <div class="table-content-box">{{ string }}</div>
       </el-dialog>
     </div>
   </div>
@@ -20,20 +20,45 @@ export default {
       opts: {
         len: 30,
         join: '...',
+        // between 两边显示，中间隐藏
         position: '',
-        title: '详情'
+        title: '详情',
+        // 数组对象的话需要设置key
+        key: '',
+        // 数组的连接方式
+        char: '，'
       },
       visible: false
     }
   },
   computed: {
+    string() {
+      let val = this.val
+      let string
+      if (Array.isArray(val)) {
+        if (this.opt.key) {
+          let arr = []
+          for (let it of val) {
+            if (typeof it[this.opt.key] !== 'undefined') {
+              arr.push(it[this.opt.key])
+            }
+          }
+          string = arr.join(this.opt.char)
+        } else {
+          string = val.join(this.opt.char)
+        }
+      } else {
+        string = val
+      }
+      return string
+    },
     subVal() {
-      const val = this.val
+      const val = this.string
       let len = this.opt.len
-      let str = this.val
+      let str = this.string
 
       if (this.isOutStr) {
-        if (this.opt.sub_position === 'between') {
+        if (this.opt.position === 'between') {
           len = Math.ceil(len / 2)
           str = val.substr(0, len) + this.opt.join + val.substr(-len)
         } else {
@@ -44,7 +69,7 @@ export default {
       return str
     },
     len() {
-      return this.val.length
+      return this.string.length
     },
     isOutStr() {
       return this.len > this.opt.len

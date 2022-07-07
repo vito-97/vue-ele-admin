@@ -13,7 +13,8 @@ const tableColumnMixin = {
   },
   computed: {
     id() {
-      return this.row.id
+      const pk = this.col.pk || 'id'
+      return this.row[pk] || 0
     },
     opt() {
       return Object.assign({}, this.opts, this.col?.opts || {})

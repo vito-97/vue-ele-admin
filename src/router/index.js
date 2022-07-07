@@ -480,7 +480,6 @@ export const asyncRoutes = [
     ]
   },
   {
-    hidden: true,
     path: '/system_log',
     component: Layout,
     redirect: '/system_log/index',

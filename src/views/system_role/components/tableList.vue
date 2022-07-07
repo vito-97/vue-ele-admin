@@ -21,7 +21,6 @@
       @update-item="onUpdateItem"
       @load="onLoad"
     >
-
     </custom-table>
   </div>
 
@@ -36,6 +35,7 @@ export default {
       columns: [
         { name: '名称', field: 'name' },
         { name: '标识', field: 'key' },
+        { name: '权限', field: 'auth', type: 'content', opts: { key: 'name' } },
         { name: '备注', field: 'mark', type: 'content' },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]

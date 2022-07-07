@@ -1,13 +1,13 @@
 <template>
   <div class="content-box">
     <curd-index
-:form-com="addForm"
-                :table-com="tableList"
-                :control="control"
-                :searchable="searchable"
-                :curd="curd"
-                :mode="mode"
-                :pagination="false"
+      :form-com="addForm"
+      :table-com="tableList"
+      :control="control"
+      :searchable="searchable"
+      :curd="curd"
+      :mode="mode"
+      :pagination="false"
     >
     </curd-index>
   </div>

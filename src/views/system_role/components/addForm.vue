@@ -104,7 +104,7 @@ export default {
       let pid = col.list[index].id
       let children = this.getChildrenID(index, formData, col)
       if (status) {
-        if (!value.includes(value)) {
+        if (!value.includes(pid)) {
           value.push(pid)
         }
       } else {
