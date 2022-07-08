@@ -4,6 +4,7 @@
 
 <script>
 import tableColumnMixin from './table-column-mixin'
+
 const num = {}
 export default {
   name: 'TagEl',

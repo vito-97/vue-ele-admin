@@ -1,17 +1,17 @@
 <template>
   <el-slider
-v-model="formData[col.field]"
-             :disabled="col.opts.disabled"
-             :min="col.opts.min"
-             :max="col.opts.max"
-             :step="col.opts.step"
-             :show-stops="col.opts.show_stops"
-             :range="col.opts.range"
-             :vertical="col.opts.vertical"
-             :show-input="col.opts.show_input"
-             :show-input-controls="col.opts.show_input_controls"
-             :show-tooltip="col.opts.show_tooltip"
-             :height="col.opts.height"
+    v-model="formData[col.field]"
+    :disabled="col.opts.disabled"
+    :min="col.opts.min"
+    :max="col.opts.max"
+    :step="col.opts.step"
+    :show-stops="col.opts.show_stops"
+    :range="col.opts.range"
+    :vertical="col.opts.vertical"
+    :show-input="col.opts.show_input"
+    :show-input-controls="col.opts.show_input_controls"
+    :show-tooltip="col.opts.show_tooltip"
+    :height="col.opts.height"
   >
 
   </el-slider>

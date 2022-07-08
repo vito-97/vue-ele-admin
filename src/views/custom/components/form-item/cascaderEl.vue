@@ -8,11 +8,11 @@
     :filterable="col.opts.filterable"
     :placeholder="col.placeholder"
     :props="{
-                           value:col.opts.value,
-                           label:col.opts.label,
-                           children:col.opts.children,
-                           multiple:col.opts.children_multiple
-                         }"
+             value:col.opts.value,
+             label:col.opts.label,
+             children:col.opts.children,
+             multiple:col.opts.children_multiple
+             }"
   >
 
   </el-cascader>

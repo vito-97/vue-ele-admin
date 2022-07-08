@@ -1,12 +1,15 @@
 <template>
   <div class="content-box">
     <curd-index
-:form-com="addForm"
-                :table-com="tableList"
-                :control="control"
-                :searchable="searchable"
-                :curd="curd"
-                :mode="mode"
+      :query="query"
+      :form-com="addForm"
+      :table-com="tableList"
+      :control="control"
+      :searchable="searchable"
+      :curd="curd"
+      :mode="mode"
+      @select="onSelect"
+      @select-multiple="onSelectMultiple"
     >
     </curd-index>
   </div>

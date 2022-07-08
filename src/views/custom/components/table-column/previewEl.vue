@@ -8,7 +8,7 @@
         <el-link target="_blank" :href="val" :underline="false">
           <div class="other-type">
             <img src="/images/file.png" alt="">
-            <div class="ext">{{ext.toUpperCase()}}</div>
+            <div class="ext">{{ ext.toUpperCase() }}</div>
           </div>
         </el-link>
       </div>
@@ -42,26 +42,26 @@ export default {
     }
   },
   filters: {},
-  methods: {
-  }
+  methods: {}
 }
 </script>
 
 <style scoped lang="scss">
-.cover-box{
-  .cover{
+.cover-box {
+  .cover {
     height: 100%;
     width: auto;
     object-fit: cover;
   }
 
-  .tip{
+  .tip {
     color: #999;
   }
 
-  .other-type{
+  .other-type {
     position: relative;
-    .ext{
+
+    .ext {
       position: absolute;
       left: 0;
       top: 40%;

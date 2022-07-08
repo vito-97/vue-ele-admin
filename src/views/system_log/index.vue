@@ -1,6 +1,7 @@
 <template>
   <div class="content-box">
     <curd-index
+      :query="query"
       :table-com="tableList"
       :control="control"
       :searchable="searchable"

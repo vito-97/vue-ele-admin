@@ -1,10 +1,9 @@
 <template>
   <el-color-picker
-v-model="formData[col.field]"
-                   :disabled="col.opts.disabled"
-                   :show-alpha="col.opts.show_alpha"
-,
-                   :color-format="col.opts.color_format"
+    v-model="formData[col.field]"
+    :disabled="col.opts.disabled"
+    :show-alpha="col.opts.show_alpha"
+    :color-format="col.opts.color_format"
   >
   </el-color-picker>
 </template>

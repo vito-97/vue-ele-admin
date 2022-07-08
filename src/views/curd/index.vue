@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <!--    数据列表-->
     <template v-if="hasCurdAuth('index') && tableCom">
       <component
@@ -210,6 +209,7 @@ export default {
     },
     // 选择
     onSelect(args) {
+      console.log(args)
       this.$emit('select', args)
     },
     // 多选

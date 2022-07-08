@@ -5,8 +5,8 @@
       :query="queryParams"
       :searchable="searchable"
       :selectable="selectable"
-      :deletable="selectable"
-      :editable="selectable"
+      :deletable="deletable"
+      :editable="editable"
       :list="list"
       :list-label="listLabel"
       :pagination="pagination"
@@ -35,7 +35,7 @@ export default {
       columns: [
         { name: '名称', field: 'name' },
         { name: '标识', field: 'key' },
-        { name: '权限', field: 'auth', type: 'content', opts: { key: 'name' } },
+        { name: '权限', field: 'auth_tree', type: 'content', opts: { key: 'name', tree: true } },
         { name: '备注', field: 'mark', type: 'content' },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]
@@ -52,6 +52,12 @@ export default {
   },
   methods: {
     selectable(row, index) {
+      return row.id !== 1
+    },
+    deletable(row, index) {
+      return row.id !== 1
+    },
+    editable(row, index) {
       return row.id !== 1
     }
   }

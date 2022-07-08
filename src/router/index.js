@@ -97,7 +97,7 @@ export const asyncRoutes = [
         component: () => import('@/views/admin/index'),
         name: 'AdminIndex',
         meta: {
-          title: '管理员列表',
+          title: '管理员管理',
           auth: ['admin/index']
         }
       }
@@ -120,7 +120,7 @@ export const asyncRoutes = [
         component: () => import('@/views/user/index'),
         name: 'UserIndex',
         meta: {
-          title: '用户列表',
+          title: '用户管理',
           auth: ['user/index']
         }
       },
@@ -130,7 +130,7 @@ export const asyncRoutes = [
         component: () => import('@/views/water_company/index'),
         name: 'WaterCompanyIndex',
         meta: {
-          title: '水务公司列表',
+          title: '水务公司管理',
           auth: ['water_company/index']
         }
       },
@@ -140,7 +140,7 @@ export const asyncRoutes = [
         component: () => import('@/views/waterworks/index'),
         name: 'WaterworksIndex',
         meta: {
-          title: '水厂列表',
+          title: '水厂管理',
           auth: ['waterworks/index']
         }
       },
@@ -150,7 +150,7 @@ export const asyncRoutes = [
         component: () => import('@/views/customer/index'),
         name: 'CustomerIndex',
         meta: {
-          title: '取水客户列表',
+          title: '取水客户管理',
           auth: ['customer/index']
         }
       },
@@ -160,7 +160,7 @@ export const asyncRoutes = [
         component: () => import('@/views/water_fetcher/index'),
         name: 'WaterFetcherIndex',
         meta: {
-          title: '取水员列表',
+          title: '取水员管理',
           auth: ['water_fetcher/index']
         }
       }
@@ -183,7 +183,7 @@ export const asyncRoutes = [
         component: () => import('@/views/agent/index'),
         name: 'AgentIndex',
         meta: {
-          title: '运营商列表',
+          title: '运营商管理',
           auth: ['agent/index']
         }
       },
@@ -193,7 +193,7 @@ export const asyncRoutes = [
         component: () => import('@/views/repair_user/index'),
         name: 'RepairUserIndex',
         meta: {
-          title: '运营商维护员列表',
+          title: '运营商维护员管理',
           auth: ['repair_user/index']
         }
       },
@@ -203,7 +203,7 @@ export const asyncRoutes = [
         component: () => import('@/views/all_in_pay/index'),
         name: 'AllInPayIndex',
         meta: {
-          title: '通联支付列表',
+          title: '通联支付管理',
           auth: ['all_in_pay/index']
         }
       },
@@ -213,7 +213,7 @@ export const asyncRoutes = [
         component: () => import('@/views/service_charge/index'),
         name: 'ServiceChargeIndex',
         meta: {
-          title: '服务费列表',
+          title: '服务费管理',
           auth: ['service_charge/index']
         }
       }
@@ -236,7 +236,7 @@ export const asyncRoutes = [
         component: () => import('@/views/device/index'),
         name: 'DeviceIndex',
         meta: {
-          title: '设备列表',
+          title: '设备管理',
           auth: ['device/index']
         }
       },
@@ -246,7 +246,7 @@ export const asyncRoutes = [
         component: () => import('@/views/factory_user/index'),
         name: 'FactoryUserIndex',
         meta: {
-          title: '出厂设置员列表',
+          title: '出厂设置员管理',
           auth: ['factory_user/index']
         }
       }
@@ -269,7 +269,7 @@ export const asyncRoutes = [
         component: () => import('@/views/product/index'),
         name: 'ProductIndex',
         meta: {
-          title: '套餐列表',
+          title: '套餐管理',
           auth: ['product/index']
         }
       }
@@ -292,7 +292,7 @@ export const asyncRoutes = [
         component: () => import('@/views/order/index'),
         name: 'OrderIndex',
         meta: {
-          title: '订单列表',
+          title: '订单管理',
           auth: ['order/index']
         }
       },
@@ -307,7 +307,7 @@ export const asyncRoutes = [
         component: () => import('@/views/order/refund'),
         name: 'OrderRefund',
         meta: {
-          title: '退款列表',
+          title: '退款管理',
           auth: ['order/index']
         }
       }
@@ -330,7 +330,7 @@ export const asyncRoutes = [
         component: () => import('@/views/adverts/index'),
         name: 'AdvertsIndex',
         meta: {
-          title: '广告列表',
+          title: '广告管理',
           auth: ['adverts/index']
         }
       }
@@ -354,7 +354,7 @@ export const asyncRoutes = [
         component: () => import('@/views/coupon/index'),
         name: 'CouponIndex',
         meta: {
-          title: '优惠券列表',
+          title: '优惠券管理',
           auth: ['coupon/index']
         }
       },
@@ -363,7 +363,7 @@ export const asyncRoutes = [
         component: () => import('@/views/coupon_card/index'),
         name: 'CouponCardIndex',
         meta: {
-          title: '优惠券领取列表',
+          title: '优惠券领取管理',
           auth: ['coupon_card/index']
         }
       }
@@ -386,7 +386,7 @@ export const asyncRoutes = [
         component: () => import('@/views/cash_coupon/index'),
         name: 'CashCouponIndex',
         meta: {
-          title: '现金券列表',
+          title: '现金券管理',
           auth: ['cash_coupon/index']
         }
       },
@@ -395,7 +395,7 @@ export const asyncRoutes = [
         component: () => import('@/views/cash_coupon_card/index'),
         name: 'CashCouponCardIndex',
         meta: {
-          title: '现金券领取列表',
+          title: '现金券领取管理',
           auth: ['cash_coupon_card/index']
         }
       }
@@ -418,7 +418,7 @@ export const asyncRoutes = [
         component: () => import('@/views/card/index'),
         name: 'CardIndex',
         meta: {
-          title: 'IC卡列表',
+          title: 'IC卡管理',
           auth: ['card/index']
         }
       }
@@ -441,7 +441,7 @@ export const asyncRoutes = [
         component: () => import('@/views/attachment/index'),
         name: 'AttachmentIndex',
         meta: {
-          title: '附件列表',
+          title: '附件管理',
           auth: ['attachment/index']
         }
       }
@@ -464,7 +464,7 @@ export const asyncRoutes = [
         component: () => import('@/views/system_role/index'),
         name: 'SystemRoleIndex',
         meta: {
-          title: '角色列表',
+          title: '角色管理',
           auth: ['system_role/index']
         }
       },
@@ -473,7 +473,7 @@ export const asyncRoutes = [
         component: () => import('@/views/system_auth/index'),
         name: 'SystemAuthIndex',
         meta: {
-          title: '权限列表',
+          title: '权限管理',
           auth: ['system_auth/index']
         }
       }
@@ -496,7 +496,7 @@ export const asyncRoutes = [
         component: () => import('@/views/system_log/index'),
         name: 'SystemLogIndex',
         meta: {
-          title: '日志列表',
+          title: '日志管理',
           auth: ['system_log/index']
         }
       }

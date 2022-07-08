@@ -1,16 +1,16 @@
 <template>
   <div class="content-box">
     <curd-index
-:form-com="addForm"
-                :table-com="tableList"
-                :control="control"
-                :searchable="searchable"
-                :curd="curd"
-                :mode="mode"
-                :query="queryParams"
-                :select-multiple="selectMultiple"
-                @select="onSelect"
-                @select-multiple="onSelectMultiple"
+      :query="query"
+      :form-com="addForm"
+      :table-com="tableList"
+      :control="control"
+      :searchable="searchable"
+      :curd="curd"
+      :mode="mode"
+      :select-multiple="selectMultiple"
+      @select="onSelect"
+      @select-multiple="onSelectMultiple"
     >
     </curd-index>
   </div>
@@ -33,9 +33,6 @@ export default {
   },
   mixins: [indexMixin],
   computed: {
-    queryParams() {
-      return { }
-    }
   }
 }
 </script>

@@ -1,5 +1,10 @@
 <template>
-  <upload-el :column="column" :detail="detail" :attr="{list_type:'picture',accept:'.doc,.docx',tip:'只能上传Word文档'}"></upload-el>
+  <upload-el
+    :column="column"
+    :detail="detail"
+    :attr="{list_type:'picture',accept:'.doc,.docx',tip:'只能上传Word文档'}"
+  >
+  </upload-el>
 </template>
 
 <script>

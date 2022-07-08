@@ -1,6 +1,7 @@
 <template>
   <div class="content-box">
     <curd-index
+      :query="query"
       :form-com="addForm"
       :table-com="tableList"
       :control="control"
@@ -8,6 +9,9 @@
       :curd="curd"
       :mode="mode"
       :pagination="false"
+      :select-multiple="selectMultiple"
+      @select="onSelect"
+      @select-multiple="onSelectMultiple"
     >
     </curd-index>
   </div>

@@ -19,7 +19,6 @@
       @update-item="onUpdateItem"
       @load="onLoad"
     >
-
     </custom-table>
   </div>
 

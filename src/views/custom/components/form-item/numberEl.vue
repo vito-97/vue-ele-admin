@@ -1,17 +1,17 @@
 <template>
   <el-input-number
-v-model.number="formData[col.field]"
-                   :type="col.input_type"
-                   :placeholder="col.placeholder"
-                   :disabled="col.opts.disabled"
-                   :readonly="col.opts.readonly"
-                   :min="col.opts.min"
-                   :max="col.opts.max"
-                   :step="col.opts.step"
-                   :precision="col.opts.precision"
-                   :step-strictly="col.opts.step_strictly"
-                   :controls="col.opts.controls"
-                   :name="col.field"
+    v-model.number="formData[col.field]"
+    :type="col.input_type"
+    :placeholder="col.placeholder"
+    :disabled="col.opts.disabled"
+    :readonly="col.opts.readonly"
+    :min="col.opts.min"
+    :max="col.opts.max"
+    :step="col.opts.step"
+    :precision="col.opts.precision"
+    :step-strictly="col.opts.step_strictly"
+    :controls="col.opts.controls"
+    :name="col.field"
   >
   </el-input-number>
 </template>

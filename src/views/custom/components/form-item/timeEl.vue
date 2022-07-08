@@ -1,19 +1,19 @@
 <template>
   <el-time-picker
-placeholder="选择时间"
-                  v-model="formData[col.field]"
-                  :disabled="col.opts.disabled"
-                  :readonly="col.opts.readonly"
-                  :editable="col.opts.editable"
-                  :clearable="col.opts.clearable"
-                  :start-placeholder="col.opts.start_placeholder"
-                  :end-placeholder="col.opts.end_placeholder"
-                  :value-format="col.opts.format"
-                  :is-range="col.opts.is_range"
-                  :name="col.field"
-                  :arrow-control="col.opts.arrow_control"
-                  :picker-options="col.opts.picker_options"
-                  style="width: 100%;"
+    placeholder="选择时间"
+    v-model="formData[col.field]"
+    :disabled="col.opts.disabled"
+    :readonly="col.opts.readonly"
+    :editable="col.opts.editable"
+    :clearable="col.opts.clearable"
+    :start-placeholder="col.opts.start_placeholder"
+    :end-placeholder="col.opts.end_placeholder"
+    :value-format="col.opts.format"
+    :is-range="col.opts.is_range"
+    :name="col.field"
+    :arrow-control="col.opts.arrow_control"
+    :picker-options="col.opts.picker_options"
+    style="width: 100%;"
   >
 
   </el-time-picker>

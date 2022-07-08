@@ -1,19 +1,19 @@
 <template>
   <el-date-picker
-placeholder="选择日期时间"
-                  v-model="formData[col.field]"
-                  :disabled="col.opts.disabled"
-                  :readonly="col.opts.readonly"
-                  :editable="col.opts.editable"
-                  :clearable="col.opts.clearable"
-                  :start-placeholder="col.opts.start_placeholder"
-                  :end-placeholder="col.opts.end_placeholder"
-                  :type="col.opts.type"
-                  :format="col.opts.format"
-                  :name="col.field"
-                  :picker-options="col.opts.picker_options"
-                  :value-format="col.opts.format"
-                  style="width: 100%;"
+    placeholder="选择日期时间"
+    v-model="formData[col.field]"
+    :disabled="col.opts.disabled"
+    :readonly="col.opts.readonly"
+    :editable="col.opts.editable"
+    :clearable="col.opts.clearable"
+    :start-placeholder="col.opts.start_placeholder"
+    :end-placeholder="col.opts.end_placeholder"
+    :type="col.opts.type"
+    :format="col.opts.format"
+    :name="col.field"
+    :picker-options="col.opts.picker_options"
+    :value-format="col.opts.format"
+    style="width: 100%;"
   >
   </el-date-picker>
 </template>

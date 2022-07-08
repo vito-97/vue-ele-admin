@@ -3,7 +3,19 @@
     <div :class="{pointer:isOutStr}" @click.stop="onClick">{{ subVal }}</div>
     <div class="" v-if="isOutStr">
       <el-dialog :title="opt.title" :visible.sync="visible">
-        <div class="table-content-box">{{ string }}</div>
+        <div class="table-content-box">
+          <template v-if="opt.tree">
+            <div v-for="(item,index) in val" :key="index">
+              <el-divider content-position="left">{{ item[opt.key] }}</el-divider>
+              <el-tag v-for="(sub,i) in item[opt.children]" :key="i" class="tag">
+                {{ sub[opt.key] }}
+              </el-tag>
+            </div>
+          </template>
+          <template v-else>
+            {{ string }}
+          </template>
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -26,7 +38,10 @@ export default {
         // 数组对象的话需要设置key
         key: '',
         // 数组的连接方式
-        char: '，'
+        char: '，',
+        // 展示为树形结构
+        tree: false,
+        children: 'children'
       },
       visible: false
     }
@@ -72,7 +87,7 @@ export default {
       return this.string.length
     },
     isOutStr() {
-      return this.len > this.opt.len
+      return this.len > this.opt.len || this.opt.tree
     }
   },
   methods: {
@@ -95,5 +110,10 @@ export default {
   word-wrap: break-word;
   word-break: normal;
   white-space: normal;
+
+  .tag{
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
 }
 </style>

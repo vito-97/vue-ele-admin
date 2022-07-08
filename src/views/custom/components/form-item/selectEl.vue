@@ -1,22 +1,22 @@
 <template>
   <el-select
-v-model="formData[col.field]"
-             :placeholder="col.placeholder"
-             :disabled="col.opts.disabled"
-             :clearable="col.opts.clearable"
-             :multiple="col.opts.multiple"
-             :multiple-limit="col.opts.multiple_limit"
-             :name="col.field"
-             :filterable="col.opts.filterable"
-             :remote="col.opts.remote"
-             :remote-method="selectRemote"
-             :loading="col.opts.loading"
+    v-model="formData[col.field]"
+    :placeholder="col.placeholder"
+    :disabled="col.opts.disabled"
+    :clearable="col.opts.clearable"
+    :multiple="col.opts.multiple"
+    :multiple-limit="col.opts.multiple_limit"
+    :name="col.field"
+    :filterable="col.opts.filterable"
+    :remote="col.opts.remote"
+    :remote-method="selectRemote"
+    :loading="col.opts.loading"
   >
     <el-option
-:label="getListItemLabel(it,i)"
-               :value="getListItemValue(it,i)"
-               v-for="(it,i) in col.list"
-:key="i">
+      :label="getListItemLabel(it,i)"
+      :value="getListItemValue(it,i)"
+      v-for="(it,i) in col.list"
+      :key="i">
 
     </el-option>
   </el-select>

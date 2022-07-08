@@ -1,17 +1,17 @@
 <template>
   <div class="cover-box">
     <template v-if="val2array.length">
-        <el-image
-          v-for="(src,index) in val2array"
-:key="index"
-          class="cover"
-          :src="src"
-          fit="contain"
-          :previewSrcList="val2array"
-          @click="onClickImg(index,src)"
-        >
+      <el-image
+        v-for="(src,index) in val2array"
+        :key="index"
+        class="cover"
+        :src="src"
+        fit="contain"
+        :previewSrcList="val2array"
+        @click="onClickImg(index,src)"
+      >
 
-        </el-image>
+      </el-image>
     </template>
     <template v-else>
       <div class="tip">暂无图片</div>

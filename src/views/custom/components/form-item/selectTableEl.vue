@@ -2,24 +2,28 @@
   <div class="select-table-box">
     <template v-if="control">
       <el-tag v-show="labelName" size="medium" class="label-name" @click="onClickChoose">{{ labelName }}</el-tag>
-      <el-button class="select-btn" type="primary" size="mini" @click="onClickChoose" :disabled="disabled">{{ btnText }}</el-button>
+      <el-button class="select-btn" type="primary" size="mini" @click="onClickChoose" :disabled="disabled">
+        {{ btnText }}
+      </el-button>
       <el-dialog
-:title="title"
-:visible.sync="visible"
-                 class="detail-form-dialog"
-                 @close="onClose"
-                 @open="onOpen"
-                 :modal="true"
-                 width="60%"
-                 top="10vh"
-                 append-to-body
+        :title="title"
+        :visible.sync="visible"
+        class="detail-form-dialog"
+        @close="onClose"
+        @open="onOpen"
+        :modal="true"
+        width="60%"
+        top="10vh"
+        append-to-body
       >
         <component
-:is="com"
-mode="select"
-:select-multiple="opt.multiple"
-                   @select="onSelect"
-                   @select-multiple="onSelectMultiple"></component>
+          :is="com"
+          mode="select"
+          :query="opt.query"
+          :select-multiple="opt.multiple"
+          @select="onSelect"
+          @select-multiple="onSelectMultiple">
+        </component>
       </el-dialog>
     </template>
     <template v-else>
@@ -85,7 +89,8 @@ export default {
         title: '选择%s',
         name: '', // 展示的名称
         pk: 'id', // 主键
-        key: ''// 对象的KEY
+        key: '', // 对象的KEY
+        query: {}
       }
     }
   },
@@ -106,6 +111,7 @@ export default {
     },
     // 选择
     onSelect({ row, index }) {
+      console.log(row)
       this.$set(this.formData, this.field, row[this.opt.pk])
       this.$set(this.detail, this.key, row)
       this.visible = false

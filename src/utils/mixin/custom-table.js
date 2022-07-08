@@ -73,12 +73,26 @@ const tableMixin = {
     }
   },
   methods: {
+    // 是否可选中
+    selectable(row, index) {
+      return true
+    },
+    // 是否可删除
+    deletable(row, index) {
+      return true
+    },
+    // 是否可编辑
+    editable(row, index) {
+      return true
+    },
+    // 加载列表
     onLoad(args) {
       if (args.query) {
         this.lastQuery = args.query
       }
       this.$emit('load', args)
     },
+    // 点击头部按钮
     onTapHeadBtn(args) {
       const key = args.key
       const method = 'onTapHeadBtn' + this.ucfirst(key)
@@ -89,6 +103,7 @@ const tableMixin = {
         this.$emit('tap-head-btn', args)
       }
     },
+    // 点击行的按钮
     onTapRowBtn(args) {
       const key = args.key
       const method = 'onTapRowBtn' + this.ucfirst(key)
@@ -130,7 +145,10 @@ const tableMixin = {
     onRowDbClick(row, column, event) {
       // 展示的模式才编辑
       if (this.mode === 'show') {
-        this.onTapRowBtnUpdate(row, 0)
+        // 判断是否有权限和是否可编辑
+        if (this.checkAuth('edit') && this.checkAuth('update') && this.editable(row, 0)) {
+          this.onTapRowBtnUpdate(row, 0)
+        }
         // 选择模式
       } else if (this.mode === 'select') {
         this.onTapRowBtnSelect(row, 0)
