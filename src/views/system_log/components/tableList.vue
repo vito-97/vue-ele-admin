@@ -44,7 +44,7 @@ export default {
         { name: '模块', field: 'module', label: true },
         { name: '请求参数', field: 'query', type: 'content' },
         { name: 'IP', field: 'ip' },
-        { name: 'UA', field: 'ua', type: 'content' },
+        { name: 'UserAgent', field: 'ua', type: 'content' },
         { name: '访问时间', field: 'create_time', width: 150 }
       ]
     }

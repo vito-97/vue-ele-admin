@@ -19,6 +19,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'RadioEl',
+  alias: '单选框',
   mixins: [formItemMixin],
   data() {
     return {

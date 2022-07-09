@@ -4,9 +4,6 @@
       :columns="columns"
       :query="queryParams"
       :searchable="searchable"
-      :selectable="selectable"
-      :deletable="deletable"
-      :editable="editable"
       :list="list"
       :list-label="listLabel"
       :pagination="pagination"
@@ -15,7 +12,6 @@
       :control="control"
       :mode="mode"
       :select-multiple="selectMultiple"
-      :default-expand-all="true"
       @tap-head-btn="onTapHeadBtn"
       @tap-row-btn="onTapRowBtn"
       @row-dblclick="onRowDbClick"
@@ -34,10 +30,12 @@ export default {
   data() {
     return {
       columns: [
-        { name: '名称', field: 'name' },
-        { name: '标识', field: 'key' },
-        { name: '权限', field: 'auth_tree', type: 'content', opts: { key: 'name', tree: true } },
-        { name: '备注', field: 'mark', type: 'content' },
+        { name: '名称', field: 'name', width: 150 },
+        { name: '变量键', field: 'key', width: 150 },
+        { name: '变量值', field: 'value', width: 150 },
+        { name: '类型', field: 'type' },
+        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
+        { name: '提示信息', field: 'desc', type: 'content' },
         { name: '添加时间', field: 'create_time', width: 150 }
       ]
     }
@@ -49,18 +47,14 @@ export default {
   computed: {},
   props: {},
   filters: {},
+  watch: {
+  },
   created() {
+
+  },
+  destroyed() {
   },
   methods: {
-    selectable(row, index) {
-      return row.id !== 1
-    },
-    deletable(row, index) {
-      return row.id !== 1
-    },
-    editable(row, index) {
-      return row.id !== 1
-    }
   }
 }
 </script>

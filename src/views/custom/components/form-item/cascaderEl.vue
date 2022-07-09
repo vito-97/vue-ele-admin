@@ -23,6 +23,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'CascaderEl',
+  alias: '级联选择器',
   mixins: [formItemMixin],
   data() {
     return {

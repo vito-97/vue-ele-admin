@@ -1,14 +1,14 @@
 <template>
   <div>
     <custom-form
-:visible.sync="Visible"
-                 :columns="columns"
-                 :detail.sync="detail"
-                 :id="id"
-                 :list="list"
-                 :rules="rules"
-                 :append-to-body="appendToBody"
-                 @submit="onSubmit"
+      :visible.sync="Visible"
+      :columns="columns"
+      :detail.sync="detail"
+      :id="id"
+      :list="list"
+      :rules="rules"
+      :append-to-body="appendToBody"
+      @submit="onSubmit"
     >
 
     </custom-form>
@@ -28,8 +28,8 @@ export default {
       rules: {},
       // 列配置
       columns: [
-        { name: '标题', field: 'title', opts: { maxlength: 100, required: true }},
-        { name: '订单号', field: 'order_no', opts: { required: true, maxlength: 30 }, edit_opts: { readonly: true }},
+        { name: '标题', field: 'title', opts: { maxlength: 100, required: true } },
+        { name: '订单号', field: 'order_no', opts: { required: true, maxlength: 30 }, edit_opts: { readonly: true } },
         {
           name: '第三方订单号',
           field: 'outer_trade_no',
@@ -43,9 +43,9 @@ export default {
         { name: '退款金额', field: 'refund_money', opts: { required: true, precision: 2 }, type: 'number' },
         { name: '套餐', field: 'product_id', opts: { required: true, control: 'product', name: 'name' }, type: 'select_table' },
         { name: '用户', field: 'user_id', opts: { required: true, control: 'user', name: 'nickname' }, type: 'select_table' },
-        { name: '运营商', field: 'agent_id', opts: { required: true, control: 'agent', name: 'nickname' }, type: 'select_table', edit_opts: { disabled: false }},
-        { name: '类型', field: 'type', label: true, type: 'radio', opts: { required: true }},
-        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true }},
+        { name: '运营商', field: 'agent_id', opts: { required: true, control: 'agent', name: 'nickname' }, type: 'select_table', edit_opts: { disabled: false } },
+        { name: '类型', field: 'type', label: true, type: 'radio', opts: { required: true } },
+        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },
         { name: '备注', field: 'mark', opts: { maxlength: 120 }, type: 'textarea' },
         { name: '退款备注', field: 'refund_mark', opts: { maxlength: 100 }, type: 'textarea' },
         { name: '退款失败备注', field: 'refund_error_mark', opts: { maxlength: 100 }, type: 'textarea' }

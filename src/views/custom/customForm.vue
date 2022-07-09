@@ -2,6 +2,7 @@
   <div>
     <!--    添加或编辑-->
     <el-dialog
+      v-if="dialog"
       :title="title"
       :visible.sync="Visible"
       class="detail-form-dialog"
@@ -17,6 +18,11 @@
         ref="detailForm"
         @validate="onValidate"
         v-if="Visible">
+        <el-alert
+          v-if="!formColumns.length"
+          title="提示"
+          description="未设置表单内容，请先设置表单内容选项">
+        </el-alert>
         <template v-for="(col,index) in formColumns">
           <el-form-item
             v-if="!col.hidden && (isEdit ? (col.editable) : col.addable)"
@@ -37,7 +43,8 @@
                   :column="col"
                   :form-data="formData"
                   :mode="isEdit ? 'edit' : 'add'"
-                ></component>
+                >
+                </component>
               </template>
 
               <template v-else>
@@ -57,40 +64,67 @@
         <el-button @click="onReset">重 置</el-button>
       </div>
     </el-dialog>
+    <div v-else>
+      <!--  添加或编辑-->
+      <el-form
+        :model="formData"
+        class="detail-form"
+        :rules="formRules"
+        ref="detailForm"
+        @validate="onValidate"
+      >
+        <el-alert
+          v-if="!formColumns.length"
+          title="提示"
+          description="未设置表单内容，请先设置表单内容选项">
+        </el-alert>
+        <template v-for="(col,index) in formColumns">
+          <el-form-item
+            v-if="!col.hidden && (isEdit ? (col.editable) : col.addable)"
+            :key="index"
+            :label="col.name"
+            :prop="col.field"
+            :required="col.opts.required"
+            :error="error && error[col.field] || ''"
+            :label-width="col.width"
+          >
+            <!--          插槽-->
+            <slot :name="col.slot || col.field" :form-data="formData" :col="col">
+
+              <template v-if="items[col.type]">
+                <component
+                  :is="items[col.type]"
+                  :detail="detail"
+                  :column="col"
+                  :form-data="formData"
+                  :mode="isEdit ? 'edit' : 'add'"
+                >
+                </component>
+              </template>
+
+              <template v-else>
+                <el-alert
+                  :title="'未知类型'+col.type"
+                  type="error"
+                  :closable="false">
+                </el-alert>
+              </template>
+            </slot>
+          </el-form-item>
+        </template>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit()">确 定</el-button>
+          <el-button @click="onReset">重 置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
 <script>
 import visible from '@/utils/mixin/visible'
 import { deepVal, toArray } from '@/utils'
-
-// 使用require引入所有组件
-const itemsCom = {}
-const requireComponent = require.context(
-  // 其组件目录的相对路径
-  './components/form-item',
-  // 是否查询其子目录
-  false,
-  // 匹配基础组件文件名的正则表达式
-  /\w+El\.vue$/
-)
-
-requireComponent.keys().forEach(fileName => {
-  // 获取组件配置
-  const componentConfig = requireComponent(fileName)
-
-  // 获取组件的命名
-  const componentName = fileName
-    .split('/')
-    .pop()
-    .replace(/El\.\w+$/, '')
-
-  const componentLineName = componentName
-    .replace(/([A-Z])/g, '_$1')
-    .toLowerCase()
-  itemsCom[componentName] = componentConfig.default || componentConfig
-  itemsCom[componentLineName] = componentConfig.default || componentConfig
-})
+import itemsCom from '@/utils/form-item'
 
 export default {
   name: 'CustomForm',
@@ -133,18 +167,29 @@ export default {
     appendToBody: {
       type: Boolean,
       default: false
+    },
+    // 是否使用dialog显示表单
+    dialog: {
+      type: Boolean,
+      default: true
     }
   },
   watch: {
+    // 是否展示
     Visible: {
       // immediate: true,
       handler(val) {
         if (val) {
-          this.initColumns()
-          if (!this.isInitFormRules) {
-            this.isInitFormRules = true
-            this.formRules = this.initFormRules()
-          }
+          this.init()
+        }
+      }
+    },
+    // 监听是否使用dialog
+    dialog: {
+      immediate: true,
+      handler(val) {
+        if (!val) {
+          this.init()
         }
       }
     }
@@ -171,6 +216,13 @@ export default {
   created() {
   },
   methods: {
+    init() {
+      this.initColumns()
+      if (!this.isInitFormRules) {
+        this.isInitFormRules = true
+        this.formRules = this.initFormRules()
+      }
+    },
     // 初始化表内容
     initColumns() {
       this.formData = {}

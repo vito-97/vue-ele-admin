@@ -8,6 +8,7 @@ import uploadEl from './uploadEl'
 
 export default {
   name: 'UploadZipEl',
+  alias: '上传压缩包',
   components: { uploadEl },
   mixins: [formItemMixin]
 }

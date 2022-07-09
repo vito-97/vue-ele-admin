@@ -24,6 +24,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'TimeEl',
+  alias: '时间',
   mixins: [formItemMixin],
   data() {
     return {

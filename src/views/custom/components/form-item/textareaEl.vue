@@ -22,6 +22,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'TextareaEl',
+  alias: '多行文本',
   mixins: [formItemMixin],
   data() {
     return {

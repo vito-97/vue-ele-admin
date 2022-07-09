@@ -35,6 +35,7 @@ import { getToken } from '@/utils/auth'
 const base = process.env.VUE_APP_BASE_API
 export default {
   name: 'UploadEl',
+  alias: '上传',
   mixins: [formItemMixin],
   data() {
     return {

@@ -1,14 +1,18 @@
 <template>
   <div class="select-table-box">
     <template v-if="control">
-      <el-tag v-show="labelName" size="medium" class="label-name" @click="onClickChoose">{{ labelName }}</el-tag>
-      <el-button class="select-btn" type="primary" size="mini" @click="onClickChoose" :disabled="disabled">
-        {{ btnText }}
-      </el-button>
+      <div class="form-item">
+        <template v-if="isFormat('image')">
+          <input-el :detail="detail" :form-data="formData" :column="column" :mode="mode" class="item"></input-el>
+        </template>
+        <el-button class="select-btn" type="primary" size="small" @click="onClickChoose" :disabled="disabled">
+          {{ btnText }}
+        </el-button>
+      </div>
+
       <el-dialog
         :title="title"
         :visible.sync="visible"
-        class="detail-form-dialog"
         @close="onClose"
         @open="onOpen"
         :modal="true"
@@ -25,6 +29,13 @@
           @select-multiple="onSelectMultiple">
         </component>
       </el-dialog>
+      <!--      显示内容-->
+      <div v-if="isFormat('image')" class="label-name">
+        <image-el :val="labelName" :col="{opts:{size:opt.imageSize}}"></image-el>
+      </div>
+      <el-tag v-show="labelName" size="medium" class="label-name" @click="onClickChoose" v-else>
+        {{ labelName }}
+      </el-tag>
     </template>
     <template v-else>
       <el-alert
@@ -39,12 +50,19 @@
 <script>
 import formItemMixin from './form-item-mixin'
 import { deepVal } from '@/utils'
+import imageEl from '@/views/custom/components/table-column/imageEl'
+import inputEl from '@/views/custom/components/form-item/inputEl'
 
 const com = {}
 
 export default {
   name: 'SelectTableEl',
+  alias: '数据选择器',
   mixins: [formItemMixin],
+  components: {
+    imageEl,
+    inputEl
+  },
   computed: {
     // 获取控制器名称
     control() {
@@ -66,7 +84,8 @@ export default {
         console.warn(this.col.field, 'select table not set label name')
       }
       const key = `${this.key}.${this.opt.name}`
-      return deepVal(key, this.detail)
+
+      return deepVal(key, this.detail) || deepVal(this.col.field, this.formData)
     },
     // 是否禁用选择按钮
     disabled() {
@@ -90,7 +109,9 @@ export default {
         name: '', // 展示的名称
         pk: 'id', // 主键
         key: '', // 对象的KEY
-        query: {}
+        query: {},
+        format: '',
+        imageSize: 300
       }
     }
   },
@@ -106,12 +127,14 @@ export default {
     onClose() {
 
     },
+    isFormat(s) {
+      return s === this.opt.format
+    },
     getText(string) {
       return string.replace(/%s/g, this.controlName(this.control))
     },
     // 选择
     onSelect({ row, index }) {
-      console.log(row)
       this.$set(this.formData, this.field, row[this.opt.pk])
       this.$set(this.detail, this.key, row)
       this.visible = false
@@ -127,11 +150,19 @@ export default {
 
 <style scoped lang="scss">
 .select-table-box {
-  display: flex;
-  align-items: center;
+  //display: flex;
+  //align-items: center;
+  .form-item {
+    display: flex;
+    align-items: center;
+    .item{
+      margin-right: 10px;
+    }
+    //align-items: flex-start;
+  }
 
   .label-name {
-    margin-right: 10px;
+    margin-top: 10px;
     cursor: pointer;
   }
 }

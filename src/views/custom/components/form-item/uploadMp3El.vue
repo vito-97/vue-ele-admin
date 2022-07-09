@@ -8,6 +8,7 @@ import uploadEl from './uploadEl'
 
 export default {
   name: 'UploadMp3El',
+  alias: '上传MP3',
   components: { uploadEl },
   mixins: [formItemMixin]
 }

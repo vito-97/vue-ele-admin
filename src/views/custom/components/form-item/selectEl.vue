@@ -27,6 +27,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'SelectEl',
+  alias: '下拉选择框',
   mixins: [formItemMixin],
   data() {
     return {

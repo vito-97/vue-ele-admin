@@ -21,6 +21,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'NumberEl',
+  alias: '计数器',
   mixins: [formItemMixin],
   data() {
     return {

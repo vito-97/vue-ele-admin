@@ -13,6 +13,7 @@ import uploadEl from './uploadEl'
 
 export default {
   name: 'UploadDocEl',
+  alias: '上传文档',
   components: { uploadEl },
   mixins: [formItemMixin]
 }

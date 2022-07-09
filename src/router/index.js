@@ -431,7 +431,7 @@ export const asyncRoutes = [
     alwaysShow: true, // will always show the root menu
     name: 'Attachment',
     meta: {
-      title: '附件管理',
+      title: '附件',
       icon: 'el-icon-paperclip',
       auth: ['attachment']
     },
@@ -503,52 +503,24 @@ export const asyncRoutes = [
     ]
   },
   {
-    hidden: true,
-    path: '/system_setting',
+    path: '/system_config_tab',
     component: Layout,
-    redirect: '/system_setting/config',
+    redirect: '/system_config_tab/index',
     alwaysShow: true, // will always show the root menu
-    name: 'SystemSetting',
+    name: 'SystemConfigTab',
     meta: {
-      title: '设置',
+      title: '系统配置',
       icon: 'el-icon-s-tools',
-      auth: ['system_setting']
+      auth: ['system_config_tab', 'system_config']
     },
     children: [
       {
-        path: 'config',
-        component: () => import('@/views/system_setting/config'),
-        name: 'SystemSettingConfig',
+        path: 'index',
+        component: () => import('@/views/system_config_tab/index'),
+        name: 'SystemConfigTabIndex',
         meta: {
-          title: '基本设置',
-          auth: ['system_setting/config']
-        }
-      },
-      {
-        path: 'pay',
-        component: () => import('@/views/system_setting/pay'),
-        name: 'SystemSettingPay',
-        meta: {
-          title: '支付设置',
-          auth: ['system_setting/pay']
-        }
-      },
-      {
-        path: 'wechat',
-        component: () => import('@/views/system_setting/wechat'),
-        name: 'SystemSettingWechat',
-        meta: {
-          title: '公众号设置',
-          auth: ['system_setting/wechat']
-        }
-      },
-      {
-        path: 'profile',
-        component: () => import('@/views/system_setting/profile'),
-        name: 'SystemSettingPayProfile',
-        meta: {
-          title: '个人信息设置',
-          auth: ['system_setting/profile']
+          title: '系统设置',
+          auth: ['system_config_tab/index', 'system_config/index']
         }
       }
     ]

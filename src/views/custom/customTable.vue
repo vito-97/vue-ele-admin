@@ -39,166 +39,156 @@
         </el-form>
       </div>
     </div>
-    <el-table
-      :data="list"
-      :row-key="rowKey"
-      :stripe="stripe"
-      :border="border"
-      :default-expand-all="defaultExpandAll"
-      :tree-props="treeProps"
-      :height="height"
-      class="table-box"
-      v-if="hasCurdAuth('index') && visible"
-      ref="table"
-      @selection-change="onTableSelectionChange"
-      @row-dblclick="onTableRowDbClick"
-      @filter-change="onTableFilter"
-    >
-      <!--      选项列-->
-      <el-table-column
-        v-if="!hideSelection"
-        type="selection"
-        :selectable="selectable"
-        width="50">
-      </el-table-column>
-      <el-table-column
-        v-if="!hidePk"
-        :prop="pk"
-        :label="pkLabel"
-        width="80">
-      </el-table-column>
-      <!--      渲染列-->
-      <el-table-column
-        v-for="(it,i) in cols"
-        :key="i"
-        :fixed="it.fixed || null"
-        :prop="it.prop || it.field"
-        :label="it.name"
-        :width="it.width"
-        :sortable="it.sortable"
-        :resizable="it.resizable"
-        :formatter="it.formatter"
-        :show-overflow-tooltip="it.show_overflow_tooltip"
-        :align="it.align"
-        :class-name="it.class_name"
-        :label-class-name="it.label_class_name"
-        :filters="it.filters"
-        :filter-multiple="it.filter_multiple"
-        :column-key="it.field"
+    <slot name="content" :column="cols">
+      <el-table
+        :data="list"
+        :row-key="rowKey"
+        :stripe="stripe"
+        :border="border"
+        :default-expand-all="defaultExpandAll"
+        :tree-props="treeProps"
+        :height="height"
+        class="table-box"
+        v-if="hasCurdAuth('index') && visible"
+        ref="table"
+        @selection-change="onTableSelectionChange"
+        @row-dblclick="onTableRowDbClick"
+        @filter-change="onTableFilter"
       >
-        <template slot-scope="{row,column,$index}">
+        <!--      选项列-->
+        <el-table-column
+          v-if="!hideSelection"
+          type="selection"
+          :selectable="selectable"
+          width="50">
+        </el-table-column>
+        <el-table-column
+          v-if="!hidePk"
+          :prop="pk"
+          :label="pkLabel"
+          width="80">
+        </el-table-column>
+        <!--      渲染列-->
+        <el-table-column
+          v-for="(it,i) in cols"
+          :key="i"
+          :fixed="it.fixed || null"
+          :prop="it.prop || it.field"
+          :label="it.name"
+          :width="it.width"
+          :sortable="it.sortable"
+          :resizable="it.resizable"
+          :formatter="it.formatter"
+          :show-overflow-tooltip="it.show_overflow_tooltip"
+          :align="it.align"
+          :class-name="it.class_name"
+          :label-class-name="it.label_class_name"
+          :filters="it.filters"
+          :filter-multiple="it.filter_multiple"
+          :column-key="it.field"
+        >
+          <template slot-scope="{row,column,$index}">
 
-          <slot
-            :name="(it.slot || it.field)+'-before'"
-            v-if="getColValue(it, row)"
-            :row="row"
-            :column="column"
-            :$index="$index"
-            :value="getColValue(it, row)"></slot>
+            <slot
+              :name="(it.slot || it.field)+'-before'"
+              v-if="getColValue(it, row)"
+              :row="row"
+              :column="column"
+              :$index="$index"
+              :value="getColValue(it, row)"></slot>
 
-          <slot
-            :name="(it.slot || it.field)"
-            :row="row"
-            :column="column"
-            :$index="$index"
-            :value="getColValue(it, row)"
-            :label="listLabel">
+            <slot
+              :name="(it.slot || it.field)"
+              :row="row"
+              :column="column"
+              :$index="$index"
+              :value="getColValue(it, row)"
+              :label="listLabel">
 
-            <template v-if="!isEmpty(it,row)">
+              <template v-if="!isEmpty(it,row)">
 
-              <template v-if="it.type && items[it.type]">
-                <component
-                  :is="items[it.type]"
-                  :row="row"
-                  :col="it"
-                  :index="$index"
-                  :val="getColValue(it, row)"
-                  :format-val="getFormatColValue(it, row)"
-                  @update-item="onUpdateItem"></component>
+                <template v-if="it.type && items[it.type]">
+                  <component
+                    :is="items[it.type]"
+                    :row="row"
+                    :col="it"
+                    :index="$index"
+                    :val="getColValue(it, row)"
+                    :format-val="getFormatColValue(it, row)"
+                    @update-item="onUpdateItem"></component>
+                </template>
+
+                <template v-else>
+                  {{ getFormatColValue(it, row) }}
+                </template>
+
               </template>
 
-              <template v-else>
-                {{ getFormatColValue(it, row) }}
+            </slot>
+
+            <slot
+              :name="(it.slot || it.field)+'-empty'"
+              v-if="!row[it.field]"
+              :row="row"
+              :column="column"
+              :$index="$index"
+              :value="getColValue(it, row)"></slot>
+
+            <slot
+              :name="(it.slot || it.field)+'-after'"
+              v-if="row[it.field]"
+              :row="row"
+              :column="column"
+              :$index="$index"
+              :value="getColValue(it, row)"></slot>
+
+          </template>
+
+        </el-table-column>
+
+        <!--      操作列-->
+        <el-table-column
+          fixed="right"
+          :label="rowBtnColumn.name"
+          :width="rowBtnColumn.width"
+          v-if="!hideRowBtn"
+        >
+          <template slot-scope="{row,column,$index}">
+
+            <slot name="before-row-btn" :row="row" :column="column" :$index="$index"></slot>
+
+            <slot name="row-btn" :row="row" :column="column" :$index="$index">
+              <template v-for="(btn,index) in rowBtns">
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="onTapRowBtn(btn,row,$index,column)"
+                  v-if="(!btn.auth || checkAuth(btn.auth))"
+                  :disabled="rowBtnDisabled(btn,row,$index)"
+                  :key="index"
+                >
+                  {{ btn.name }}
+                </el-button>
               </template>
+            </slot>
 
-            </template>
+            <slot name="after-row-btn" :row="row" :column="column" :$index="$index"></slot>
 
-          </slot>
+          </template>
+        </el-table-column>
 
-          <slot
-            :name="(it.slot || it.field)+'-empty'"
-            v-if="!row[it.field]"
-            :row="row"
-            :column="column"
-            :$index="$index"
-            :value="getColValue(it, row)"></slot>
-
-          <slot
-            :name="(it.slot || it.field)+'-after'"
-            v-if="row[it.field]"
-            :row="row"
-            :column="column"
-            :$index="$index"
-            :value="getColValue(it, row)"></slot>
-
-        </template>
-
-      </el-table-column>
-
-      <!--      操作列-->
-      <el-table-column
-        fixed="right"
-        :label="rowBtnColumn.name"
-        :width="rowBtnColumn.width"
-        v-if="!hideRowBtn"
-      >
-        <template slot-scope="{row,column,$index}">
-
-          <slot name="before-row-btn" :row="row" :column="column" :$index="$index"></slot>
-
-          <slot name="row-btn" :row="row" :column="column" :$index="$index">
-            <template v-for="(btn,index) in rowBtns">
-              <el-button
-                type="text"
-                size="small"
-                @click="onTapRowBtn(btn,row,$index,column)"
-                v-if="(!btn.auth || checkAuth(btn.auth))"
-                :disabled="rowBtnDisabled(btn,row,$index)"
-                :key="index"
-              >
-                {{ btn.name }}
-              </el-button>
-            </template>
-          </slot>
-
-          <slot name="after-row-btn" :row="row" :column="column" :$index="$index"></slot>
-
-        </template>
-      </el-table-column>
-
-    </el-table>
-
-    <!--    分页-->
-    <div class="page-box" v-if="pagination">
-      <!--      <el-pagination-->
-      <!--        background-->
-      <!--        @size-change="onPaginationSizeChange"-->
-      <!--        @current-change="onPaginationCurrentChange"-->
-      <!--        :current-page="page"-->
-      <!--        :page-sizes="pageSizes"-->
-      <!--        :page-size="limit"-->
-      <!--        layout="total, sizes, prev, pager, next, jumper"-->
-      <!--        :total="total">-->
-      <!--      </el-pagination>-->
-
-      <pagination
-        :total="total"
-        :page="page"
-        :page-sizes="pageSizes"
-        :limit="limit"
-        :auto-scroll="true"
-        @pagination="onPaginationChange"/>
-    </div>
+      </el-table>
+      <!--    分页-->
+      <div class="page-box" v-if="pagination">
+        <pagination
+          :total="total"
+          :page="page"
+          :page-sizes="pageSizes"
+          :limit="limit"
+          :auto-scroll="true"
+          @pagination="onPaginationChange"/>
+      </div>
+    </slot>
 
     <el-dialog
       title="提示"
@@ -221,35 +211,7 @@ import { getLimit, pageSizes, setLimit } from '@/utils/list'
 import checkPermission from '@/utils/permission'
 import Pagination from '@/components/Pagination'
 import { deepVal } from '@/utils'
-
-const itemsCom = {}
-const requireComponent = require.context(
-  // 其组件目录的相对路径
-  './components/table-column',
-  // 是否查询其子目录
-  false,
-  // 匹配基础组件文件名的正则表达式
-  /\w+El\.vue$/
-)
-
-requireComponent.keys().forEach(fileName => {
-  // 获取组件配置
-  const componentConfig = requireComponent(fileName)
-
-  // 获取组件的命名
-  const componentName = fileName
-    .split('/')
-    .pop()
-    .replace(/El\.\w+$/, '')
-    .replace(/([A-Z])/g, '-$1')
-    .toLowerCase()
-  const componentLineName = componentName
-    .replace(/([A-Z])/g, '_$1')
-    .toLowerCase()
-
-  itemsCom[componentName] = componentConfig.default || componentConfig
-  itemsCom[componentLineName] = componentConfig.default || componentConfig
-})
+import itemsCom from '@/utils/table-column'
 
 export default {
   name: 'CustomTable',

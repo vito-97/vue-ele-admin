@@ -8,6 +8,7 @@ import uploadEl from './uploadEl'
 
 export default {
   name: 'UploadXlsEl',
+  alias: '上传表格',
   components: { uploadEl },
   mixins: [formItemMixin]
 }

@@ -24,6 +24,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'DateEl',
+  alias: '日期',
   mixins: [formItemMixin],
   data() {
     const isRange = this.column.opts.is_range

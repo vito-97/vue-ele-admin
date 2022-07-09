@@ -8,6 +8,7 @@ import uploadEl from './uploadEl'
 
 export default {
   name: 'UploadPdfEl',
+  alias: '上传PDF',
   components: { uploadEl },
   mixins: [formItemMixin]
 }

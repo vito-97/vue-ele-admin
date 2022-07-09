@@ -22,6 +22,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'SwitchEl',
+  alias: '开关',
   mixins: [formItemMixin],
   data() {
     return {

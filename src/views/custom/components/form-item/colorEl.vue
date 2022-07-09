@@ -14,6 +14,7 @@ import formItemMixin from './form-item-mixin'
 export default {
   name: 'ColorEl',
   mixins: [formItemMixin],
+  alias: '颜色选择器',
   data() {
     return {
       opts: {

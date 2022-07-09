@@ -1,14 +1,14 @@
 <template>
   <div>
     <custom-form
-:visible.sync="Visible"
-                 :columns="columns"
-                 :detail.sync="detail"
-                 :id="id"
-                 :list="list"
-                 :rules="rules"
-                 :append-to-body="appendToBody"
-                 @submit="onSubmit"
+      :visible.sync="Visible"
+      :columns="columns"
+      :detail.sync="detail"
+      :id="id"
+      :list="list"
+      :rules="rules"
+      :append-to-body="appendToBody"
+      @submit="onSubmit"
     >
 
     </custom-form>

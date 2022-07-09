@@ -22,6 +22,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'SliderEl',
+  alias: '滑块',
   mixins: [formItemMixin],
   data() {
     return {

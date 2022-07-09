@@ -183,6 +183,10 @@ const tableMixin = {
       s += auth
 
       return s
+    },
+    // 检测其他权限
+    checkPermission(auth) {
+      return checkPermission(auth)
     }
   }
 }

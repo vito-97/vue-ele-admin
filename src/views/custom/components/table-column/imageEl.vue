@@ -5,6 +5,7 @@
         v-for="(src,index) in val2array"
         :key="index"
         class="cover"
+        :style="style"
         :src="src"
         fit="contain"
         :previewSrcList="val2array"
@@ -26,6 +27,22 @@ export default {
   name: 'ImageEl',
   mixins: [tableColumnMixin],
   filters: {},
+  data() {
+    return {
+      opts: {
+        size: 100
+      }
+    }
+  },
+  computed: {
+    style() {
+      let size = this.opt.size + 'px'
+      return {
+        maxHeight: size,
+        maxWidth: size
+      }
+    }
+  },
   methods: {
     onClickImg(index, src) {
 
@@ -40,10 +57,6 @@ export default {
 <style scoped lang="scss">
 .cover-box {
   .cover {
-    max-height: 100px;
-    max-width: 100px;
-    width: auto;
-    object-fit: cover;
   }
 
   .tip {

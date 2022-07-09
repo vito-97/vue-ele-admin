@@ -22,6 +22,7 @@ import formItemMixin from './form-item-mixin'
 
 export default {
   name: 'InputEl',
+  alias: '输入框',
   mixins: [formItemMixin],
   data() {
     return {

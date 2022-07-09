@@ -8,6 +8,7 @@ import uploadEl from './uploadEl'
 
 export default {
   name: 'UploadVideoEl',
+  alias: '上传视频',
   components: { uploadEl },
   mixins: [formItemMixin]
 }
