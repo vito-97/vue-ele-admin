@@ -383,6 +383,11 @@ export default {
       type: [Function, Boolean],
       default: true
     },
+    // 判断是否可以选择
+    optional: {
+      type: [Function, Boolean],
+      default: true
+    },
     // 是否过滤
     filter: {
       type: Boolean,
@@ -638,7 +643,8 @@ export default {
         {
           name: '选择',
           key: 'select',
-          mode: ['select']
+          mode: ['select'],
+          show: this.optional || true
         },
         {
           name: '编辑',

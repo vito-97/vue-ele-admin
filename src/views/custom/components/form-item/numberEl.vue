@@ -1,7 +1,6 @@
 <template>
   <el-input-number
     v-model.number="formData[col.field]"
-    :type="col.input_type"
     :placeholder="col.placeholder"
     :disabled="col.opts.disabled"
     :readonly="col.opts.readonly"

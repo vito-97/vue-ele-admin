@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-tabs type="card" :addable="checkAuth('edit') && checkAuth('save')" @tab-add="onTabPaneAdd">
+    <el-tabs type="card" :addable="checkAuth('edit') && checkAuth('save') && mode === 'page'" @tab-add="onTabPaneAdd">
       <!--      管理配置菜单-->
       <el-tab-pane label="配置管理" v-if="checkAuth('index')">
         <span slot="label"><i class="el-icon-menu"></i> 配置管理</span>
@@ -17,6 +17,7 @@
           :mode="mode"
           :select-multiple="selectMultiple"
           :default-expand-all="true"
+          :optional="optional"
           @tap-head-btn="onTapHeadBtn"
           @tap-row-btn="onTapRowBtn"
           @row-dblclick="onRowDbClick"
@@ -28,7 +29,7 @@
       <!--      获取所有配置菜单-->
       <template v-for="(item,index) in list">
         <el-tab-pane
-          v-if="item.status && checkAuth('index') && checkPermission('system_config/index') && checkPermission('system_config/save')"
+          v-if="'show' === mode && item.status && checkAuth('index') && checkPermission('system_config/index') && checkPermission('system_config/save')"
           :label="item.name"
           :key="index"
           :lazy="true"
@@ -44,13 +45,25 @@
                   :lazy="true"
                 >
                   <span slot="label"><i :class="child.icon" v-if="child.icon"></i> {{ child.name }}</span>
-                  <system-config-form :columns="child.config" :detail="listLabel.config"></system-config-form>
+                  <system-config-form
+                    :columns="child.config"
+                    :detail="listLabel.config.option"
+                    :id="child.id"
+                    :config="child"
+                    @flush="onTapHeadBtnFlush"
+                  ></system-config-form>
                 </el-tab-pane>
               </template>
             </el-tabs>
           </template>
           <template v-else>
-            <system-config-form :columns="item.config" :detail="listLabel.config"></system-config-form>
+            <system-config-form
+              :columns="item.config"
+              :detail="listLabel.config.option"
+              :id="item.id"
+              :config="item"
+              @flush="onTapHeadBtnFlush"
+            ></system-config-form>
           </template>
         </el-tab-pane>
       </template>
@@ -100,6 +113,11 @@ export default {
     // 添加配置分类
     onTabPaneAdd() {
       this.onTapHeadBtnSave()
+    },
+
+    optional(row, index) {
+      // 有下级的就不可选
+      return !row.children.length
     }
   }
 }

@@ -96,7 +96,9 @@ const formItemMixin = {
      * @param val
      */
     updateValue(val) {
-      this.formData[this.col.field] = val
+      // this.formData[this.col.field] = val
+      console.log(this.field, val)
+      this.$set(this.formData, this.field, val)
     },
     /**
      * 转换为数组

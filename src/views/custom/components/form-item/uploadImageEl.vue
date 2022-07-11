@@ -1,5 +1,5 @@
 <template>
-  <upload-el :column="column" :detail="detail" :attr="{list_type:'picture',accept:'image/*','tip':'只能上传jpg/png/gif'}"></upload-el>
+  <upload-el :column="column" :detail="detail" :form-data="formData" :attr="{list_type:'picture',accept:'image/*','tip':'只能上传jpg/png/gif'}" :mode="mode"></upload-el>
 </template>
 
 <script>

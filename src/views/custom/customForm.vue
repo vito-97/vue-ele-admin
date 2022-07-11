@@ -240,7 +240,6 @@ export default {
       // 默认单个的配置
       var column = {
         type: 'input',
-        input_type: 'text',
         list: [], // 列表数据
         value: '',
         placeholder: '',

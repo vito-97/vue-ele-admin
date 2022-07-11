@@ -33,7 +33,7 @@ export default {
         { name: '图标', field: 'icon', opts: { required: false, maxlength: 30 }, type: 'icon' },
         { name: '排序', field: 'sort', type: 'number' },
         {
-          name: '上级',
+          name: '上级分类',
           field: 'pid',
           opts: { required: false, control: 'system_config_tab', name: 'name', key: 'parent', query: { without: 'children' } },
           type: 'select_table',

@@ -1,5 +1,5 @@
 <template>
-  <upload-el :column="column" :detail="detail" :attr="{list_type:'picture',accept:'.xls,.xlsx','tip':'只能上传xls'}"></upload-el>
+  <upload-el :column="column" :detail="detail" :form-data="formData" :attr="{list_type:'picture',accept:'.xls,.xlsx','tip':'只能上传xls'}" :mode="mode"></upload-el>
 </template>
 
 <script>
