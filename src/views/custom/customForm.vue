@@ -21,7 +21,11 @@
         <el-alert
           v-if="!formColumns.length"
           title="提示"
-          description="未设置表单内容，请先设置表单内容选项">
+          type="error"
+          class="empty-tip"
+          description="未设置表单内容，请先设置表单内容选项"
+          :closable="false"
+        >
         </el-alert>
         <template v-for="(col,index) in formColumns">
           <el-form-item
@@ -76,7 +80,11 @@
         <el-alert
           v-if="!formColumns.length"
           title="提示"
-          description="未设置表单内容，请先设置表单内容选项">
+          type="error"
+          class="empty-tip"
+          description="未设置表单内容，请先设置表单内容选项"
+          :closable="false"
+        >
         </el-alert>
         <template v-for="(col,index) in formColumns">
           <el-form-item
@@ -106,13 +114,14 @@
                 <el-alert
                   :title="'未知类型'+col.type"
                   type="error"
-                  :closable="false">
+                  :closable="false"
+                >
                 </el-alert>
               </template>
             </slot>
           </el-form-item>
         </template>
-        <el-form-item>
+        <el-form-item v-if="columns.length">
           <el-button type="primary" @click="onSubmit()">确 定</el-button>
           <el-button @click="onReset">重 置</el-button>
         </el-form-item>
@@ -261,6 +270,9 @@ export default {
 
       for (let [index, item] of columns.entries()) {
         item = Object.assign({}, column, item)
+        if (typeof item.field === 'undefined' && item.key) {
+          item.field = item.key
+        }
         // 设置表单数据
         if (item.field && (typeof this.formData[item.field] === 'undefined' || this.formData[item.field] === '')) {
           const value = typeof item.value === 'undefined' ? '' : item.value
@@ -394,5 +406,9 @@ export default {
 
   .detail-form {
   }
+}
+
+.empty-tip {
+  margin-bottom: 20px;
 }
 </style>

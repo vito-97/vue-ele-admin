@@ -35,7 +35,7 @@ export default {
         {
           name: '上级',
           field: 'pid',
-          opts: { required: false, control: 'system_config_tab', name: 'name', query: { without: 'children' } },
+          opts: { required: false, control: 'system_config_tab', name: 'name', key: 'parent', query: { without: 'children' } },
           type: 'select_table',
           edit_opts: { disabled: false },
           value: 0

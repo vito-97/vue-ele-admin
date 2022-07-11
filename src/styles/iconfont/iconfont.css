@@ -1,0 +1,36 @@
+@font-face {
+  font-family: "v-icons"; /* Project id 3513017 */
+  src: url('iconfont.woff2?t=1657506688577') format('woff2'),
+       url('iconfont.woff?t=1657506688577') format('woff'),
+       url('iconfont.ttf?t=1657506688577') format('truetype');
+}
+
+[class*=" v-icon-"], [class^=v-icon-]   {
+  font-family: "v-icons" !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: baseline;
+  display: inline-block;
+  font-smoothing: antialiased;
+}
+
+.v-icon-weixin:before {
+  content: "\e600";
+}
+
+.v-icon-zhifu:before {
+  content: "\e627";
+}
+
+.v-icon-tonglianpingtaijiekou:before {
+  content: "\e624";
+}
+
+.v-icon-weixingongzhonghao:before {
+  content: "\e705";
+}
+

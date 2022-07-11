@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
+import '@/styles/iconfont/iconfont.css' // 扩展图标
 
 import Element from 'element-ui'
 import './styles/element-variables.scss'
@@ -11,7 +12,6 @@ import 'element-ui/lib/theme-chalk/display.css'// 基于断点的隐藏类
 
 import '@/styles/index.scss' // global css
 import '@/styles/app.scss' // 自定义样式
-
 import App from './App'
 import store from './store'
 import router from './router'
