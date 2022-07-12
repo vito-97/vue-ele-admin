@@ -108,6 +108,10 @@ export default {
     pagination: {
       type: Boolean,
       default: true
+    },
+    // 是否一直获取label
+    loadDetailLabel: {
+      type: Boolean
     }
   },
   computed: {
@@ -270,7 +274,7 @@ export default {
     // 获取新增或者编辑数据
     getEditData() {
       const params = {}
-      if (!this.isLoadDetailLabel) {
+      if (!this.isLoadDetailLabel || this.loadDetailLabel) {
         params._label = 1
       }
 

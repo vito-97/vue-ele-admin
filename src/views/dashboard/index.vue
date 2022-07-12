@@ -6,6 +6,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import checkPermission from '@/utils/permission'
 import adminDashboard from './admin'
 import editorDashboard from './editor'
 
@@ -23,7 +24,7 @@ export default {
     ])
   },
   created() {
-    if (this.role.key !== 'admin') {
+    if (!checkPermission('dashboard/index')) {
       this.currentRole = 'editorDashboard'
     }
   }

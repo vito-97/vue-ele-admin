@@ -16,7 +16,7 @@ export default function checkPermission(value) {
     const auths = value
 
     const hasPermission = auths.reduce((last, v) => {
-      return last && role.auth[setting.authPrefix + v.trim()] && true
+      return last && role && role.auth[setting.authPrefix + v.trim()]
     }, true)
 
     return hasPermission

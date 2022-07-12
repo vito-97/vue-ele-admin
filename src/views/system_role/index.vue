@@ -9,6 +9,7 @@
       :curd="curd"
       :mode="mode"
       :select-multiple="selectMultiple"
+      :load-detail-label="true"
       @select="onSelect"
       @select-multiple="onSelectMultiple"
     >
