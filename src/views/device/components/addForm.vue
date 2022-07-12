@@ -20,6 +20,7 @@
 <script>
 import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
+import { isSuperAdmin } from '@/utils'
 
 export default {
   name: 'AddForm',
@@ -44,6 +45,18 @@ export default {
           opts: { required: true, control: 'agent', name: 'nickname' },
           type: 'select_table',
           edit_opts: { disabled: false }
+        },
+        {
+          field: 'site_id',
+          name: '站点',
+          list: { 1: '居科乐', 2: '市政' },
+          type: 'radio',
+          opts: { required: true },
+          edit_opts: { disabled: true },
+          value: 1,
+          visible(formData, detail) {
+            return isSuperAdmin(this.$store.getters.role)
+          }
         },
         { name: '广告灯', field: 'adverts_light', label: true, type: 'switch', opts: { required: true } },
         { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },

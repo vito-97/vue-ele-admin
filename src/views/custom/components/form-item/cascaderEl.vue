@@ -1,7 +1,7 @@
 <template>
   <el-cascader
     v-model="formData[col.field]"
-    :options="list"
+    :options="col.list"
     :disabled="col.opts.disabled"
     :clearable="col.opts.clearable"
     :multiple="col.opts.multiple"
@@ -24,6 +24,7 @@ import formItemMixin from './form-item-mixin'
 export default {
   name: 'CascaderEl',
   alias: '级联选择器',
+  list: true,
   mixins: [formItemMixin],
   data() {
     return {

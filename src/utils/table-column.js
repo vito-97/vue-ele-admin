@@ -23,7 +23,7 @@ requireComponent.keys().forEach(fileName => {
     .replace(/([A-Z])/g, '_$1')
     .toLowerCase()
 
-  tableColumnCom[componentName] = tableColumnCom[componentLineName] = componentConfig.default || componentConfig
+  /* tableColumnCom[componentName] = */ tableColumnCom[componentLineName] = componentConfig.default || componentConfig
 })
 
 export default tableColumnCom

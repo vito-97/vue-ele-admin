@@ -23,6 +23,7 @@ import formItemMixin from './form-item-mixin'
 export default {
   name: 'CheckboxEl',
   alias: '多选框',
+  list: true,
   mixins: [formItemMixin],
   data() {
     return {

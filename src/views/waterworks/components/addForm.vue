@@ -43,6 +43,13 @@ export default {
         { name: '头像', field: 'avatar', type: 'upload_image' },
         { name: '手机号', field: 'tel' },
         { name: '邮箱', field: 'email' },
+        {
+          name: '水务公司',
+          field: 'user_id',
+          opts: { required: true, control: 'water_company', name: 'nickname' },
+          type: 'select_table',
+          edit_opts: { disabled: true }
+        },
         { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },
         { name: '备注', field: 'mark', type: 'textarea', opts: { maxlength: 120 } }
       ]

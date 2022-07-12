@@ -29,7 +29,7 @@
         </el-alert>
         <template v-for="(col,index) in formColumns">
           <el-form-item
-            v-if="!col.hidden && (isEdit ? (col.editable) : col.addable)"
+            v-if="checkColVisible(col) && (isEdit ? (col.editable) : col.addable)"
             :key="index"
             :label="col.name"
             :prop="col.field"
@@ -88,7 +88,7 @@
         </el-alert>
         <template v-for="(col,index) in formColumns">
           <el-form-item
-            v-if="!col.hidden && (isEdit ? (col.editable) : col.addable)"
+            v-if="checkColVisible(col) && (isEdit ? (col.editable) : col.addable)"
             :key="index"
             :label="col.name"
             :prop="col.field"
@@ -242,11 +242,11 @@ export default {
         type: 'input',
         list: [], // 列表数据
         value: '',
-        placeholder: '',
+        // placeholder: '',
         addable: true, // 添加显示
         editable: true, // 编辑显示
         required: false, // 是否必选
-        hidden: false, // 是否隐藏
+        visible: true, // 是否显示
         width: '',
         slot: '',
         // 配置项
@@ -359,6 +359,23 @@ export default {
       console.log('rules', rules)
 
       return rules
+    },
+    /**
+     * 检测元素是否显示
+     * @param col
+     * @returns {boolean|*}
+     */
+    checkColVisible(col) {
+      if (typeof col.visible === 'boolean') {
+        return col.visible
+      }
+      if (typeof col.visible === 'function') {
+        const status = col.visible.call(this, this.formData, this.detail)
+
+        return status
+      }
+
+      return true
     },
     // 提交
     onSubmit() {

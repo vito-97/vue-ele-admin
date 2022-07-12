@@ -19,7 +19,6 @@
 <script>
 import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
-import ENUM from '@/utils/enum'
 
 export default {
   name: 'AddForm',
@@ -45,15 +44,6 @@ export default {
         { name: '报障电话', field: 'tel' },
         { name: '手机号', field: 'tel' },
         { name: '邮箱', field: 'email' },
-        {
-          name: '类型',
-          field: 'type',
-          label: true,
-          type: 'select',
-          value: ENUM.user.type.agent.toString(),
-          hidden: true,
-          opts: { disabled: true }
-        },
         { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },
         { name: '备注', field: 'mark', type: 'textarea', opts: { maxlength: 120 } }
       ]

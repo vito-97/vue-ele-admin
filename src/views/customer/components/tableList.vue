@@ -38,6 +38,7 @@ export default {
         { name: '邮箱', field: 'email' },
         { name: '流量', field: 'flow', after: 'L' },
         { name: '已使用', field: 'used_flow', after: 'L' },
+        { name: '水务公司', field: 'water_company.nickname' },
         { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         { name: '最后登录时间', field: 'last_login_time', width: 150 },
         { name: '最后登录IP', field: 'last_login_ip', width: 150 },

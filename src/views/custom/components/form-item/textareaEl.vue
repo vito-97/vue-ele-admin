@@ -12,6 +12,7 @@
     :readonly="col.opts.readonly"
     :name="col.field"
     :rows="col.opts.rows"
+    :autosize="col.opts.autosize"
   >
 
   </el-input>
@@ -29,7 +30,8 @@ export default {
       opts: {
         rows: 2,
         show_word_limit: false,
-        show_password: false
+        show_password: false,
+        autosize: true
       }
     }
   }

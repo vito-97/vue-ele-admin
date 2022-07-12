@@ -1,13 +1,13 @@
 <template>
   <div>
     <custom-form
-:visible.sync="Visible"
-              :columns="columns"
-              :detail.sync="detail"
-              :id="id"
-              :list="list"
-              :rules="rules"
-              @submit="onSubmit"
+      :visible.sync="Visible"
+      :columns="columns"
+      :detail.sync="detail"
+      :id="id"
+      :list="list"
+      :rules="rules"
+      @submit="onSubmit"
     >
 
     </custom-form>
@@ -18,6 +18,7 @@
 <script>
 import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
+import { isSuperAdmin } from '@/utils'
 
 // required 是否必填  trigger 触发检查的方式 blur 失去焦点时检查 change 值发生改变时触发
 // { required: true, message: '请输入活动名称', trigger: 'blur' },
@@ -59,9 +60,9 @@ export default {
       },
       // 列配置
       columns: [
-        { field: 'username', name: '账号', edit_opts: { readonly: true }},
-        { field: 'password', name: '密码', add_opts: { required: true }},
-        { field: 'nickname', name: '昵称', opts: { required: true }},
+        { field: 'username', name: '账号', edit_opts: { readonly: true } },
+        { field: 'password', name: '密码', add_opts: { required: true }, edit_opts: { required: false } },
+        { field: 'nickname', name: '昵称', opts: { required: true } },
         { field: 'tel', name: '手机' },
         { field: 'email', name: '邮箱' },
         {
@@ -71,7 +72,19 @@ export default {
           type: 'select',
           opts: { label_field: 'name', label_value: 'id', required: true }
         },
-        { field: 'status', name: '状态', label: true, type: 'radio', opts: { required: true }},
+        {
+          field: 'site_id',
+          name: '站点',
+          list: { 1: '居科乐', 2: '市政' },
+          type: 'radio',
+          opts: { required: true },
+          edit_opts: { disabled: true },
+          value: 1,
+          visible(formData, detail) {
+            return isSuperAdmin(this.$store.getters.role)
+          }
+        },
+        { field: 'status', name: '状态', label: true, type: 'radio', opts: { required: true } },
         { field: 'mark', name: '备注', type: 'textarea' },
         { field: 'disabled_mark', name: '禁用备注', type: 'textarea' }
       ]

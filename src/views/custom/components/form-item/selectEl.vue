@@ -7,10 +7,12 @@
     :multiple="col.opts.multiple"
     :multiple-limit="col.opts.multiple_limit"
     :name="col.field"
-    :filterable="col.opts.filterable"
+    :filterable="col.opts.filterable || col.opts.allow_create"
     :remote="col.opts.remote"
     :remote-method="selectRemote"
     :loading="col.opts.loading"
+    :allow-create="col.opts.allow_create"
+    :default-first-option="col.opts.default_first_option"
   >
     <el-option
       :label="getListItemLabel(it,i)"
@@ -28,6 +30,7 @@ import formItemMixin from './form-item-mixin'
 export default {
   name: 'SelectEl',
   alias: '下拉选择框',
+  list: true,
   mixins: [formItemMixin],
   data() {
     return {
@@ -38,7 +41,9 @@ export default {
         filterable: false,
         remote: false,
         loading: false,
-        placeholder: '请选择'
+        placeholder: '请选择',
+        default_first_option: true,
+        allow_create: false
       }
     }
   },

@@ -32,26 +32,6 @@ export default {
         { name: '密码', field: 'password', add_opts: { required: true } },
         { name: '昵称', field: 'nickname', opts: { required: true, maxlength: 20 } },
         { name: '姓名', field: 'real_name', opts: { required: false, maxlength: 20 } },
-        /*        {
-          name: '性别',
-          field: 'sex',
-          label: true,
-          type: 'radio',
-          opts: { required: true },
-          edit_opts: { required: false }
-        },*/
-        // { name: '头像', field: 'avatar', type: 'upload_image' },
-        // { name: '手机号', field: 'tel' },
-        // { name: '邮箱', field: 'email' },
-        // {
-        //   name: '类型',
-        //   field: 'type',
-        //   label: true,
-        //   type: 'select',
-        //   value: ENUM.user.type.agent.toString(),
-        //   hidden:true,
-        //   opts: { disabled: true }
-        // },
         { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },
         { name: '备注', field: 'mark', type: 'textarea', opts: { maxlength: 120 } }
       ]

@@ -445,3 +445,7 @@ export function controlName(index) {
 export function toArray(data, char = ',') {
   return Array.isArray(data) ? data : (typeof data === 'undefined' || data === '' ? [] : data.split(char))
 }
+
+export function isSuperAdmin(role) {
+  return role && role.key === 'admin'
+}

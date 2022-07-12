@@ -14,6 +14,7 @@
     :suffix-icon="col.opts.suffix_icon"
     :min="col.opts.min"
     :max="col.opts.max"
+    :step="col.opts.step"
     :name="col.field"
   >
   </el-input>
@@ -33,7 +34,8 @@ export default {
         show_password: false,
         input_type: 'text',
         prefix_icon: '',
-        suffix_icon: ''
+        suffix_icon: '',
+        step: 1
       }
     }
   }

@@ -21,6 +21,15 @@
 import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
 import ENUM from '@/utils/enum'
+import formItemCom from '@/utils/form-item'
+
+const MUST_LIST_ITEM = []
+
+for (let [key, item] of Object.entries(formItemCom)) {
+  if (item.list) {
+    MUST_LIST_ITEM.push(key)
+  }
+}
 
 export default {
   name: 'AddForm',
@@ -69,6 +78,17 @@ export default {
         },
         { name: '变量键', field: 'key', add_opts: { required: true, maxlength: 50 }, edit_opts: { readonly: true } },
         { name: '变量值', field: 'value', opts: { required: false } },
+        {
+          name: '变量选项',
+          field: 'list',
+          opts: { required: true },
+          type: 'textarea',
+          placeholder: '请输入变量选项 例：\r\na|A选项\r\nb|B选项\r\nc|C选项',
+          visible(formData, detail) {
+            return MUST_LIST_ITEM.includes(formData.type || '')
+          }
+        },
+        { name: '变量配置项', field: 'opts', opts: { required: false }, type: 'textarea', placeholder: '请输入变量配置项' },
         {
           name: '分类',
           field: 'system_config_tab_id',

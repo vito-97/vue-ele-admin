@@ -22,7 +22,8 @@ requireComponent.keys().forEach(fileName => {
   const componentLineName = componentName
     .replace(/([A-Z])/g, '_$1')
     .toLowerCase()
-  formItemCom[componentName] = formItemCom[componentLineName] = componentConfig.default || componentConfig
+
+  /* formItemCom[componentName] = */ formItemCom[componentLineName] = componentConfig.default || componentConfig
 })
 
 export default formItemCom
