@@ -1,17 +1,17 @@
 <template>
   <el-cascader
-    v-model="formData[col.field]"
+    v-model="formData[field]"
     :options="col.list"
-    :disabled="col.opts.disabled"
-    :clearable="col.opts.clearable"
-    :multiple="col.opts.multiple"
-    :filterable="col.opts.filterable"
+    :disabled="opt.disabled"
+    :clearable="opt.clearable"
+    :multiple="opt.multiple"
+    :filterable="opt.filterable"
     :placeholder="col.placeholder"
     :props="{
-             value:col.opts.value,
-             label:col.opts.label,
-             children:col.opts.children,
-             multiple:col.opts.children_multiple
+             value:opt.value,
+             label:opt.label,
+             children:opt.children,
+             multiple:opt.children_multiple
              }"
   >
 

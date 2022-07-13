@@ -125,8 +125,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'water_company/index',
-        alias: '/water_company/index',
+        path: '/water_company/index',
         component: () => import('@/views/water_company/index'),
         name: 'WaterCompanyIndex',
         meta: {
@@ -135,8 +134,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'waterworks/index',
-        alias: '/waterworks/index',
+        path: '/waterworks/index',
         component: () => import('@/views/waterworks/index'),
         name: 'WaterworksIndex',
         meta: {
@@ -145,8 +143,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'customer/index',
-        alias: '/customer/index',
+        path: '/customer/index',
         component: () => import('@/views/customer/index'),
         name: 'CustomerIndex',
         meta: {
@@ -155,8 +152,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'water_fetcher/index',
-        alias: '/water_fetcher/index',
+        path: '/water_fetcher/index',
         component: () => import('@/views/water_fetcher/index'),
         name: 'WaterFetcherIndex',
         meta: {
@@ -188,8 +184,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'repair_user/index',
-        alias: '/repair_user/index',
+        path: '/repair_user/index',
         component: () => import('@/views/repair_user/index'),
         name: 'RepairUserIndex',
         meta: {
@@ -198,8 +193,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'all_in_pay/index',
-        alias: '/all_in_pay/index',
+        path: '/all_in_pay/index',
         component: () => import('@/views/all_in_pay/index'),
         name: 'AllInPayIndex',
         meta: {
@@ -208,8 +202,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'service_charge/index',
-        alias: '/service_charge/index',
+        path: '/service_charge/index',
         component: () => import('@/views/service_charge/index'),
         name: 'ServiceChargeIndex',
         meta: {
@@ -241,8 +234,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'factory_user/index',
-        alias: '/factory_user/index',
+        path: '/factory_user/index',
         component: () => import('@/views/factory_user/index'),
         name: 'FactoryUserIndex',
         meta: {
@@ -391,7 +383,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'cash_coupon_card/index',
+        path: '/cash_coupon_card/index',
         component: () => import('@/views/cash_coupon_card/index'),
         name: 'CashCouponCardIndex',
         meta: {
@@ -456,7 +448,7 @@ export const asyncRoutes = [
     meta: {
       title: '角色',
       icon: 'el-icon-s-check',
-      auth: ['system_role', 'admin_system_auth']
+      auth: ['system_role', 'system_auth']
     },
     children: [
       {
@@ -469,7 +461,7 @@ export const asyncRoutes = [
         }
       },
       {
-        path: 'auth/index',
+        path: '/system_auth/index',
         component: () => import('@/views/system_auth/index'),
         name: 'SystemAuthIndex',
         meta: {
@@ -511,7 +503,7 @@ export const asyncRoutes = [
     meta: {
       title: '系统配置',
       icon: 'el-icon-s-tools',
-      auth: ['system_config_tab', 'system_config']
+      auth: ['system_config_tab', 'system_config', 'profile']
     },
     children: [
       {
@@ -521,6 +513,15 @@ export const asyncRoutes = [
         meta: {
           title: '系统设置',
           auth: ['system_config_tab/index', 'system_config/index']
+        }
+      },
+      {
+        path: '/profile/index',
+        component: () => import('@/views/profile/index'),
+        name: 'ProfileIndex',
+        meta: {
+          title: '个人信息',
+          auth: ['profile/update']
         }
       }
     ]

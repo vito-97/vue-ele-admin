@@ -1,13 +1,13 @@
 <template>
   <el-rate
-    v-model="formData[col.field]"
-    :disabled="col.opts.disabled"
-    :max="col.opts.max"
-    :low-threshold="col.opts.low_threshold"
-    :high-threshold="col.opts.high_threshold"
-    :allow-half="col.opts.allow_half"
-    :colors="col.opts.colors"
-    :name="col.field"
+    v-model="formData[field]"
+    :disabled="opt.disabled"
+    :max="opt.max"
+    :low-threshold="opt.low_threshold"
+    :high-threshold="opt.high_threshold"
+    :allow-half="opt.allow_half"
+    :colors="opt.colors"
+    :name="field"
   ></el-rate>
 </template>
 

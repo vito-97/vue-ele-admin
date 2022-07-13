@@ -37,7 +37,7 @@ const formItemMixin = {
     col() {
       const col = { ...this.column }
 
-      col.opts = Object.assign({}, this.opts, this.attr, col.opts)
+      col.opts = Object.assign({}, this.opts, col.opts, this.attr)
 
       return col
     },

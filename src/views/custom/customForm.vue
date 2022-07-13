@@ -17,7 +17,9 @@
         :rules="formRules"
         ref="detailForm"
         @validate="onValidate"
-        v-if="Visible">
+        v-if="Visible"
+        @submit.native.prevent="onSubmit"
+      >
         <el-alert
           v-if="!formColumns.length"
           title="提示"
@@ -64,7 +66,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="onSubmit()">确 定</el-button>
+        <el-button type="primary" @click="onSubmit">确 定</el-button>
         <el-button @click="onReset">重 置</el-button>
       </div>
     </el-dialog>
@@ -76,6 +78,7 @@
         :rules="formRules"
         ref="detailForm"
         @validate="onValidate"
+        @submit.native.prevent="onSubmit"
       >
         <el-alert
           v-if="!formColumns.length"
@@ -122,7 +125,7 @@
           </el-form-item>
         </template>
         <el-form-item v-if="columns.length">
-          <el-button type="primary" @click="onSubmit()">确 定</el-button>
+          <el-button type="primary" native-type="submit">确 定</el-button>
           <el-button @click="onReset">重 置</el-button>
         </el-form-item>
       </el-form>

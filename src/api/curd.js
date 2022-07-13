@@ -9,8 +9,9 @@ function curd(control, version = 'v1') {
      * @returns {AxiosPromise}
      */
     get(uri, params = {}) {
+      uri = uri ? '/' + uri : ''
       return request({
-        url: `${version}/${control}/${uri}`,
+        url: `${version}/${control}${uri}`,
         method: 'GET',
         params
       })
@@ -22,8 +23,9 @@ function curd(control, version = 'v1') {
      * @returns {AxiosPromise}
      */
     post(uri, data = {}) {
+      uri = uri ? '/' + uri : ''
       return request({
-        url: `${version}/${control}/${uri}`,
+        url: `${version}/${control}${uri}`,
         method: 'POST',
         data
       })
@@ -35,8 +37,9 @@ function curd(control, version = 'v1') {
      * @returns {AxiosPromise}
      */
     put(uri, data = {}) {
+      uri = uri ? '/' + uri : ''
       return request({
-        url: `${version}/${control}/${uri}`,
+        url: `${version}/${control}${uri}`,
         method: 'PUT',
         data
       })

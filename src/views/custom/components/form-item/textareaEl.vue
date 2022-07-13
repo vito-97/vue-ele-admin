@@ -1,18 +1,18 @@
 <template>
   <el-input
     type="textarea"
-    v-model="formData[col.field]"
+    v-model="formData[field]"
     :placeholder="col.placeholder"
-    :minlength="col.opts.minlength"
-    :maxlength="col.opts.maxlength"
-    :show-word-limit="col.opts.show_word_limit"
-    :clearable="col.opts.clearable"
-    :show-password="col.opts.show_password"
-    :disabled="col.opts.disabled"
-    :readonly="col.opts.readonly"
-    :name="col.field"
-    :rows="col.opts.rows"
-    :autosize="col.opts.autosize"
+    :minlength="opt.minlength"
+    :maxlength="opt.maxlength"
+    :show-word-limit="opt.show_word_limit"
+    :clearable="opt.clearable"
+    :show-password="opt.show_password"
+    :disabled="opt.disabled"
+    :readonly="opt.readonly"
+    :name="field"
+    :rows="opt.rows"
+    :autosize="opt.autosize"
   >
 
   </el-input>

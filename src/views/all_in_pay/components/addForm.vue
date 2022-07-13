@@ -28,7 +28,7 @@ export default {
       rules: {},
       // 列配置
       columns: [
-        { name: '名称', field: 'name', opts: { maxlength: 50 } },
+        { name: '名称', field: 'name', opts: { maxlength: 50, required: true } },
         { name: 'APP ID', field: 'app_id', opts: { required: true } },
         { name: 'CUS ID', field: 'cus_id', opts: { required: true } },
         { name: '已收款', field: 'amount', opts: { required: true }, type: 'number' },

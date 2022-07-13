@@ -3,7 +3,7 @@
     <template v-if="control">
       <div class="form-item">
         <template v-if="isFormat('image')">
-          <input-el :detail="detail" :form-data="formData" :column="column" :mode="mode" class="item"></input-el>
+          <input-el :detail="detail" :form-data="formData" :column="column" :mode="mode" :attr="{clearable:true}" class="item"></input-el>
         </template>
         <el-button class="select-btn" type="primary" size="small" @click="onClickChoose" :disabled="disabled">
           {{ btnText }}
@@ -31,7 +31,7 @@
       </el-dialog>
       <!--      显示内容-->
       <div v-if="isFormat('image')" class="label-name">
-        <image-el :val="labelName" :col="{opts:{size:opt.imageSize}}"></image-el>
+        <image-el :val="labelName" :col="{opts:{size:opt.imageSize}}" v-if="formData[field]"></image-el>
       </div>
       <el-tag v-show="labelName" size="medium" class="label-name" @click="onClickChoose" v-else>
         {{ labelName }}
@@ -81,11 +81,11 @@ export default {
     // 获取label名称
     labelName() {
       if (!this.opt.name) {
-        console.warn(this.col.field, 'select table not set label name')
+        console.warn(this.field, 'select table not set label name')
       }
       const key = `${this.key}.${this.opt.name}`
 
-      return deepVal(key, this.detail) || deepVal(this.col.field, this.formData)
+      return deepVal(key, this.detail) || deepVal(this.field, this.formData)
     },
     // 是否禁用选择按钮
     disabled() {

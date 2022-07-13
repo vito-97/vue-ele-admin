@@ -1,12 +1,12 @@
 <template>
   <el-radio-group
-    v-model="formData[col.field]"
-    :disabled="col.opts.disabled"
-    :text-color="col.opts.text_color"
+    v-model="formData[field]"
+    :disabled="opt.disabled"
+    :text-color="opt.text_color"
   >
     <el-radio
       :label="getListItemValue(it,i)"
-      :name="col.field"
+      :name="field"
       v-for="(it,i) in col.list"
       :key="i">
       {{ getListItemLabel(it, i) }}

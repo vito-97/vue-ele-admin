@@ -1,6 +1,8 @@
 module.exports = {
   title: '居科乐后台管理系统',
 
+  avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+
   /**
    * @type {boolean} true | false
    * @description Whether show the settings right-panel

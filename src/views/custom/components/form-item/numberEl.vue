@@ -1,16 +1,16 @@
 <template>
   <el-input-number
-    v-model.number="formData[col.field]"
+    v-model.number="formData[field]"
     :placeholder="col.placeholder"
-    :disabled="col.opts.disabled"
-    :readonly="col.opts.readonly"
-    :min="col.opts.min"
-    :max="col.opts.max"
-    :step="col.opts.step"
-    :precision="col.opts.precision"
-    :step-strictly="col.opts.step_strictly"
-    :controls="col.opts.controls"
-    :name="col.field"
+    :disabled="opt.disabled"
+    :readonly="opt.readonly"
+    :min="opt.min"
+    :max="opt.max"
+    :step="opt.step"
+    :precision="opt.precision"
+    :step-strictly="opt.step_strictly"
+    :controls="opt.controls"
+    :name="field"
   >
   </el-input-number>
 </template>

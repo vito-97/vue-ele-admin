@@ -1,11 +1,12 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import settings from '@/settings'
 
 const state = {
   token: getToken(),
   name: '',
-  avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+  avatar: settings.avatar,
   userinfo: {},
   introduction: '',
   role: '',
@@ -26,6 +27,9 @@ const mutations = {
     state.userinfo = userinfo
   },
   SET_AVATAR: (state, avatar) => {
+    if (!avatar) {
+      avatar = settings.avatar
+    }
     state.avatar = avatar
   },
   SET_ROLE: (state, role) => {

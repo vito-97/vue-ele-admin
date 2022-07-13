@@ -1,15 +1,15 @@
 <template>
   <el-checkbox-group
-    v-model="formData[col.field]"
-    :indeterminate="col.opts.indeterminate"
-    :disabled="col.opts.disabled"
-    :min="col.opts.min"
-    :max="col.opts.max"
-    :text-color="col.opts.text_color"
+    v-model="formData[field]"
+    :indeterminate="opt.indeterminate"
+    :disabled="opt.disabled"
+    :min="opt.min"
+    :max="opt.max"
+    :text-color="opt.text_color"
   >
     <el-checkbox
       :label="getListItemValue(it,i)"
-      :name="col.field"
+      :name="field"
       v-for="(it,i) in col.list"
       :key="i">
       {{ getListItemLabel(it, i) }}

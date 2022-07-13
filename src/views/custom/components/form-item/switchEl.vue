@@ -1,17 +1,17 @@
 <template>
   <el-switch
-    v-model="formData[col.field]"
-    :disabled="col.opts.disabled"
-    :active-icon-class="col.opts.active_icon"
-    :inactive-icon-class="col.opts.inactive_icon"
-    :active-text="col.opts.active_text"
-    :inactive-text="col.opts.inactive_text"
-    :active-value="col.opts.active_value"
-    :inactive-value="col.opts.inactive_value"
-    :active-color="col.opts.active_color"
-    :inactive-color="col.opts.inactive_color"
-    :width="col.opts.width"
-    :name="col.field"
+    v-model="formData[field]"
+    :disabled="opt.disabled"
+    :active-icon-class="opt.active_icon"
+    :inactive-icon-class="opt.inactive_icon"
+    :active-text="opt.active_text"
+    :inactive-text="opt.inactive_text"
+    :active-value="opt.active_value"
+    :inactive-value="opt.inactive_value"
+    :active-color="opt.active_color"
+    :inactive-color="opt.inactive_color"
+    :width="opt.width"
+    :name="field"
   >
 
   </el-switch>

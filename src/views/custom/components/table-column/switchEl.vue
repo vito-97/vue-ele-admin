@@ -54,7 +54,7 @@ export default {
       this.$emit('update-item',
         {
           id: this.id,
-          field: this.col.field,
+          field: this.field,
           index: this.index,
           value
         })
