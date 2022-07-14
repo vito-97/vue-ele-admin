@@ -107,6 +107,18 @@ const formItemMixin = {
      */
     toArray(data) {
       return toArray(data)
+    },
+    /**
+     * 触发事件
+     * @param type
+     * @param payload
+     */
+    triggerEvent(type, payload = {}) {
+      this.$emit('event', {
+        field: this.field,
+        type,
+        payload
+      })
     }
   }
 }

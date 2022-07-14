@@ -20,13 +20,16 @@
         top="10vh"
         append-to-body
       >
+        <!--  用v-if动态挂载和移除组件-->
         <component
           :is="com"
           mode="select"
           :query="opt.query"
           :select-multiple="opt.multiple"
           @select="onSelect"
-          @select-multiple="onSelectMultiple">
+          @select-multiple="onSelectMultiple"
+          v-if="visible"
+        >
         </component>
       </el-dialog>
       <!--      显示内容-->

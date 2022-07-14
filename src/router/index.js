@@ -234,6 +234,15 @@ export const asyncRoutes = [
         }
       },
       {
+        path: '/device_control_test/index',
+        component: () => import('@/views/device_control_test/index'),
+        name: 'DeviceControlTest',
+        meta: {
+          title: '设备控制测试',
+          auth: ['device_control_test']
+        }
+      },
+      {
         path: '/factory_user/index',
         component: () => import('@/views/factory_user/index'),
         name: 'FactoryUserIndex',

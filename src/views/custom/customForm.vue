@@ -33,14 +33,15 @@
           <el-form-item
             v-if="checkColVisible(col) && (isEdit ? (col.editable) : col.addable)"
             :key="index"
-            :label="col.name"
+            :label="col.opts.label && col.name || ''"
             :prop="col.field"
             :required="col.opts.required"
             :error="error && error[col.field] || ''"
             :label-width="col.width"
           >
+            <slot :name="getColSlot(col)+'-before'" :form-data="formData" :col="col"></slot>
             <!--          插槽-->
-            <slot :name="col.slot || col.field" :form-data="formData" :col="col">
+            <slot :name="getColSlot(col)" :form-data="formData" :col="col">
 
               <template v-if="items[col.type]">
                 <component
@@ -49,6 +50,7 @@
                   :column="col"
                   :form-data="formData"
                   :mode="isEdit ? 'edit' : 'add'"
+                  @event="onEvent"
                 >
                 </component>
               </template>
@@ -61,13 +63,18 @@
                 </el-alert>
               </template>
             </slot>
+            <slot :name="getColSlot(col)+'-after'" :form-data="formData" :col="col"></slot>
           </el-form-item>
         </template>
 
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="onSubmit">确 定</el-button>
-        <el-button @click="onReset">重 置</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+        v-if="columns.length && !hideButton && (!hideSubmitButton || !hideResetButton)"
+      >
+        <el-button type="primary" @click="onSubmit" v-if="!hideSubmitButton">确 定</el-button>
+        <el-button @click="onReset" v-if="!hideResetButton">重 置</el-button>
       </div>
     </el-dialog>
     <div v-else>
@@ -93,14 +100,15 @@
           <el-form-item
             v-if="checkColVisible(col) && (isEdit ? (col.editable) : col.addable)"
             :key="index"
-            :label="col.name"
+            :label="col.opts.label && col.name || ''"
             :prop="col.field"
             :required="col.opts.required"
             :error="error && error[col.field] || ''"
             :label-width="col.width"
           >
+            <slot :name="getColSlot(col)+'-before'" :form-data="formData" :col="col"></slot>
             <!--          插槽-->
-            <slot :name="col.slot || col.field" :form-data="formData" :col="col">
+            <slot :name="getColSlot(col)" :form-data="formData" :col="col">
 
               <template v-if="items[col.type]">
                 <component
@@ -109,6 +117,7 @@
                   :column="col"
                   :form-data="formData"
                   :mode="isEdit ? 'edit' : 'add'"
+                  @event="onEvent"
                 >
                 </component>
               </template>
@@ -122,11 +131,12 @@
                 </el-alert>
               </template>
             </slot>
+            <slot :name="getColSlot(col)+'-after'" :form-data="formData" :col="col"></slot>
           </el-form-item>
         </template>
-        <el-form-item v-if="columns.length">
-          <el-button type="primary" native-type="submit">确 定</el-button>
-          <el-button @click="onReset">重 置</el-button>
+        <el-form-item v-if="columns.length && !hideButton && (!hideSubmitButton || !hideResetButton)">
+          <el-button type="primary" native-type="submit" v-if="!hideSubmitButton">确 定</el-button>
+          <el-button @click="onReset" v-if="hideResetButton">重 置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -148,7 +158,8 @@ export default {
       formRules: {},
       formColumns: [],
       isInitFormRules: false,
-      items: itemsCom
+      items: itemsCom,
+      lock: false
     }
   },
   props: {
@@ -184,6 +195,24 @@ export default {
     dialog: {
       type: Boolean,
       default: true
+    },
+    // 隐藏按钮
+    hideButton: {
+      type: Boolean
+    },
+    // 隐藏提交按钮
+    hideSubmitButton: {
+      type: Boolean
+    },
+    // 隐藏重置按钮
+    hideResetButton: {
+      type: Boolean
+    },
+    value: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   watch: {
@@ -204,6 +233,41 @@ export default {
           this.init()
         }
       }
+    },
+    // 监听表单内容修改
+    formData: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        console.log('form', val)
+
+        if (!this.lock) {
+          this.lock = true
+          // 更新value的值
+          this.$emit('input', val)
+
+          setTimeout(() => {
+            this.lock = false
+          }, 10)
+        }
+      }
+    },
+    // 监听传入的表单数据修改
+    value: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        console.log('value', val)
+
+        if (!this.lock) {
+          this.lock = true
+          this.formData = { ...this.formData, ...val }
+
+          setTimeout(() => {
+            this.lock = false
+          }, 10)
+        }
+      }
     }
   },
   computed: {
@@ -213,17 +277,6 @@ export default {
     isEdit() {
       return this.id
     }
-    // 设置必填的规则
-
-    /*    formData(){
-          let data = {}
-
-          this.columns.forEach((it,i)=>{
-            data[it.field] = this.detail[it.field]
-          })
-
-          return data
-        },*/
   },
   created() {
   },
@@ -237,7 +290,7 @@ export default {
     },
     // 初始化表内容
     initColumns() {
-      this.formData = {}
+      this.setFormData({})
       var columns = [...this.columns]
       var addDefaultOpt = {}
       // 默认单个的配置
@@ -254,6 +307,7 @@ export default {
         slot: '',
         // 配置项
         opts: {
+          label: true, // 是否显示label
           label_name: '', // label显示的字段
           label_value: '', // label值的键
           clearable: false, // 是否可清空
@@ -286,7 +340,7 @@ export default {
             })
           }
 
-          this.$set(this.formData, item.field, formDataValue)
+          this.setFormData(item.field, formDataValue)
         }
         // 需要获取详情的标签数据
         if (item.label) {
@@ -305,7 +359,7 @@ export default {
         // 默认选中第一个
         if (item.label && this.formData[item.field] === '' && Object.keys(item.list).length) {
           if (item.type === 'checkbox') {
-            this.$set(this.formData, item.field, [])
+            this.setFormData(item.field, [])
           } else {
             let keys = Object.keys(item.list)
 
@@ -320,7 +374,7 @@ export default {
               if (Number.isInteger(Number(value))) {
                 value = Number(value)
               }
-              this.$set(this.formData, item.field, value)
+              this.setFormData(item.field, [])
             }
           }
         }
@@ -373,7 +427,7 @@ export default {
         return col.visible
       }
       if (typeof col.visible === 'function') {
-        const status = col.visible.call(this, this.formData, this.detail)
+        const status = col.visible.call(this, this.formData, this.detail, col)
 
         return status
       }
@@ -410,10 +464,34 @@ export default {
     onOpen() {
       this.clearValidate()
     },
+    // 监听表单元素触发的事件
+    onEvent(e) {
+      this.$emit(e.field + '-' + e.type, e.payload)
+      this.$emit(e.field + '-event', { type: e.type, payload: e.payload })
+      this.$emit('event', e)
+    },
     clearValidate() {
       setTimeout(() => {
         this.$refs.detailForm && this.$refs.detailForm.clearValidate()
       }, 10)
+    },
+    /**
+     * 获取列的插槽名称
+     */
+    getColSlot(col) {
+      return col.slot || col.field
+    },
+    /**
+     * 设置表单内容
+     * @param key
+     * @param value
+     */
+    setFormData(key, value = null) {
+      if (typeof key === 'object') {
+        this.formData = key
+      } else {
+        this.$set(this.formData, key, value)
+      }
     }
   }
 }

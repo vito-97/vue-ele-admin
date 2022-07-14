@@ -1,4 +1,5 @@
 import customForm from '@/views/custom/customForm'
+import checkPermission from '@/utils/permission'
 
 const customFromMixin = {
   props: {
@@ -27,6 +28,10 @@ const customFromMixin = {
     },
     flush() {
       this.$emit('flush')
+    },
+    // 检测其他权限
+    checkPermission(auth) {
+      return checkPermission(auth)
     }
   }
 }
