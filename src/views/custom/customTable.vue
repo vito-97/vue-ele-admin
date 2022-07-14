@@ -69,82 +69,84 @@
           width="80">
         </el-table-column>
         <!--      渲染列-->
-        <el-table-column
-          v-for="(it,i) in cols"
-          :key="i"
-          :fixed="it.fixed || null"
-          :prop="it.prop || it.field"
-          :label="it.name"
-          :width="it.width"
-          :sortable="it.sortable"
-          :resizable="it.resizable"
-          :formatter="it.formatter"
-          :show-overflow-tooltip="it.show_overflow_tooltip"
-          :align="it.align"
-          :class-name="it.class_name"
-          :label-class-name="it.label_class_name"
-          :filters="it.filters"
-          :filter-multiple="it.filter_multiple"
-          :column-key="it.field"
-        >
-          <template slot-scope="{row,column,$index}">
+        <template v-for="(it,i) in cols">
+          <el-table-column
+            v-if="checkColVisible(it)"
+            :key="i"
+            :fixed="it.fixed || null"
+            :prop="it.prop || it.field"
+            :label="it.name"
+            :width="it.width"
+            :sortable="it.sortable"
+            :resizable="it.resizable"
+            :formatter="it.formatter"
+            :show-overflow-tooltip="it.show_overflow_tooltip"
+            :align="it.align"
+            :class-name="it.class_name"
+            :label-class-name="it.label_class_name"
+            :filters="it.filters"
+            :filter-multiple="it.filter_multiple"
+            :column-key="it.field"
+          >
+            <template slot-scope="{row,column,$index}">
 
-            <slot
-              :name="(it.slot || it.field)+'-before'"
-              v-if="getColValue(it, row)"
-              :row="row"
-              :column="column"
-              :$index="$index"
-              :value="getColValue(it, row)"></slot>
+              <slot
+                :name="(it.slot || it.field)+'-before'"
+                v-if="getColValue(it, row)"
+                :row="row"
+                :column="column"
+                :$index="$index"
+                :value="getColValue(it, row)"></slot>
 
-            <slot
-              :name="(it.slot || it.field)"
-              :row="row"
-              :column="column"
-              :$index="$index"
-              :value="getColValue(it, row)"
-              :label="listLabel">
+              <slot
+                :name="(it.slot || it.field)"
+                :row="row"
+                :column="column"
+                :$index="$index"
+                :value="getColValue(it, row)"
+                :label="listLabel">
 
-              <template v-if="!isEmpty(it,row)">
+                <template v-if="!isEmpty(it,row)">
 
-                <template v-if="it.type && items[it.type]">
-                  <component
-                    :is="items[it.type]"
-                    :row="row"
-                    :col="it"
-                    :index="$index"
-                    :val="getColValue(it, row)"
-                    :format-val="getFormatColValue(it, row)"
-                    @update-item="onUpdateItem"></component>
+                  <template v-if="it.type && items[it.type]">
+                    <component
+                      :is="items[it.type]"
+                      :row="row"
+                      :col="it"
+                      :index="$index"
+                      :val="getColValue(it, row)"
+                      :format-val="getFormatColValue(it, row)"
+                      @update-item="onUpdateItem"></component>
+                  </template>
+
+                  <template v-else>
+                    {{ getFormatColValue(it, row) }}
+                  </template>
+
                 </template>
 
-                <template v-else>
-                  {{ getFormatColValue(it, row) }}
-                </template>
+              </slot>
 
-              </template>
+              <slot
+                :name="(it.slot || it.field)+'-empty'"
+                v-if="!row[it.field]"
+                :row="row"
+                :column="column"
+                :$index="$index"
+                :value="getColValue(it, row)"></slot>
 
-            </slot>
+              <slot
+                :name="(it.slot || it.field)+'-after'"
+                v-if="row[it.field]"
+                :row="row"
+                :column="column"
+                :$index="$index"
+                :value="getColValue(it, row)"></slot>
 
-            <slot
-              :name="(it.slot || it.field)+'-empty'"
-              v-if="!row[it.field]"
-              :row="row"
-              :column="column"
-              :$index="$index"
-              :value="getColValue(it, row)"></slot>
+            </template>
 
-            <slot
-              :name="(it.slot || it.field)+'-after'"
-              v-if="row[it.field]"
-              :row="row"
-              :column="column"
-              :$index="$index"
-              :value="getColValue(it, row)"></slot>
-
-          </template>
-
-        </el-table-column>
+          </el-table-column>
+        </template>
 
         <!--      操作列-->
         <el-table-column
@@ -485,7 +487,8 @@ export default {
         // 模板类型
         type: '',
         // 组件配置
-        opts: {}
+        opts: {},
+        visible: true
       }
       cols.forEach((it, i) => {
         const col = { ...def, ...it }
@@ -888,6 +891,23 @@ export default {
         return !btn.show(row, index)
       }
       return !btn.show
+    },
+    /**
+     * 检测元素是否显示
+     * @param col
+     * @returns {boolean|*}
+     */
+    checkColVisible(col) {
+      if (typeof col.visible === 'boolean') {
+        return col.visible
+      }
+      if (typeof col.visible === 'function') {
+        const status = col.visible.call(this, this.formData, this.detail, col)
+
+        return status
+      }
+
+      return true
     }
   }
 }
