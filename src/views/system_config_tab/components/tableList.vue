@@ -116,8 +116,8 @@ export default {
     },
 
     optional(row, index) {
-      // 有下级的就不可选
-      return !row.children.length
+      // 有上级的就不可选
+      return !row.pid
     }
   }
 }
