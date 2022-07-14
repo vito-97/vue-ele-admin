@@ -11,6 +11,9 @@
       :kw="kw"
       :control="control"
       :mode="mode"
+      :editable="editable"
+      :deletable="deletable"
+      :selectable="selectable"
       :select-multiple="selectMultiple"
       @tap-head-btn="onTapHeadBtn"
       @tap-row-btn="onTapRowBtn"
@@ -50,7 +53,17 @@ export default {
   filters: {},
   created() {
   },
-  methods: {}
+  methods: {
+    editable(row, index) {
+      return !row.is_use
+    },
+    selectable(row, index) {
+      return !row.is_use
+    },
+    deletable(row, index) {
+      return !row.is_use
+    }
+  }
 }
 </script>
 
