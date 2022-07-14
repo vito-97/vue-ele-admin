@@ -372,7 +372,7 @@ export default {
               if (Number.isInteger(Number(value))) {
                 value = Number(value)
               }
-              this.setFormData(item.field, [])
+              this.setFormData(item.field, value)
             }
           }
         }
