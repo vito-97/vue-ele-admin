@@ -1,6 +1,6 @@
 <template>
   <div class="system-config-form-box">
-    <el-button type="primary" icon="el-icon-plus" size="mini" @click="onSaveConfig">添加配置</el-button>
+    <el-button type="primary" icon="el-icon-plus" size="mini" @click="onSaveConfig" class="add-config-btn">添加配置</el-button>
     <!--    配置信息-->
     <custom-form
       :columns="columns"
@@ -11,12 +11,13 @@
       @submit="onSubmitConfig"
     >
     </custom-form>
+    <!--    新增配置-->
     <system-config-add-form
       :visible.sync="visible"
       :detail="configDetail"
       :error="configError"
-      @submit="onSubmit"></system-config-add-form>
-    <!--    新增配置-->
+      @submit="onSubmit">
+    </system-config-add-form>
   </div>
 </template>
 
@@ -67,6 +68,7 @@ export default {
       showLoading('添加中...')
       API.save(data).then(res => {
         this.$emit('flush')
+        this.visible = false
         hideLoading()
         this.$message({
           message: res.msg,
@@ -84,7 +86,6 @@ export default {
     onSubmitConfig(data) {
       showLoading('更新中...')
       API.put('config', data).then(res => {
-        this.visible = false
         hideLoading()
         this.$message({
           message: res.msg,
@@ -105,6 +106,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.add-config-btn{
+  margin-bottom: 15px;
+}
 </style>

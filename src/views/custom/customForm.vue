@@ -136,7 +136,7 @@
         </template>
         <el-form-item v-if="columns.length && !hideButton && (!hideSubmitButton || !hideResetButton)">
           <el-button type="primary" native-type="submit" v-if="!hideSubmitButton">确 定</el-button>
-          <el-button @click="onReset" v-if="hideResetButton">重 置</el-button>
+          <el-button @click="onReset" v-if="!hideResetButton">重 置</el-button>
         </el-form-item>
       </el-form>
     </div>
