@@ -119,6 +119,10 @@ const formItemMixin = {
         type,
         payload
       })
+    },
+    // 组件使用其他组件事件需要冒泡
+    eventBubbling(e) {
+      this.$emit('event', e)
     }
   }
 }

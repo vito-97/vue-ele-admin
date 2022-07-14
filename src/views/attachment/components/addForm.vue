@@ -8,6 +8,8 @@
       :list="list"
       :rules="rules"
       :append-to-body="appendToBody"
+      :hide-button="true"
+      @url-success="onUploadSuccess"
       @submit="onSubmit"
     >
 
@@ -28,17 +30,10 @@ export default {
       rules: {},
       // 列配置
       columns: [
-        { name: '名称', field: 'name', opts: { required: true, maxlength: 100 }, addable: false },
-        { name: '分类', field: 'category', label: true, opts: { required: true }, addable: false, type: 'select' },
+        // { name: '名称', field: 'name', opts: { required: true, maxlength: 100 }, addable: false },
+        // { name: '分类', field: 'category', label: true, opts: { required: true }, addable: false, type: 'select' },
         {
-          name: '附件', field: 'url', type: 'upload', opts: { required: true, maxlength: 255 }, events: {
-            success: (val, mode) => {
-              if (mode === 'add') {
-                this.close()
-                // this.flush()
-              }
-            }
-          },
+          name: '附件', field: 'url', type: 'upload', opts: { required: true, maxlength: 255 },
           editable: false
         }
         // { name: '宽度', field: 'width', opts: { required: true, }, addable: false, type: 'number' },
@@ -50,7 +45,15 @@ export default {
     }
   },
   watch: {},
-  methods: {}
+  methods: {
+    // 上传成功事件
+    onUploadSuccess({ mode }) {
+      if (mode === 'add') {
+        this.close()
+        // this.flush()
+      }
+    }
+  }
 }
 </script>
 

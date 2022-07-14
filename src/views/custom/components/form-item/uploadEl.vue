@@ -149,7 +149,7 @@ export default {
         } else {
           val = url
         }
-        this.events.success && this.events.success(url, this.mode)
+        this.triggerEvent('success', { url, mode: this.mode })
         this.updateValue(val)
       } else {
         this.$refs.upload.clearFiles()
@@ -164,7 +164,7 @@ export default {
     onError(err, file, fileList) {
       console.log('upload error', err, file, fileList)
       this.$message({ message: '上传到服务器失败', type: 'error' })
-      this.events.error && this.events.error(this.mode)
+      this.triggerEvent('error', { mode: this.mode })
     },
     // 文件上传时的钩子
     onProgress(event, file, fileList) {

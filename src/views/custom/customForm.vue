@@ -316,8 +316,6 @@ export default {
           disable: false,
           required: false
         },
-        // 组件的事件
-        events: {},
         // 添加选项
         add_opts: { ...addDefaultOpt },
         // 编辑选项

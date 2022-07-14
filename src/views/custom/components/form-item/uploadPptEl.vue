@@ -1,5 +1,14 @@
 <template>
-  <upload-el :column="column" :detail="detail" :form-data="formData" :attr="{list_type:'picture',accept:'.ppt,.pptx','tip':'只能上传ppt'}" :mode="mode"></upload-el>
+  <upload-el
+    :column="column"
+    :detail="detail"
+    :form-data="formData"
+    :attr="{list_type:'picture',accept:'.ppt,.pptx','tip':'只能上传ppt'}"
+    :mode="mode"
+    @event="eventBubbling"
+  >
+
+  </upload-el>
 </template>
 
 <script>

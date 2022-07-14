@@ -1,5 +1,14 @@
 <template>
-  <upload-el :column="column" :detail="detail" :form-data="formData" :attr="{list_type:'picture',accept:'.zip,.rar','tip':'只能上传zip/rar'}" :mode="mode"></upload-el>
+  <upload-el
+    :column="column"
+    :detail="detail"
+    :form-data="formData"
+    :attr="{list_type:'picture',accept:'.zip,.rar','tip':'只能上传zip/rar'}"
+    :mode="mode"
+    @event="eventBubbling"
+  >
+
+  </upload-el>
 </template>
 
 <script>
