@@ -411,6 +411,20 @@ export default {
     backtop: {
       type: Boolean,
       default: true
+    },
+    // 头部按钮文字
+    headBtnText: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    },
+    // 行按钮文字
+    rowBtnText: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   filters: {},
@@ -605,7 +619,7 @@ export default {
     defaultHeadBtn() {
       return [
         {
-          name: '刷新',
+          name: this.headBtnText.flush || '刷新',
           type: '',
           icon: 'el-icon-refresh',
           auth: this.getFullAuth('index'),
@@ -613,7 +627,7 @@ export default {
           mode: '*'
         },
         {
-          name: '选择',
+          name: this.headBtnText.select || '选择',
           type: 'danger',
           icon: 'el-icon-check',
           key: 'select',
@@ -622,7 +636,7 @@ export default {
           show: this.selectMultiple
         },
         {
-          name: '添加',
+          name: this.headBtnText.add || '添加',
           type: 'primary',
           icon: 'el-icon-plus',
           auth: this.getFullAuth('save'),
@@ -630,7 +644,7 @@ export default {
           mode: '*'
         },
         {
-          name: '删除',
+          name: this.headBtnText.delete || '删除',
           type: 'danger',
           icon: 'el-icon-delete',
           auth: this.getFullAuth('delete'),
@@ -644,19 +658,19 @@ export default {
     defaultRowBtn() {
       return [
         {
-          name: '选择',
+          name: this.rowBtnText.select || '选择',
           key: 'select',
           mode: ['select'],
           show: this.optional || true
         },
         {
-          name: '编辑',
+          name: this.rowBtnText.edit || '编辑',
           auth: this.getFullAuth('update'),
           key: 'update',
           show: this.editable || true
         },
         {
-          name: '删除',
+          name: this.rowBtnText.delete || '删除',
           auth: this.getFullAuth('delete'),
           key: 'delete',
           confirm: this.deleteConfirm || '确定要删除吗？',
