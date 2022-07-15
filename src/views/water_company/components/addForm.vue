@@ -8,6 +8,7 @@
       :list="list"
       :rules="rules"
       :append-to-body="appendToBody"
+      :error="error"
       @submit="onSubmit"
     >
 

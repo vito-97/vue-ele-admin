@@ -112,7 +112,7 @@ export const asyncRoutes = [
     meta: {
       title: '用户',
       icon: 'peoples',
-      auth: ['user', 'user_wallet']
+      auth: ['user', 'user_wallet', 'water_company', 'waterworks', 'customer', 'water_fetcher']
     },
     children: [
       {
@@ -171,7 +171,7 @@ export const asyncRoutes = [
     meta: {
       title: '运营商',
       icon: 'user',
-      auth: ['agent', 'all_in_pay', 'service_charge']
+      auth: ['agent', 'all_in_pay', 'service_charge', 'repair_user']
     },
     children: [
       {
@@ -221,7 +221,7 @@ export const asyncRoutes = [
     meta: {
       title: '设备',
       icon: 'el-icon-cpu',
-      auth: ['device', 'factory_user']
+      auth: ['device', 'factory_user', 'device_control_test']
     },
     children: [
       {
@@ -347,7 +347,7 @@ export const asyncRoutes = [
     meta: {
       title: '优惠券',
       icon: 'el-icon-postcard',
-      auth: ['coupon']
+      auth: ['coupon', 'coupon_card']
     },
     children: [
       {
@@ -379,7 +379,7 @@ export const asyncRoutes = [
     meta: {
       title: '现金券',
       icon: 'el-icon-postcard',
-      auth: ['coupon']
+      auth: ['cash_coupon', 'cash_coupon_card']
     },
     children: [
       {

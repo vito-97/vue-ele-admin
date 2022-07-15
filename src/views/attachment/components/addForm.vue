@@ -10,6 +10,7 @@
       :append-to-body="appendToBody"
       :hide-button="true"
       @url-success="onUploadSuccess"
+      :error="error"
       @submit="onSubmit"
     >
 

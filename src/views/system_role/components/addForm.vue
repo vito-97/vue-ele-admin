@@ -7,6 +7,7 @@
       :id="id"
       :list="list"
       :rules="rules"
+      :error="error"
       @submit="onSubmit"
     >
       <!--      权限插槽-->
