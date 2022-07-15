@@ -109,7 +109,7 @@ export default {
   },
   methods: {
     listenState() {
-      if (this.ids.length) {
+      if (this.checkAuth('state') && this.ids.length) {
         this.curd.get('state', { id: this.ids.join(',') }).then(res => {
           const data = res.data
           if (data.length) {

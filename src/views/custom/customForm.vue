@@ -81,8 +81,8 @@
         class="dialog-footer"
         v-if="columns.length && !hideButton && (!hideSubmitButton || !hideResetButton)"
       >
-        <el-button type="primary" @click="onSubmit" v-if="!hideSubmitButton">确 定</el-button>
-        <el-button @click="onReset" v-if="!hideResetButton">重 置</el-button>
+        <el-button type="primary" @click="onSubmit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
+        <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
       </div>
     </el-dialog>
     <div v-else>
@@ -150,8 +150,8 @@
           </el-form-item>
         </template>
         <el-form-item v-if="columns.length && !hideButton && (!hideSubmitButton || !hideResetButton)">
-          <el-button type="primary" native-type="submit" v-if="!hideSubmitButton">确 定</el-button>
-          <el-button @click="onReset" v-if="!hideResetButton">重 置</el-button>
+          <el-button type="primary" native-type="submit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
+          <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -228,6 +228,14 @@ export default {
       default: () => {
         return {}
       }
+    },
+    submitBtnText: {
+      type: String,
+      default: '确 定'
+    },
+    resetBtnText: {
+      type: String,
+      default: '重 置'
     }
   },
   watch: {
@@ -248,6 +256,9 @@ export default {
           this.init()
         }
       }
+    },
+    error(val) {
+      console.log('error', val)
     },
     // 监听表单内容修改
     formData: {

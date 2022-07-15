@@ -9,8 +9,8 @@
       :rules="rules"
       :append-to-body="appendToBody"
       :hide-button="true"
-      @url-success="onUploadSuccess"
       :error="error"
+      @url-success="onUploadSuccess"
       @submit="onSubmit"
     >
 
