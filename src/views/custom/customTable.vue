@@ -425,6 +425,16 @@ export default {
       default: () => {
         return {}
       }
+    },
+    // 显示头部指定按钮
+    showHeadBtn: {
+      type: [Array, String],
+      default: '*'
+    },
+    // 显示行的指定按钮
+    showRowBtn: {
+      type: [Array, String],
+      default: '*'
     }
   },
   filters: {},
@@ -624,7 +634,8 @@ export default {
           icon: 'el-icon-refresh',
           auth: this.getFullAuth('index'),
           key: 'flush',
-          mode: '*'
+          mode: '*',
+          show: this.headBtnShow('flush')
         },
         {
           name: this.headBtnText.select || '选择',
@@ -633,15 +644,16 @@ export default {
           key: 'select',
           mode: 'select',
           selected: true,
-          show: this.selectMultiple
+          show: this.selectMultiple && this.headBtnShow('select')
         },
         {
-          name: this.headBtnText.add || '添加',
+          name: this.headBtnText.save || '添加',
           type: 'primary',
           icon: 'el-icon-plus',
           auth: this.getFullAuth('save'),
           key: 'save',
-          mode: '*'
+          mode: '*',
+          show: this.headBtnShow('save')
         },
         {
           name: this.headBtnText.delete || '删除',
@@ -650,7 +662,8 @@ export default {
           auth: this.getFullAuth('delete'),
           key: 'delete',
           selected: true,
-          confirm: this.deleteMultipleConfirm || '确定要删除{n}条选中数据吗？'
+          confirm: this.deleteMultipleConfirm || '确定要删除{n}条选中数据吗？',
+          show: this.headBtnShow('delete')
         }
       ]
     },
@@ -661,20 +674,20 @@ export default {
           name: this.rowBtnText.select || '选择',
           key: 'select',
           mode: ['select'],
-          show: this.optional || true
+          show: this.rowBtnShow('select') && (this.optional || true)
         },
         {
-          name: this.rowBtnText.edit || '编辑',
+          name: this.rowBtnText.update || '编辑',
           auth: this.getFullAuth('update'),
           key: 'update',
-          show: this.editable || true
+          show: this.rowBtnShow('update') && this.editable || true
         },
         {
           name: this.rowBtnText.delete || '删除',
           auth: this.getFullAuth('delete'),
           key: 'delete',
           confirm: this.deleteConfirm || '确定要删除吗？',
-          show: this.deletable || true
+          show: this.rowBtnShow('delete') && this.deletable || true
         }
       ]
     }
@@ -922,6 +935,22 @@ export default {
       }
 
       return true
+    },
+    /**
+     * 头部按钮是否显示
+     * @param key
+     * @returns {boolean|boolean}
+     */
+    headBtnShow(key) {
+      return this.showHeadBtn === '*' || this.showHeadBtn.includes(key)
+    },
+    /**
+     * 行的按钮是否显示
+     * @param key
+     * @returns {boolean|boolean}
+     */
+    rowBtnShow(key) {
+      return this.showRowBtn === '*' || this.showRowBtn.includes(key)
     }
   }
 }
