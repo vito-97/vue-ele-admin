@@ -51,6 +51,7 @@ export default {
         // { name: '全局套餐', field: 'used_global_product', type: 'switch' },
         // { name: '报障电话', field: 'phone', },
         { name: '已加注流量', field: 'used_flow', after: 'L', width: 150 },
+        { name: '暂停定时停止时间', field: 'finish_timeout', after: '秒', width: 150 },
         {
           name: '广告灯',
           field: 'adverts_light',

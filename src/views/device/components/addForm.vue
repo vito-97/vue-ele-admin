@@ -36,6 +36,7 @@ export default {
         { name: '纬度', field: 'lat', opts: { required: false, maxlength: 20 } },
         { name: '脉冲', field: 'l_to_pulse', type: 'number', opts: { required: true, max: 255 }, value: 0 },
         { name: '温度', field: 'temperature', type: 'number', opts: { required: true, max: 50 }, value: 0 },
+        { name: '暂停定时停止时间', field: 'finish_timeout', type: 'number', opts: { required: true, max: 1000 }, value: 0 },
         // { name: '报障电话', field: 'tel' },
         { name: '地址', field: 'address', opts: { maxlength: 120 } },
         // { name: '全局套餐', field: 'used_global_product', type: 'switch', opts: { required: true } },

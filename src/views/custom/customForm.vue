@@ -12,12 +12,12 @@
       :append-to-body="appendToBody"
       @open="onOpen">
       <el-form
+        v-if="Visible"
         :model="formData"
         class="detail-form"
         :rules="formRules"
         ref="detailForm"
         @validate="onValidate"
-        v-if="Visible"
         @submit.native.prevent="onSubmit"
       >
         <el-alert
@@ -31,7 +31,7 @@
         </el-alert>
         <template v-for="(col,index) in formColumns">
           <el-form-item
-            v-if="checkColVisible(col) && (isEdit ? (col.editable) : col.addable)"
+            v-if="checkColVisible(col)"
             :key="index"
             :label="col.opts.label && col.name || ''"
             :prop="col.field"
@@ -49,7 +49,7 @@
                   :detail="detail"
                   :column="col"
                   :form-data="formData"
-                  :mode="isEdit ? 'edit' : 'add'"
+                  :mode="nowMode"
                   @event="onEvent"
                 >
                 </component>
@@ -59,11 +59,19 @@
                 <el-alert
                   :title="'未知类型'+col.type"
                   type="error"
-                  :closable="false">
+                  :closable="false"
+                >
                 </el-alert>
               </template>
             </slot>
             <slot :name="getColSlot(col)+'-after'" :form-data="formData" :col="col"></slot>
+            <!--            提示信息-->
+            <div
+              v-if="col.placeholder && formData[col.field] !== '' && checkColVisible(col)"
+              class="placeholder-tip"
+            >
+              {{ col.placeholder }}
+            </div>
           </el-form-item>
         </template>
 
@@ -116,7 +124,7 @@
                   :detail="detail"
                   :column="col"
                   :form-data="formData"
-                  :mode="isEdit ? 'edit' : 'add'"
+                  :mode="nowMode"
                   @event="onEvent"
                 >
                 </component>
@@ -132,6 +140,13 @@
               </template>
             </slot>
             <slot :name="getColSlot(col)+'-after'" :form-data="formData" :col="col"></slot>
+            <!--            提示信息-->
+            <div
+              v-if="col.placeholder && formData[col.field] !== '' && checkColVisible(col)"
+              class="placeholder-tip"
+            >
+              {{ col.placeholder }}
+            </div>
           </el-form-item>
         </template>
         <el-form-item v-if="columns.length && !hideButton && (!hideSubmitButton || !hideResetButton)">
@@ -276,6 +291,9 @@ export default {
     },
     isEdit() {
       return this.id
+    },
+    nowMode() {
+      return this.isEdit ? 'edit' : 'add'
     }
   },
   created() {
@@ -421,16 +439,14 @@ export default {
      * @returns {boolean|*}
      */
     checkColVisible(col) {
+      let status = this.isEdit ? col.editable : col.addable
       if (typeof col.visible === 'boolean') {
-        return col.visible
-      }
-      if (typeof col.visible === 'function') {
-        const status = col.visible.call(this, this.formData, this.detail, col)
-
-        return status
+        status = status && col.visible
+      } else if (typeof col.visible === 'function') {
+        status = status && col.visible.call(this, this.formData, this.detail, col)
       }
 
-      return true
+      return status
     },
     // 提交
     onSubmit() {
@@ -505,5 +521,12 @@ export default {
 
 .empty-tip {
   margin-bottom: 20px;
+}
+
+.placeholder-tip {
+  color: #999;
+  font-size: 12px;
+  line-height: 1;
+  padding-top: 4px;
 }
 </style>
