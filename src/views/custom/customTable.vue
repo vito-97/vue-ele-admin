@@ -10,7 +10,7 @@
             :icon="btn.icon"
             :disabled="btn.selected && !selection.length"
             size="mini"
-            v-if="btn.show && (!btn.auth || checkAuth(btn.auth))"
+            v-if="!headBtnDisabled(btn) && (!btn.auth || checkAuth(btn.auth))"
             @click="onTapHeadBtn(btn)"
             :key="index"
           >
@@ -165,7 +165,7 @@
                   type="text"
                   size="small"
                   @click="onTapRowBtn(btn,row,$index,column)"
-                  v-if="(!btn.auth || checkAuth(btn.auth))"
+                  v-if="btn.show && (!btn.auth || checkAuth(btn.auth))"
                   :disabled="rowBtnDisabled(btn,row,$index)"
                   :key="index"
                 >
@@ -335,10 +335,20 @@ export default {
     defaultExpandAll: {
       type: Boolean
     },
+    // 头按钮追加按钮的位置 before在默认按钮之前 after在默认按钮之后
+    headBtnPosition: {
+      type: String,
+      default: 'before'
+    },
     // 追加头部按钮
     headBtn: {
       type: Array,
       default: () => []
+    },
+    // 行按钮追加按钮的位置 before在默认按钮之前 after在默认按钮之后
+    rowBtnPosition: {
+      type: String,
+      default: 'before'
     },
     // 追加行按钮
     rowBtn: {
@@ -558,11 +568,19 @@ export default {
     },
     // 头部的按钮
     headBtns() {
-      let array = [...this.headBtn]
+      let array = []
       const btn = []
+
       if (!this.hideDefaultHeadBtn) {
         array = array.concat(this.defaultHeadBtn)
       }
+
+      // 有自定义按钮
+      if (this.headBtn.length) {
+        let before = this.headBtnPosition === 'before'
+        before ? array.unshift(...this.headBtn) : array.push(...this.headBtn)
+      }
+
       const def = {
         // 类型
         type: 'primary',
@@ -591,11 +609,18 @@ export default {
     },
     // 行的按钮
     rowBtns() {
-      let array = [...this.rowBtn]
+      let array = []
       const btn = []
       if (!this.hideDefaultRowBtn) {
         array = array.concat(this.defaultRowBtn)
       }
+
+      // 有自定义按钮
+      if (this.rowBtn.length) {
+        let before = this.rowBtnPosition === 'before'
+        before ? array.unshift(...this.rowBtn) : array.push(...this.rowBtn)
+      }
+
       const def = {
         // 权限
         auth: '',
@@ -674,20 +699,20 @@ export default {
           name: this.rowBtnText.select || '选择',
           key: 'select',
           mode: ['select'],
-          show: this.rowBtnShow('select') && (this.optional || true)
+          show: this.rowBtnShow('select') && this.optional
         },
         {
           name: this.rowBtnText.update || '编辑',
           auth: this.getFullAuth('update'),
           key: 'update',
-          show: this.rowBtnShow('update') && this.editable || true
+          show: this.rowBtnShow('update') && this.editable
         },
         {
           name: this.rowBtnText.delete || '删除',
           auth: this.getFullAuth('delete'),
           key: 'delete',
           confirm: this.deleteConfirm || '确定要删除吗？',
-          show: this.rowBtnShow('delete') && this.deletable || true
+          show: this.rowBtnShow('delete') && this.deletable
         }
       ]
     }
@@ -919,6 +944,13 @@ export default {
       }
       return !btn.show
     },
+    // 头部按钮是否禁用检测
+    headBtnDisabled(btn) {
+      if (typeof btn.show === 'function') {
+        return !btn.show()
+      }
+      return !btn.show
+    },
     /**
      * 检测元素是否显示
      * @param col
@@ -950,6 +982,7 @@ export default {
      * @returns {boolean|boolean}
      */
     rowBtnShow(key) {
+      console.log(this.showRowBtn)
       return this.showRowBtn === '*' || this.showRowBtn.includes(key)
     }
   }
