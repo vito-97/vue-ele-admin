@@ -112,6 +112,30 @@ export default {
     // 是否一直获取label
     loadDetailLabel: {
       type: Boolean
+    },
+    // 加载列表的接口
+    listApi: {
+      type: Function
+    },
+    // 新增接口
+    saveApi: {
+      type: Function
+    },
+    // 更新接口
+    updateApi: {
+      type: Function
+    },
+    // 修改时获取数据接口
+    editApi: {
+      type: Function
+    },
+    // 更改单一数据时的接口
+    changeApi: {
+      type: Function
+    },
+    // 删除接口
+    deleteApi: {
+      type: Function
     }
   },
   computed: {
@@ -166,7 +190,9 @@ export default {
         query._label = 1
       }
 
-      this.api.index(query).then(res => {
+      const method = this.listApi || this.api.index
+
+      method(query).then(res => {
         const data = res.data
         this.page = data.page
         this.total = data.total
@@ -223,7 +249,8 @@ export default {
     // 请求接口删除
     delete(ids) {
       this.showLoading('删除中...')
-      this.api.delete(ids).then(res => {
+      const method = this.deleteApi || this.api.delete
+      method(ids).then(res => {
         this.hideLoading()
 
         const { list, n } = this.removeItemByID(ids)
@@ -266,7 +293,8 @@ export default {
      */
     onUpdateItem({ id, field, value, index }) {
       this.showLoading('更新中...')
-      this.api.change(id, field, value).then(res => {
+      const method = this.changeApi || this.api.change
+      method(id, field, value).then(res => {
         this.hideLoading()
         this.$set(this.list[index], field, value)
       }, this.hideLoading)
@@ -285,7 +313,8 @@ export default {
       }
 
       showLoading('获取数据中...')
-      this.api.edit(this.detailID, params).then(res => {
+      let method = this.editApi || this.api.edit
+      method(this.detailID, params).then(res => {
         this.isLoadDetailLabel = true
         this.isLoadDetailData = true
         this.detail = !Array.isArray(res.data?.detail) && res.data?.detail || {}
@@ -340,7 +369,8 @@ export default {
       this.showLoading('添加中...')
       // 清空错误消息
       this.error = {}
-      return this.api.save(data).then(res => {
+      const method = this.saveApi || this.api.save
+      return method(data).then(res => {
         this.hideLoading()
         this.dialogVisible = false
         this.total++
@@ -365,7 +395,8 @@ export default {
       this.showLoading('更新中...')
       // 清空错误消息
       this.error = {}
-      return this.api.update(data, id).then(res => {
+      const method = this.updateApi || this.api.update
+      return method(data, id).then(res => {
         this.hideLoading()
         this.dialogVisible = false
         this.$message({
