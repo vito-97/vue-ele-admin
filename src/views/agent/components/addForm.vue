@@ -45,6 +45,7 @@ export default {
         { name: '报障电话', field: 'tel' },
         { name: '手机号', field: 'tel' },
         { name: '邮箱', field: 'email' },
+        { name: '使用套餐类型', field: 'product_type', type: 'radio', opts: { required: true }, label: true },
         { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },
         { name: '备注', field: 'mark', type: 'textarea', opts: { maxlength: 120 } }
       ]

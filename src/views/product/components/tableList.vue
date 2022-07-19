@@ -39,6 +39,7 @@ export default {
         { name: '已购买数量', field: 'buy_total' },
         { name: 'VIP', field: 'is_vip', type: 'switch' },
         { name: '是否可退', field: 'allow_refund', type: 'switch' },
+        { name: '类型', field: 'type', type: 'tag', label: true },
         { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         { name: '备注', field: 'mark', type: 'content' },
         { name: '添加时间', field: 'create_time', width: 150 }
