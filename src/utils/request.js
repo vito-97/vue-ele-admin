@@ -62,7 +62,9 @@ service.interceptors.response.use(
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
-            location.reload()
+            if (location.pathname.indexOf('/login') === -1) {
+              location.reload()
+            }
           })
         })
       }
