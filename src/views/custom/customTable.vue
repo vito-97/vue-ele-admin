@@ -1,10 +1,10 @@
 <template>
   <div v-if="hasCurdAuth('index')" style="width: 100%;height: 100%;">
     <div class="curd-box">
-      <el-button-group size="small">
+      <el-button-group>
         <!--        默认控制按钮之前-->
-        <slot name="before-control-button" :selection="selection"></slot>
-        <template v-for="(btn,index) in headBtns">
+        <slot name="before-head-button" :selection="selection"></slot>
+        <template v-for="(btn) in headBtns">
           <el-button
             :type="btn.type"
             :icon="btn.icon"
@@ -12,13 +12,13 @@
             size="mini"
             v-if="!headBtnDisabled(btn) && (!btn.auth || checkAuth(btn.auth))"
             @click="onTapHeadBtn(btn)"
-            :key="index"
+            :key="btn.key"
           >
             {{ btn.name }}
           </el-button>
         </template>
         <!--        默认控制按钮之后-->
-        <slot name="after-control-button" :selection="selection"></slot>
+        <slot name="after-head-button" :selection="selection"></slot>
       </el-button-group>
       <div class="search-group-box" v-if="searchable && hasCurdAuth('index')">
         <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
@@ -160,14 +160,14 @@
             <slot name="before-row-btn" :row="row" :column="column" :$index="$index"></slot>
 
             <slot name="row-btn" :row="row" :column="column" :$index="$index">
-              <template v-for="(btn,index) in rowBtns">
+              <template v-for="(btn) in rowBtns">
                 <el-button
                   type="text"
                   size="small"
                   @click="onTapRowBtn(btn,row,$index,column)"
                   v-if="btn.show && (!btn.auth || checkAuth(btn.auth))"
                   :disabled="rowBtnDisabled(btn,row,$index)"
-                  :key="index"
+                  :key="btn.key"
                 >
                   {{ btn.name }}
                 </el-button>
