@@ -456,6 +456,7 @@ export default {
       } else if (typeof col.visible === 'function') {
         status = status && col.visible.call(this, this.formData, this.detail, col)
       }
+
       return status
     },
     // 提交

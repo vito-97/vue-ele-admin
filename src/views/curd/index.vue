@@ -221,6 +221,7 @@ export default {
     onUpdate(args) {
       this.detailID = args.id
       this.detail = args.row
+      console.log(args)
       // this.dialogVisible = true
       this.isLoadDetailData = false
       this.getEditData()
@@ -318,7 +319,11 @@ export default {
         this.isLoadDetailLabel = true
         this.isLoadDetailData = true
         this.detail = !Array.isArray(res.data?.detail) && res.data?.detail || {}
-        this.detailID = res.data.detail?.id || 0
+
+        // 获取不到任何数据
+        if (!Object.keys(this.detail).length) {
+          this.detailID = 0
+        }
 
         if (res.data?.label && Object.keys(res.data.label).length) {
           this.detailLabel = res.data.label
