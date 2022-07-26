@@ -189,9 +189,7 @@ function curd(control, version = 'v1') {
         url: `${version}/${control}/${id}`,
         method: 'DELETE'
       })
-    },
-
-    a2s
+    }
   }
 }
 
