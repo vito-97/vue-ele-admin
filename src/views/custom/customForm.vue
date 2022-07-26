@@ -79,7 +79,7 @@
       <div
         slot="footer"
         class="dialog-footer"
-        v-if="formColumns.length && !hideButton && (!hideSubmitButton || !hideResetButton)"
+        v-if="columns.length && !hideButton && (!hideSubmitButton || !hideResetButton)"
       >
         <el-button type="primary" @click="onSubmit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
         <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
@@ -106,7 +106,7 @@
         </el-alert>
         <template v-for="(col,index) in formColumns">
           <el-form-item
-            v-if="checkColVisible(col) && (isEdit ? (col.editable) : col.addable)"
+            v-if="checkColVisible(col)"
             :key="index"
             :label="col.opts.label && col.name || ''"
             :prop="col.field"
@@ -149,7 +149,7 @@
             </div>
           </el-form-item>
         </template>
-        <el-form-item v-if="formColumns.length && !hideButton && (!hideSubmitButton || !hideResetButton)">
+        <el-form-item v-if="columns.length && !hideButton && (!hideSubmitButton || !hideResetButton)">
           <el-button type="primary" native-type="submit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
           <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
         </el-form-item>
@@ -252,8 +252,7 @@ export default {
     dialog: {
       immediate: true,
       handler(val) {
-        // 开发的时候需要初始化 修改代码更新不再初始化后会显示空
-        if (!val || process.env.NODE_ENV === 'development') {
+        if (!val) {
           this.init()
         }
       }
@@ -313,12 +312,10 @@ export default {
   methods: {
     init() {
       this.initColumns()
-      // 必须也初始化规则 否则添加和修改的opts选项不生效
-      this.formRules = this.initFormRules()
-      /*     if (!this.isInitFormRules) {
-             this.isInitFormRules = true
-             this.formRules = this.initFormRules()
-           }*/
+      if (!this.isInitFormRules) {
+        this.isInitFormRules = true
+        this.formRules = this.initFormRules()
+      }
     },
     // 初始化表内容
     initColumns() {
@@ -459,7 +456,6 @@ export default {
       } else if (typeof col.visible === 'function') {
         status = status && col.visible.call(this, this.formData, this.detail, col)
       }
-
       return status
     },
     // 提交

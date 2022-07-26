@@ -34,6 +34,7 @@ export default {
         { name: '价格', field: 'price', after: '元', type: 'tag' },
         { name: '流量', field: 'flow', after: 'L', type: 'tag' },
         { name: '赠送流量', field: 'give_flow', after: 'L', type: 'tag' },
+        { name: '时间', field: 'second', after: '秒', type: 'tag' },
         { name: '设备号', field: 'device.device_no' },
         { name: '运营商', field: 'agent.nickname' },
         { name: '已购买数量', field: 'buy_total' },

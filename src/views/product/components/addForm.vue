@@ -42,7 +42,7 @@ export default {
           }
         },
         {
-          name: '时间（分钟）', field: 'minute', opts: { required: true }, type: 'number', visible(formData) {
+          name: '时间（秒）', field: 'second', opts: { required: true }, type: 'number', visible(formData) {
             return formData.type === 2
           }
         },

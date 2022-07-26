@@ -59,6 +59,8 @@ export default {
           type: this.checkAuth('change') ? 'switch' : 'tag',
           opts: {}
         },
+        { name: '类型', field: 'type', label: true, type: 'tag', opts: {}, width: 90 },
+        { name: '使用状态', field: 'state', label: true, type: 'tag', opts: {}, width: 90 },
         { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         {
           name: '禁用',
@@ -70,7 +72,6 @@ export default {
             return isSuperAdmin(this.$store.getters.role)
           }
         },
-        { name: '使用状态', field: 'state', label: true, type: 'tag', opts: {}, width: 90 },
         { name: '坐标', field: 'position', width: 150 },
         { name: '地址', field: 'address', width: 150 },
         { name: '备注', field: 'mark', type: 'content' },
