@@ -1,5 +1,18 @@
 import request from '@/utils/request'
 
+/**
+ * 数组转字符串
+ * @param a
+ * @returns {*}
+ */
+function a2s(a) {
+  if (Array.isArray(a)) {
+    a = a.join(',')
+  }
+
+  return a
+}
+
 function curd(control, version = 'v1') {
   return {
     /**
@@ -156,7 +169,7 @@ function curd(control, version = 'v1') {
      * @returns {AxiosPromise}
      */
     change(id, field, value) {
-      id = this.a2s(id)
+      id = a2s(id)
       return request({
         url: `${version}/${control}/${id}/change`,
         method: 'PUT',
@@ -171,24 +184,14 @@ function curd(control, version = 'v1') {
      * @returns {AxiosPromise}
      */
     delete(id) {
-      id = this.a2s(id)
+      id = a2s(id)
       return request({
         url: `${version}/${control}/${id}`,
         method: 'DELETE'
       })
     },
-    /**
-     * 数组转字符串
-     * @param a
-     * @returns {*}
-     */
-    a2s(a) {
-      if (Array.isArray(a)) {
-        a = a.join(',')
-      }
 
-      return a
-    }
+    a2s
   }
 }
 
