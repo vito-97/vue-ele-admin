@@ -22,7 +22,7 @@
       </el-button-group>
       <div class="search-group-box" v-if="searchable && hasCurdAuth('index')">
         <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
-          <el-form-item>
+          <el-form-item class="mb0">
             <el-input
               v-model="keyword"
               :placeholder="searchPlaceholder"
@@ -31,12 +31,28 @@
               @input="onKwInput">
             </el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item class="mb0">
             <el-button type="primary" icon="el-icon-search" @click="onSearch">
               {{ searchBtnText }}
             </el-button>
           </el-form-item>
         </el-form>
+        <!--        控制列的显示与隐藏-->
+        <div v-if="!hideColumnsControl">
+          <el-popover
+            placement="bottom"
+            width="200"
+            trigger="click">
+            <el-checkbox-group v-model="showColumns" @change="onChangeShowColumns">
+              <template v-for="(it,i) in columnLabels">
+                <div :key="i">
+                  <el-checkbox :label="i">{{ it }}</el-checkbox>
+                </div>
+              </template>
+            </el-checkbox-group>
+            <el-button type="primary" icon="el-icon-s-operation" size="mini" plain slot="reference"></el-button>
+          </el-popover>
+        </div>
       </div>
     </div>
     <slot name="content" :column="cols">
@@ -57,15 +73,17 @@
       >
         <!--      选项列-->
         <el-table-column
-          v-if="!hideSelection"
+          v-if="!hideSelection && isShowColumn('selection')"
           type="selection"
           :selectable="selectable"
+          key="selection"
           width="50">
         </el-table-column>
         <el-table-column
-          v-if="!hidePk"
+          v-if="!hidePk && isShowColumn('pk')"
           :prop="pk"
           :label="pkLabel"
+          key="pk"
           width="80">
         </el-table-column>
         <!--      渲染列-->
@@ -73,7 +91,7 @@
           <el-table-column
             v-if="checkColVisible(it)"
             :key="i"
-            :fixed="it.fixed || null"
+            :fixed="it.fixed"
             :prop="it.prop || it.field"
             :label="it.name"
             :width="it.width"
@@ -153,7 +171,8 @@
           fixed="right"
           :label="rowBtnColumn.name"
           :width="rowBtnColumn.width"
-          v-if="!hideRowBtn"
+          key="control"
+          v-if="!hideRowBtn && isShowColumn('control')"
         >
           <template slot-scope="{row,column,$index}">
 
@@ -212,8 +231,9 @@
 import { getLimit, pageSizes, setLimit } from '@/utils/list'
 import checkPermission from '@/utils/permission'
 import Pagination from '@/components/Pagination'
-import { deepVal } from '@/utils'
+import { deepVal, debounce } from '@/utils'
 import itemsCom from '@/utils/table-column'
+import md5 from 'js-md5'
 
 export default {
   name: 'CustomTable',
@@ -233,7 +253,8 @@ export default {
       confirm: {},
       params: {},
       filterTimer: '',
-      items: itemsCom
+      items: itemsCom,
+      showColumns: []
     }
   },
   components: { Pagination },
@@ -445,6 +466,9 @@ export default {
     showRowBtn: {
       type: [Array, String],
       default: '*'
+    },
+    hideColumnsControl: {
+      type: Boolean
     }
   },
   filters: {},
@@ -715,10 +739,54 @@ export default {
           show: this.rowBtnShow('delete') && this.deletable
         }
       ]
+    },
+    /**
+     * 将传入的列生成hash值
+     */
+    hash() {
+      let string = JSON.stringify(this.columns)
+      return (this.control ? this.control + '-' : '') + md5(string).substr(0, 10)
+    },
+    /**
+     * 获取列的label
+     */
+    columnLabels() {
+      let obj = {
+        selection: '选项',
+        pk: this.pkLabel
+      }
+
+      if (!this.hideSelection) {
+        obj.selection = '选项框'
+      }
+
+      if (!this.hidePk) {
+        obj.pk = this.pkLabel
+      }
+
+      this.cols.forEach(it => {
+        obj[it.field] = it.name
+      })
+
+      if (!this.hideRowBtn) {
+        obj.control = this.rowBtnColumn.name
+      }
+
+      return obj
+    },
+    /**
+     * 获取所有列的键
+     */
+    columnFields() {
+      return Object.keys(this.columnLabels)
     }
   },
   created() {
     this.loadTrigger()
+    // 显示列控制
+    if (!this.hideColumnsControl) {
+      this.setShowColumns()
+    }
   },
   methods: {
     // 是否在指定的模式下
@@ -957,16 +1025,16 @@ export default {
      * @returns {boolean|*}
      */
     checkColVisible(col) {
+      let status = this.isShowColumn(col.field)
+
       if (typeof col.visible === 'boolean') {
-        return col.visible
+        status = status && col.visible
       }
       if (typeof col.visible === 'function') {
-        const status = col.visible.call(this, this.formData, this.detail, col)
-
-        return status
+        status = status && col.visible.call(this, this.formData, this.detail, col)
       }
 
-      return true
+      return status
     },
     /**
      * 头部按钮是否显示
@@ -984,12 +1052,61 @@ export default {
     rowBtnShow(key) {
       console.log(this.showRowBtn)
       return this.showRowBtn === '*' || this.showRowBtn.includes(key)
+    },
+    /**
+     * 设置显示的列
+     * @param value
+     */
+    setShowColumns(value = null) {
+      const cacheKey = this.hash + '-show-columns'
+      // 有传入值则是设置到缓存里
+      if (value) {
+        debounce(function () {
+          localStorage.setItem(cacheKey, JSON.stringify(value))
+        }, 500)()
+      } else {
+        value = localStorage.getItem(cacheKey)
+
+        if (value) {
+          try {
+            value = JSON.parse(value)
+          } catch (e) {
+            value = null
+          }
+        }
+
+        if (!value) {
+          value = this.columnFields
+        }
+
+        this.showColumns = value
+      }
+    },
+    /**
+     * 是否显示列
+     */
+    isShowColumn(name) {
+      return this.showColumns.includes(name)
+    },
+    /**
+     * 改变显示列的状态
+     * @param value
+     */
+    onChangeShowColumns(value) {
+      this.setShowColumns(value)
+      this.$nextTick(() => {
+        this.$refs.table.doLayout()
+      })
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+.mb0 {
+  margin-bottom: 0;
+}
+
 .curd-box {
   display: flex;
   justify-content: space-between;
