@@ -43,6 +43,8 @@
             placement="bottom"
             width="200"
             trigger="click">
+            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAllColumns" @change="showAllColumns">全选
+            </el-checkbox>
             <el-checkbox-group v-model="showColumns" @change="onChangeShowColumns">
               <template v-for="(it,i) in columnLabels">
                 <div :key="i">
@@ -254,7 +256,11 @@ export default {
       params: {},
       filterTimer: '',
       items: itemsCom,
-      showColumns: []
+      showColumns: [],
+      // 控制是否为有选但是没全选
+      isIndeterminate: true,
+      // 全选列
+      checkAllColumns: false
     }
   },
   components: { Pagination },
@@ -1055,12 +1061,16 @@ export default {
     },
     /**
      * 设置显示的列
-     * @param value
+     * @param value 数据
+     * @param set 是否设置到数据上
      */
-    setShowColumns(value = null) {
+    setShowColumns(value = null, set = false) {
       const cacheKey = this.hash + '-show-columns'
       // 有传入值则是设置到缓存里
       if (value) {
+        if (set) {
+          this.showColumns = value
+        }
         debounce(function () {
           localStorage.setItem(cacheKey, JSON.stringify(value))
         }, 500)()
@@ -1080,6 +1090,7 @@ export default {
         }
 
         this.showColumns = value
+        this.setCheckAllStatus()
       }
     },
     /**
@@ -1094,9 +1105,24 @@ export default {
      */
     onChangeShowColumns(value) {
       this.setShowColumns(value)
+      this.setCheckAllStatus()
       this.$nextTick(() => {
         this.$refs.table.doLayout()
       })
+    },
+    /**
+     * 设置全选的状态
+     */
+    setCheckAllStatus() {
+      let checkedLength = this.showColumns.length
+      let length = this.columnFields.length
+      this.checkAllColumns = checkedLength === length
+      this.isIndeterminate = checkedLength > 0 && checkedLength < length
+    },
+    showAllColumns(val) {
+      let checked = val ? this.columnFields : []
+      this.setShowColumns(checked, true)
+      this.isIndeterminate = false
     }
   }
 }
