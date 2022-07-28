@@ -28,6 +28,8 @@
 
 <script>
 import tableMixin from '@/utils/mixin/custom-table'
+import ENUM from '@/utils/enum'
+import { showLoading, hideLoading } from '@/utils'
 
 export default {
   data() {
@@ -64,15 +66,17 @@ export default {
   computed: {
     rowBtn() {
       const btn = [
-        /*        {
+        {
           name: '退款',
           auth: this.getFullAuth('refund'),
           key: 'refund',
-          confirm:'确定要退款吗？',
-          check: function (row, index) {
+          confirm: '请输入退款原因！',
+          placeholder: '退款原因',
+          input: 'textarea',
+          show: function (row, index) {
             return row.status == ENUM.order.status.paid
           }
-        },*/
+        }
       ]
 
       console.log(btn)
@@ -90,6 +94,18 @@ export default {
     },
     selectable(row, index) {
       return ![1, 4, 5].includes(row.status)
+    },
+    // 退款
+    onTapRowBtnRefund(row, index, data) {
+      showLoading('退款中...')
+      this.curd.post('refund', { id: row.id, mark: data.content }).then(res => {
+        hideLoading()
+        this.onTapHeadBtnFlush()
+        this.$message({
+          message: res.msg,
+          type: 'success'
+        })
+      }, hideLoading)
     }
   }
 }

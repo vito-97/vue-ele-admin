@@ -109,7 +109,7 @@ const tableMixin = {
       const method = 'onTapRowBtn' + this.ucfirst(key)
 
       if (this[method] && typeof this[method] === 'function') {
-        this[method](args.row, args.index)
+        this[method](args.row, args.index, args.data)
       } else {
         this.$emit('tap-row-btn', args)
       }

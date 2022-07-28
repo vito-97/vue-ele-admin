@@ -175,7 +175,8 @@ export default {
     initParams() {
       this.list = []
       this.isLoadListData = false
-      this.total = 0
+      // 不置0，会出现显示在1页
+      // this.total = 0
     },
     // 获取列表
     getList(query = {}, init = false) {
@@ -357,6 +358,7 @@ export default {
      */
     onFlush({ reload = false } = {}) {
       const query = this.lastLoadListQuery
+
       if (reload) {
         query.page = 1
       }

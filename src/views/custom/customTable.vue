@@ -218,7 +218,15 @@
       :visible.sync="dialogVisible"
       width="30%"
       center>
-      <span>{{ confirm.title }}</span>
+      <div class="mb10">{{ confirm.title }}</div>
+      <div v-if="confirm.input">
+        <el-input
+          v-model="confirmContent"
+          :type="typeof confirm.input == 'boolean' ? 'text' : confirm.input"
+          :placeholder="confirm.placeholder || ''"
+        >
+        </el-input>
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false;onConfirmSuccess();">确 定</el-button>
@@ -253,6 +261,8 @@ export default {
       selection: [],
       // 确认的内容
       confirm: {},
+      // 确认的输入内容
+      confirmContent: '',
       params: {},
       filterTimer: '',
       items: itemsCom,
@@ -622,7 +632,10 @@ export default {
         selected: false,
         // 指定模式
         mode: ['show'],
-        show: true
+        // 是否显示
+        show: true,
+        // 是否显示输入框 字符串类型的话则设置成输入框类型
+        input: false
       }
 
       array.forEach((it, i) => {
@@ -897,7 +910,12 @@ export default {
     // 点击头部的按钮
     onTapHeadBtn(btn) {
       if (btn.confirm) {
-        this.setConfirmInfo(btn.confirm.replace('{n}', this.selection.length), () => this.headBtnTrigger(btn))
+        const args = {
+          title: btn.confirm.replace('{n}', this.selection.length),
+          input: btn.input,
+          placeholder: btn.placeholder || ''
+        }
+        this.setConfirmInfo(args, (data) => this.headBtnTrigger(btn, data))
         return
       }
 
@@ -906,7 +924,12 @@ export default {
     // 点击行按钮
     onTapRowBtn(btn, row, index, column) {
       if (btn.confirm) {
-        this.setConfirmInfo(this.replace(btn.confirm, row), () => this.rowBtnTrigger(btn, row, index, column))
+        const args = {
+          title: this.replace(btn.confirm, row),
+          input: btn.input,
+          placeholder: btn.placeholder || ''
+        }
+        this.setConfirmInfo(args, (data) => this.rowBtnTrigger(btn, row, index, column, data))
         return
       }
 
@@ -935,25 +958,30 @@ export default {
       return string
     },
     // 触发事件
-    headBtnTrigger(btn) {
+    headBtnTrigger(btn, data) {
       this.$emit('tap-head-btn', {
         key: btn.key,
         selection: this.selection,
-        ids: this.selectionID
+        ids: this.selectionID,
+        data
       })
     },
-    rowBtnTrigger(btn, row, index, column) {
+    rowBtnTrigger(btn, row, index, column, data) {
       this.$emit('tap-row-btn', {
         index,
         row,
         column,
-        key: btn.key
+        key: btn.key,
+        data
       })
     },
     // 设置提示框的内容
-    setConfirmInfo(title, callback) {
+    setConfirmInfo({ title, input, placeholder }, callback) {
+      this.confirmContent = ''
       this.confirm = {
         title,
+        input,
+        placeholder,
         callback
       }
 
@@ -961,7 +989,7 @@ export default {
     },
     // 确认按钮
     onConfirmSuccess() {
-      this.confirm.callback && this.confirm.callback()
+      this.confirm.callback && this.confirm.callback({ content: this.confirmContent })
     },
     /**
      * 获取列的原始值
@@ -1119,6 +1147,10 @@ export default {
       this.checkAllColumns = checkedLength === length
       this.isIndeterminate = checkedLength > 0 && checkedLength < length
     },
+    /**
+     * 全选
+     * @param val
+     */
     showAllColumns(val) {
       let checked = val ? this.columnFields : []
       this.setShowColumns(checked, true)
@@ -1131,6 +1163,10 @@ export default {
 <style scoped lang="scss">
 .mb0 {
   margin-bottom: 0;
+}
+
+.mb10 {
+  margin-bottom: 10px;
 }
 
 .curd-box {
