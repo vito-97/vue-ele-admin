@@ -43,8 +43,10 @@
             placement="bottom"
             width="200"
             trigger="click">
-            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAllColumns" @change="showAllColumns">全选
-            </el-checkbox>
+            <div>
+              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAllColumns" @change="showAllColumns">全选
+              </el-checkbox>
+            </div>
             <el-checkbox-group v-model="showColumns" @change="onChangeShowColumns">
               <template v-for="(it,i) in columnLabels">
                 <div :key="i">
@@ -241,22 +243,37 @@
 import { getLimit, pageSizes, setLimit } from '@/utils/list'
 import checkPermission from '@/utils/permission'
 import Pagination from '@/components/Pagination'
-import { deepVal, debounce } from '@/utils'
+import { deepVal, debounce, isPositiveInteger } from '@/utils'
 import itemsCom from '@/utils/table-column'
 import md5 from 'js-md5'
 
 export default {
   name: 'CustomTable',
   data() {
+    const query = this.$route.query
+    const useQuery = this.mode === 'show'
+    let page = useQuery && isPositiveInteger(query.page) && Number(query.page) || 1
+    let limit = useQuery && isPositiveInteger(query.limit) && Number(query.limit) || getLimit()
+    let keyword = useQuery && query.kw || ''
+
+    // 未定义该数量
+    if (!pageSizes.includes(limit)) {
+      pageSizes.push(limit)
+      // 重新排序
+      pageSizes.sort(function (a, b) {
+        return a > b ? 1 : -1
+      })
+    }
+
     return {
       // 是否显示表格
       visible: false,
       deleteRow: {},
       deleteIndex: '',
       dialogVisible: false,
-      page: 1,
-      limit: getLimit(),
-      keyword: this.kw,
+      page: page,
+      limit: limit,
+      keyword: keyword,
       // 选中列表
       selection: [],
       // 确认的内容
@@ -504,16 +521,43 @@ export default {
     }
   },
   computed: {
+    useQuery() {
+      return this.mode === 'show'
+    },
     // 获取查询字符串
     queryParams() {
-      var obj = Object.assign({}, this.query, this.params)
-      if (this.keyword) {
+      var obj = {}
+
+      // 使用query string
+      // 排到前面 可以让内部的查询条件替换
+      if (this.useQuery) {
+        let query = { ...this.$route.query }
+        const exclude = ['page', 'kw', 'limit']
+        for (let field of exclude) {
+          if (query[field]) {
+            delete query[field]
+          }
+        }
+
+        if (Object.keys(query).length) {
+          obj = { ...obj, ...query }
+        }
+      }
+
+      // 合并参数
+      Object.assign(obj, this.query, this.params)
+
+      if (!obj.kw && this.keyword) {
         obj.kw = this.keyword
       }
 
       if (this.pagination) {
-        obj.page = this.page
-        obj.limit = this.limit
+        if (!obj.page) {
+          obj.page = this.page
+        }
+        if (!obj.limit) {
+          obj.limit = this.limit
+        }
       }
 
       return obj
