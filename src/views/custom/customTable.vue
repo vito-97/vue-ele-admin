@@ -258,6 +258,8 @@ export default {
       deleteRow: {},
       deleteIndex: '',
       dialogVisible: false,
+      // 首次加载
+      first: true,
       page: query.page,
       limit: query.limit,
       keyword: query.keyword,
@@ -500,25 +502,20 @@ export default {
       if (!this.visible) {
         this.visible = true
       }
-      /*      if (this.val) {
-              setTimeout(() => {
-                this.$forceUpdate()
-              }, 500)
-            }*/
-    },
-    // 监听参数的变化
-    '$route.query': {
-      handler(val, old) {
-        if (val) {
-          const query = this.mergeQueryString()
-          this.keyword = query.keyword
-          this.page = query.page
-          this.limit = query.limit
-          this.loadTrigger()
-        }
-      },
-      immediate: true
     }
+    // 监听参数的变化
+    /*    '$route.query': {
+          handler(val, old) {
+            if (val) {
+              const query = this.mergeQueryString()
+              this.keyword = query.keyword
+              this.page = query.page
+              this.limit = query.limit
+              this.loadTrigger()
+            }
+          },
+          immediate: true
+        }*/
   },
   computed: {
     useQuery() {
@@ -953,7 +950,12 @@ export default {
       if (init) {
         this.initParams()
       }
-      this.$emit('load', { query: this.queryParams, init })
+      // 首次加载
+      let first = this.first
+      if (first) {
+        this.first = false
+      }
+      this.$emit('load', { query: this.queryParams, init, first })
     },
     // 是否有CURD权限
     hasCurdAuth(auth) {

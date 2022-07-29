@@ -170,6 +170,15 @@ export default {
   methods: {
     onLoad(args) {
       console.log('query args', args)
+
+      if (!args.first) {
+        var route = this.$route
+        this.$router.replace({
+          name: route.name,
+          query: args.query
+        })
+      }
+
       this.getList(args.query, args.init)
     },
     initParams() {
