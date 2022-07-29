@@ -250,20 +250,7 @@ import md5 from 'js-md5'
 export default {
   name: 'CustomTable',
   data() {
-    const query = this.$route.query
-    const useQuery = this.mode === 'show'
-    let page = useQuery && isPositiveInteger(query.page) && Number(query.page) || 1
-    let limit = useQuery && isPositiveInteger(query.limit) && Number(query.limit) || getLimit()
-    let keyword = useQuery && query.kw || ''
-
-    // 未定义该数量
-    if (!pageSizes.includes(limit)) {
-      pageSizes.push(limit)
-      // 重新排序
-      pageSizes.sort(function (a, b) {
-        return a > b ? 1 : -1
-      })
-    }
+    const query = this.mergeQueryString()
 
     return {
       // 是否显示表格
@@ -271,9 +258,9 @@ export default {
       deleteRow: {},
       deleteIndex: '',
       dialogVisible: false,
-      page: page,
-      limit: limit,
-      keyword: keyword,
+      page: query.page,
+      limit: query.limit,
+      keyword: query.keyword,
       // 选中列表
       selection: [],
       // 确认的内容
@@ -518,6 +505,19 @@ export default {
                 this.$forceUpdate()
               }, 500)
             }*/
+    },
+    // 监听参数的变化
+    '$route.query': {
+      handler(val, old) {
+        if (val) {
+          const query = this.mergeQueryString()
+          this.keyword = query.keyword
+          this.page = query.page
+          this.limit = query.limit
+          this.loadTrigger()
+        }
+      },
+      immediate: true
     }
   },
   computed: {
@@ -551,6 +551,7 @@ export default {
         obj.kw = this.keyword
       }
 
+      // 需要分页
       if (this.pagination) {
         if (!obj.page) {
           obj.page = this.page
@@ -852,6 +853,27 @@ export default {
     }
   },
   methods: {
+    // 合并传入的query string
+    mergeQueryString() {
+      const query = this.$route.query
+      const useQuery = this.mode === 'show'
+      let page = useQuery && isPositiveInteger(query.page) && Number(query.page) || 1
+      let limit = useQuery && isPositiveInteger(query.limit) && Number(query.limit) || getLimit()
+      let keyword = useQuery && query.kw || ''
+
+      // 未定义该数量
+      if (!pageSizes.includes(limit)) {
+        pageSizes.push(limit)
+        // 重新排序
+        pageSizes.sort(function (a, b) {
+          return a > b ? 1 : -1
+        })
+      }
+
+      return {
+        page, limit, keyword
+      }
+    },
     // 是否在指定的模式下
     inMode(mode) {
       if (typeof mode === 'string') {
