@@ -276,7 +276,9 @@ export default {
       // 控制是否为有选但是没全选
       isIndeterminate: true,
       // 全选列
-      checkAllColumns: false
+      checkAllColumns: false,
+      // 排除的参数名
+      excludeParams: []
     }
   },
   components: { Pagination },
@@ -529,9 +531,10 @@ export default {
       // 排到前面 可以让内部的查询条件替换
       if (this.useQuery) {
         let query = { ...this.$route.query }
-        const exclude = ['page', 'kw', 'limit']
+        const exclude = ['page', 'kw', 'limit', ...this.excludeParams]
+        // 排除参数
         for (let field of exclude) {
-          if (query[field]) {
+          if (typeof query[field] !== 'undefined') {
             delete query[field]
           }
         }
@@ -906,7 +909,7 @@ export default {
       if (this.filterTimer) {
         clearTimeout(this.filterTimer)
       }
-
+      let excludeParams = []
       for (const [field, value] of Object.entries(filters)) {
         const filterKey = `filter[${field}]`
         const opKey = `op[${field}]`
@@ -915,10 +918,12 @@ export default {
           this.$set(this.params, filterKey, value.join(','))
           this.$set(this.params, opKey, value.length > 1 ? 'IN' : '=')
         } else {
+          excludeParams.push(filterKey, opKey)
           this.$delete(this.params, filterKey)
           this.$delete(this.params, opKey)
         }
       }
+      this.excludeParams = excludeParams
       this.loadTrigger(true)
       // this.filterTimer = setTimeout(this.loadTrigger, 100)
     },
@@ -955,7 +960,10 @@ export default {
       if (first) {
         this.first = false
       }
-      this.$emit('load', { query: this.queryParams, init, first })
+      const excludeParams = this.excludeParams
+      const query = this.queryParams
+
+      this.$emit('load', { query, init, first, excludeParams })
     },
     // 是否有CURD权限
     hasCurdAuth(auth) {
