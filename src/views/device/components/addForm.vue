@@ -26,6 +26,8 @@ export default {
   name: 'AddForm',
   mixins: [visible, customFromMixin],
   data() {
+    var siteID = this.$store.getters.userinfo.site_id
+    var isMain = siteID == 1
     return {
       rules: {},
       // 列配置
@@ -36,14 +38,14 @@ export default {
         { name: '纬度', field: 'lat', opts: { required: false, maxlength: 20 } },
         { name: '脉冲', field: 'l_to_pulse', type: 'number', opts: { required: true, max: 255 }, value: 0 },
         { name: '温度', field: 'temperature', type: 'number', opts: { required: true, max: 50 }, value: 0 },
-        { name: '暂停定时停止时间', field: 'finish_timeout', type: 'number', opts: { required: true, max: 1000 }, value: 0 },
+        { name: '暂停定时停止时间', field: 'finish_timeout', type: 'number', opts: { required: true, max: 1000 }, value: 240 },
         // { name: '报障电话', field: 'tel' },
         { name: '地址', field: 'address', opts: { maxlength: 120 } },
         // { name: '全局套餐', field: 'used_global_product', type: 'switch', opts: { required: true } },
         {
-          name: '运营商',
+          name: isMain ? '运营商' : '水厂',
           field: 'agent_id',
-          opts: { required: true, control: 'agent', name: 'nickname' },
+          opts: { required: true, control: isMain ? 'agent' : 'waterworks', name: 'nickname', key: 'agent' },
           type: 'select_table',
           edit_opts: { disabled: false }
         },

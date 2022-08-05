@@ -32,6 +32,8 @@ import { isSuperAdmin } from '@/utils'
 
 export default {
   data() {
+    var siteID = this.$store.getters.userinfo.site_id
+    var isMain = siteID == 1
     return {
       columns: [
         { name: '名称', field: 'name', width: 150 },
@@ -47,7 +49,7 @@ export default {
         },
         { name: '脉冲', field: 'l_to_pulse' },
         { name: '温度', field: 'temperature', after: '度' },
-        { name: '运营商', field: 'agent.nickname' },
+        { name: isMain ? '运营商' : '水厂', field: 'agent.nickname' },
         // { name: '全局套餐', field: 'used_global_product', type: 'switch' },
         // { name: '报障电话', field: 'phone', },
         { name: '已加注流量', field: 'used_flow', after: 'L', width: 150 },

@@ -254,7 +254,7 @@ export default {
 
     return {
       // 是否显示表格
-      visible: false,
+      visible: true,
       deleteRow: {},
       deleteIndex: '',
       dialogVisible: false,

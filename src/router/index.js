@@ -370,34 +370,66 @@ export const asyncRoutes = [
       }
     ]
   },
+  // {
+  //   path: '/cash_coupon',
+  //   component: Layout,
+  //   redirect: '/cash_coupon/index',
+  //   alwaysShow: true, // will always show the root menu
+  //   name: 'CashCoupon',
+  //   meta: {
+  //     title: '现金券',
+  //     icon: 'el-icon-postcard',
+  //     auth: ['cash_coupon', 'cash_coupon_card']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/cash_coupon/index'),
+  //       name: 'CashCouponIndex',
+  //       meta: {
+  //         title: '现金券管理',
+  //         auth: ['cash_coupon/index']
+  //       }
+  //     },
+  //     {
+  //       path: '/cash_coupon_card/index',
+  //       component: () => import('@/views/cash_coupon_card/index'),
+  //       name: 'CashCouponCardIndex',
+  //       meta: {
+  //         title: '现金券领取管理',
+  //         auth: ['cash_coupon_card/index']
+  //       }
+  //     }
+  //   ]
+  // },
   {
-    path: '/cash_coupon',
+    path: '/flow_coupon',
     component: Layout,
-    redirect: '/cash_coupon/index',
+    redirect: '/flow_coupon/index',
     alwaysShow: true, // will always show the root menu
-    name: 'CashCoupon',
+    name: 'FlowCoupon',
     meta: {
-      title: '现金券',
+      title: '流量券',
       icon: 'el-icon-postcard',
-      auth: ['cash_coupon', 'cash_coupon_card']
+      auth: ['flow_coupon', 'flow_coupon_card']
     },
     children: [
       {
         path: 'index',
-        component: () => import('@/views/cash_coupon/index'),
-        name: 'CashCouponIndex',
+        component: () => import('@/views/flow_coupon/index'),
+        name: 'FlowCouponIndex',
         meta: {
-          title: '现金券管理',
-          auth: ['cash_coupon/index']
+          title: '流量券管理',
+          auth: ['flow_coupon/index']
         }
       },
       {
-        path: '/cash_coupon_card/index',
-        component: () => import('@/views/cash_coupon_card/index'),
-        name: 'CashCouponCardIndex',
+        path: '/flow_coupon_card/index',
+        component: () => import('@/views/flow_coupon_card/index'),
+        name: 'FlowCouponCardIndex',
         meta: {
-          title: '现金券领取管理',
-          auth: ['cash_coupon_card/index']
+          title: '流量券领取管理',
+          auth: ['flow_coupon_card/index']
         }
       }
     ]
