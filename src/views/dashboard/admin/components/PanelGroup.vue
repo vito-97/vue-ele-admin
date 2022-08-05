@@ -289,7 +289,8 @@ export default {
     margin: 0 !important;
 
     .svg-icon, [class*=el-icon-] {
-      display: block;
+      display: flex;
+      justify-content: center;
       margin: 0 auto 14px !important;
       float: none !important;
     }
