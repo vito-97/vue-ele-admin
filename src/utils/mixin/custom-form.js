@@ -5,20 +5,29 @@ const customFromMixin = {
   props: {
     // 数据详情
     detail: {
-      type: Object
+      type: Object,
+      default: () => {
+        return {}
+      }
     },
     id: {
       type: Number,
       default: 0
     },
     list: {
-      type: Object
+      type: Object,
+      default: () => {
+        return {}
+      }
     },
     appendToBody: {
       type: Boolean
     },
     error: {
-      type: Object
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   components: { customForm },

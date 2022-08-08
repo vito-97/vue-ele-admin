@@ -236,6 +236,12 @@ export default {
     resetBtnText: {
       type: String,
       default: '重 置'
+    },
+    addTitle: {
+      type: String
+    },
+    editTitle: {
+      type: String
     }
   },
   watch: {
@@ -298,7 +304,7 @@ export default {
   },
   computed: {
     title() {
-      return (this.isEdit ? '编辑' : '添加')
+      return this.isEdit ? (this.editTitle || '编辑') : (this.addTitle || '添加')
     },
     isEdit() {
       return this.id
