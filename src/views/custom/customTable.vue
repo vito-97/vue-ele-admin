@@ -253,8 +253,8 @@ export default {
     const query = this.mergeQueryString()
 
     return {
-      // 是否显示表格
-      visible: true,
+      // 是否显示表格 默认不显示 等到加载表格才显示 这样才能渲染过滤
+      visible: false,
       deleteRow: {},
       deleteIndex: '',
       dialogVisible: false,

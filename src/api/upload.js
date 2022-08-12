@@ -10,7 +10,7 @@ export function upload(file) {
   formData.append('file', file)
   formData.append('category', 'un')
   return curd('attachment').save(formData).then(res => {
-    console.log(res)
+    // console.log('upload', res)
     if ([0, 50905].includes(res.code)) {
       return res
     } else {

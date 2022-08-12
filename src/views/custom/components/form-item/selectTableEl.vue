@@ -159,6 +159,14 @@ export default {
     // 多选
     onSelectMultiple({ selection, ids }) {
       // console.log('select multiple', ids, selection)
+      let value = []
+
+      selection.forEach((it) => {
+        value.push(it[this.opt.pk])
+      })
+
+      this.triggerEvent('select-multiple', { value, items: selection })
+
       this.visible = false
     }
   }
@@ -174,6 +182,7 @@ export default {
     align-items: center;
     position: relative;
     width: 100%;
+
     .item {
       margin-right: 10px;
     }

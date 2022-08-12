@@ -20,6 +20,7 @@ import load from './dynamicLoadScript'
 import selectTable from '@/views/custom/components/form-item/selectTableEl'
 import { upload } from '@/api/upload'
 import CONFIG from '@/utils/config'
+import { showLoading, hideLoading } from '@/utils'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
 // const tinymceCDN = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
@@ -86,7 +87,8 @@ export default {
           key: 'link',
           btn_text: '附件',
           btn_size: 'mini',
-          btn_icon: 'el-icon-paperclip'
+          btn_icon: 'el-icon-paperclip',
+          multiple: true
         },
         type: 'select_table',
         edit_opts: { disabled: false }
@@ -191,7 +193,10 @@ export default {
         // it will try to keep these URLs intact
         // https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
         // https://stackoverflow.com/questions/5196205/disable-tinymce-absolute-to-relative-url-conversions
-        convert_urls: false
+        convert_urls: false,
+        images_upload_handler(blobInfo, success, failure, progress) {
+          console.log(blobInfo)
+        }
         // 整合七牛上传
         // images_dataimg_filter(img) {
         //   setTimeout(() => {
@@ -281,7 +286,9 @@ export default {
      * @returns {Promise<void>}
      */
     uploadFile(file) {
+      showLoading('上传中...')
       return upload(file).then(res => {
+        hideLoading()
         this.onEvent({
           field: 'file',
           type: 'select',
@@ -290,6 +297,7 @@ export default {
           }
         })
       }).catch((err) => {
+        hideLoading()
         // console.log(err)
         // 上传错误可⾃⾏给出提⽰
         if (err.message) {
@@ -300,22 +308,38 @@ export default {
     // 监听事件
     onEvent(e) {
       // 选择事件
-      if (e.field === 'file' && e.type === 'select') {
-        var row = e.payload.row
-        console.log(row)
-        var type = row.category
-        // 图片
-        if (type === 'image') {
-          this.editor.selection.setContent(this.editor.dom.createHTML('img', { src: row.link }))
-          // 视频
-        } else if (type === 'video') {
-          let html = '<video controls="controls" src="' + row.link + '"' + '>\n' + '</video>'
+      if (e.field === 'file') {
+        if (e.type === 'select') {
+          var row = e.payload.row
+          console.log(row)
+          var type = row.category
+          var html = ''
+          // 图片
+          if (type === 'image') {
+            html = `<p><img src="${row.link}" /></p>`
+            // 视频
+          } else if (type === 'video') {
+            html = `<p><video controls="controls" src="${row.link}"></video></p>`
+            // MP3
+          } else if (type === 'mp3') {
+            html = `<p><audio controls="controls" src="${row.link}"></audio></p>`
+            // 其他内容设置为链接
+          } else {
+            html = `<p><a href="${row.link}" target="_blank" rel="noopener">${row.name}</a></p>`
+          }
           this.editor.selection.setContent(html)
-        } else if (type === 'mp3') {
-          let html = '<audio controls="controls" src="' + row.link + '"' + '>\n' + '</audio>'
-          this.editor.selection.setContent(html)
-        } else {
-          this.editor.selection.setContent(`<a href="${row.link}" target="_blank" rel="noopener">${row.name}</a>`)
+        } else if (e.type === 'select-multiple') {
+          var items = e.payload.items
+
+          for (let row of items) {
+            this.onEvent({
+              field: e.field,
+              type: 'select',
+              payload: {
+                row
+              }
+            })
+          }
         }
       }
     }
@@ -324,21 +348,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.mr10{
+.mr10 {
   margin-right: 10px;
 }
+
 .tinymce-container {
   position: relative;
   line-height: normal;
 }
 
-.tinymce-container {
+/*.tinymce-container {
   ::v-deep {
     .mce-fullscreen {
       z-index: 10000;
     }
   }
-}
+}*/
 
 .tinymce-textarea {
   visibility: hidden;
@@ -351,13 +376,11 @@ export default {
   position: absolute;
   right: 5px;
   top: 5px;
-  z-index: 10000;
-
-  /*z-index: 2005;*/
+  z-index: 1;
 }
 
 .fullscreen .editor-custom-btn-container {
-  //z-index: 10000;
+  z-index: 10000;
   position: fixed;
 }
 
