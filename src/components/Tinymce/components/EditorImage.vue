@@ -1,9 +1,13 @@
 <template>
   <div class="upload-container">
-    <el-button :style="{background:color,borderColor:color}" icon="el-icon-upload" size="mini" type="primary" @click=" dialogVisible=true">
-      upload
+    <el-button
+      icon="el-icon-upload"
+      size="mini"
+      type="primary"
+      @click=" dialogVisible=true">
+      上传
     </el-button>
-    <el-dialog :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" :append-to-body="true">
       <el-upload
         :multiple="true"
         :file-list="fileList"
@@ -12,25 +16,31 @@
         :on-success="handleSuccess"
         :before-upload="beforeUpload"
         class="editor-slide-upload"
-        action="https://httpbin.org/post"
+        :data="uploadData"
+        :headers="uploadHeaders"
+        :action="uploadAction"
         list-type="picture-card"
+        :accept="uploadAccept"
+        :drag="true"
+        ref="upload"
       >
         <el-button size="small" type="primary">
-          Click upload
+          点击上传
         </el-button>
       </el-upload>
       <el-button @click="dialogVisible = false">
-        Cancel
+        取消
       </el-button>
       <el-button type="primary" @click="handleSubmit">
-        Confirm
+        确定
       </el-button>
     </el-dialog>
   </div>
 </template>
 
 <script>
-// import { getToken } from 'api/qiniu'
+import { getToken } from '@/utils/auth'
+import CONFIG from '@/utils/config'
 
 export default {
   name: 'EditorSlideUpload',
@@ -44,7 +54,13 @@ export default {
     return {
       dialogVisible: false,
       listObj: {},
-      fileList: []
+      fileList: [],
+      uploadAction: CONFIG.upload_url,
+      uploadData: { category: 'un' },
+      uploadAccept: 'image/*',
+      uploadHeaders: {
+        'access-token': getToken()
+      }
     }
   },
   methods: {
@@ -54,7 +70,7 @@ export default {
     handleSubmit() {
       const arr = Object.keys(this.listObj).map(v => this.listObj[v])
       if (!this.checkAllSuccess()) {
-        this.$message('Please wait for all images to be uploaded successfully. If there is a network problem, please refresh the page and upload again!')
+        this.$message('请等待所有图像成功上传。如果出现网络问题，请刷新页面并再次上传！')
         return
       }
       this.$emit('successCBK', arr)
@@ -63,14 +79,29 @@ export default {
       this.dialogVisible = false
     },
     handleSuccess(response, file) {
-      const uid = file.uid
-      const objKeyArr = Object.keys(this.listObj)
-      for (let i = 0, len = objKeyArr.length; i < len; i++) {
-        if (this.listObj[objKeyArr[i]].uid === uid) {
-          this.listObj[objKeyArr[i]].url = response.files.file
-          this.listObj[objKeyArr[i]].hasSuccess = true
-          return
+      const code = response.code
+
+      if ([0, 50905].includes(code)) {
+        this.$message({
+          type: 'success',
+          message: '上传成功'
+        })
+        const uid = file.uid
+        const objKeyArr = Object.keys(this.listObj)
+        for (let i = 0, len = objKeyArr.length; i < len; i++) {
+          if (this.listObj[objKeyArr[i]].uid === uid) {
+            this.listObj[objKeyArr[i]].url = response.data.detail.link
+            this.listObj[objKeyArr[i]].hasSuccess = true
+            return
+          }
         }
+      } else {
+        this.$refs.upload.clearFiles()
+        this.$message({
+          dangerouslyUseHTMLString: true,
+          type: 'error',
+          message: response.msg || '上传失败'
+        })
       }
     },
     handleRemove(file) {
@@ -91,7 +122,7 @@ export default {
       return new Promise((resolve, reject) => {
         const img = new Image()
         img.src = _URL.createObjectURL(file)
-        img.onload = function() {
+        img.onload = function () {
           _self.listObj[fileName] = { hasSuccess: false, uid: file.uid, width: this.width, height: this.height }
         }
         resolve(true)
@@ -104,8 +135,15 @@ export default {
 <style lang="scss" scoped>
 .editor-slide-upload {
   margin-bottom: 20px;
+
   ::v-deep .el-upload--picture-card {
     width: 100%;
+    border: unset;
+  }
+
+  ::v-deep .el-upload-dragger {
+    width: 100%;
+    height: unset;
   }
 }
 </style>

@@ -34,10 +34,18 @@ export default {
         {
           name: '图片',
           field: 'image',
-          opts: { required: true, control: 'attachment', name: 'link', pk: 'url', query: { category: 'image' }, format: 'image' },
+          opts: {
+            required: true,
+            control: 'attachment',
+            name: 'link',
+            pk: 'url',
+            query: { category: 'image' },
+            format: 'image'
+          },
           type: 'select_table'
         },
         { name: '链接', field: 'link', opts: { required: true, maxlength: 255 } },
+        // { name: '内容', field: 'content', opts: { required: true, maxlength: 255 }, type: 'editor' },
         {
           name: '运营商',
           field: 'agent_id',

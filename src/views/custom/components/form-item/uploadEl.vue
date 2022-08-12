@@ -31,8 +31,8 @@
 <script>
 import formItemMixin from './form-item-mixin'
 import { getToken } from '@/utils/auth'
+import CONFIG from '@/utils/config'
 
-const base = process.env.VUE_APP_BASE_API
 export default {
   name: 'UploadEl',
   alias: '上传',
@@ -48,7 +48,7 @@ export default {
       },
 
       opts: {
-        action: base + 'v1/attachment',
+        action: CONFIG.upload_url,
         headers: {},
         data: {},
         multiple: false,

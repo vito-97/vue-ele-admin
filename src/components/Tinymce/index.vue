@@ -1,8 +1,9 @@
 <template>
   <div :class="{fullscreen:fullscreen}" class="tinymce-container" :style="{width:containerWidth}">
-    <textarea :id="tinymceId" class="tinymce-textarea" />
+    <textarea :id="tinymceId" class="tinymce-textarea"/>
     <div class="editor-custom-btn-container">
-      <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK" />
+      <select-table :detail="{}" :form-data="{}" :column="column" @event="onEvent" class="mr10"></select-table>
+      <editorImage class="editor-upload-btn" @successCBK="imageSuccessCBK"/>
     </div>
   </div>
 </template>
@@ -16,17 +17,22 @@ import editorImage from './components/EditorImage'
 import plugins from './plugins'
 import toolbar from './toolbar'
 import load from './dynamicLoadScript'
+import selectTable from '@/views/custom/components/form-item/selectTableEl'
+import { upload } from '@/api/upload'
+import CONFIG from '@/utils/config'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
-const tinymceCDN = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
+// const tinymceCDN = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
+// const tinymceCDN = 'https://cdn.staticfile.org/tinymce/4.9.3/tinymce.min.js'
+const tinymceCDN = '/static/tinymce/tinymce.min.js'
 
 export default {
   name: 'Tinymce',
-  components: { editorImage },
+  components: { editorImage, selectTable },
   props: {
     id: {
       type: String,
-      default: function() {
+      default: function () {
         return 'vue-tinymce-' + +new Date() + ((Math.random() * 1000).toFixed(0) + '')
       }
     },
@@ -42,18 +48,26 @@ export default {
       }
     },
     menubar: {
-      type: String,
+      type: [String, Boolean],
       default: 'file edit insert view format table'
     },
     height: {
       type: [Number, String],
       required: false,
-      default: 360
+      default: 500
     },
     width: {
       type: [Number, String],
       required: false,
       default: 'auto'
+    },
+    lang: {
+      type: String,
+      default: 'zh'
+    },
+    // 只读
+    readonly: {
+      type: Boolean
     }
   },
   data() {
@@ -62,6 +76,21 @@ export default {
       hasInit: false,
       tinymceId: this.id,
       fullscreen: false,
+      column: {
+        name: '附件',
+        field: 'file',
+        opts: {
+          required: true,
+          control: 'attachment',
+          name: 'name',
+          key: 'link',
+          btn_text: '附件',
+          btn_size: 'mini',
+          btn_icon: 'el-icon-paperclip'
+        },
+        type: 'select_table',
+        edit_opts: { disabled: false }
+      },
       languageTypeList: {
         'en': 'en',
         'zh': 'zh_CN',
@@ -77,6 +106,9 @@ export default {
         return `${width}px`
       }
       return width
+    },
+    editor() {
+      return window.tinymce.get(this.tinymceId)
     }
   },
   watch: {
@@ -116,22 +148,28 @@ export default {
       const _this = this
       window.tinymce.init({
         selector: `#${this.tinymceId}`,
-        language: this.languageTypeList['en'],
+        content_style: 'img {max-width:100%;}',
+        language: this.languageTypeList[this.lang] || this.languageTypeList['zh'],
         height: this.height,
         body_class: 'panel-body ',
         object_resizing: false,
+        // statusbar: false,
         toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
         menubar: this.menubar,
         plugins: plugins,
+        readonly: this.readonly,
         end_container_on_empty_block: true,
         powerpaste_word_import: 'clean',
         code_dialog_height: 450,
         code_dialog_width: 1000,
         advlist_bullet_styles: 'square',
         advlist_number_styles: 'default',
-        imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
+        // 图片跨域
+        imagetools_cors_hosts: [process.env.VUE_APP_BASE_HOST],
         default_link_target: '_blank',
         link_title: false,
+        // 媒体实时预览开关
+        media_live_embeds: true,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
         init_instance_callback: editor => {
           if (_this.value) {
@@ -143,10 +181,12 @@ export default {
             this.$emit('input', editor.getContent())
           })
         },
-        setup(editor) {
+        setup: editor => {
           editor.on('FullscreenStateChanged', (e) => {
             _this.fullscreen = e.state
           })
+
+          editor.on('paste', this.onPaste)
         },
         // it will try to keep these URLs intact
         // https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
@@ -204,13 +244,89 @@ export default {
       window.tinymce.get(this.tinymceId).getContent()
     },
     imageSuccessCBK(arr) {
-      arr.forEach(v => window.tinymce.get(this.tinymceId).insertContent(`<img class="wscnph" src="${v.url}" >`))
+      arr.forEach(v => {
+        // window.tinymce.get(this.tinymceId).insertContent(`<img class="wscnph" src="${v.url}" />`)
+        this.editor.selection.setContent(this.editor.dom.createHTML('img', { src: v.url }))
+      })
+    },
+    onPaste(e) {
+      console.log('paste', e)
+      const items = (e.clipboardData || window.clipboardData).items
+      const mimes = Object.values(CONFIG.allow_upload_type)
+      let len = items.length
+      for (let i = 0; i < len; i++) {
+        const item = items[i]
+        /* console.log('file', item, item.getAsString(function (s) {
+          console.log(s)
+        })) */
+        if (item.kind === 'file') {
+          console.log('file', item)
+          if (mimes.includes(item.type)) {
+            e.preventDefault()
+            let file = item.getAsFile() // 获取⽂件数据
+            // let blob = new Blob([file], { type: file.type }) // 实例化⼀个blob 将图⽚⼤⼩以及类型初始化到blob⾥
+            this.uploadFile(file)
+          } else {
+            let file = item.getAsFile() // 获取⽂件数据
+            console.log(file)
+            this.$message.error(`${file.name}不支持上传`)
+          }
+        }
+      }
+      console.log(items)
+    },
+    /**
+     * 上传文件
+     * @param file
+     * @returns {Promise<void>}
+     */
+    uploadFile(file) {
+      return upload(file).then(res => {
+        this.onEvent({
+          field: 'file',
+          type: 'select',
+          payload: {
+            row: res.data.detail
+          }
+        })
+      }).catch((err) => {
+        // console.log(err)
+        // 上传错误可⾃⾏给出提⽰
+        if (err.message) {
+          this.$message.error(err.message)
+        }
+      })
+    },
+    // 监听事件
+    onEvent(e) {
+      // 选择事件
+      if (e.field === 'file' && e.type === 'select') {
+        var row = e.payload.row
+        console.log(row)
+        var type = row.category
+        // 图片
+        if (type === 'image') {
+          this.editor.selection.setContent(this.editor.dom.createHTML('img', { src: row.link }))
+          // 视频
+        } else if (type === 'video') {
+          let html = '<video controls="controls" src="' + row.link + '"' + '>\n' + '</video>'
+          this.editor.selection.setContent(html)
+        } else if (type === 'mp3') {
+          let html = '<audio controls="controls" src="' + row.link + '"' + '>\n' + '</audio>'
+          this.editor.selection.setContent(html)
+        } else {
+          this.editor.selection.setContent(`<a href="${row.link}" target="_blank" rel="noopener">${row.name}</a>`)
+        }
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.mr10{
+  margin-right: 10px;
+}
 .tinymce-container {
   position: relative;
   line-height: normal;
@@ -230,14 +346,18 @@ export default {
 }
 
 .editor-custom-btn-container {
+  display: flex;
+  align-items: center;
   position: absolute;
-  right: 4px;
-  top: 4px;
+  right: 5px;
+  top: 5px;
+  z-index: 10000;
+
   /*z-index: 2005;*/
 }
 
 .fullscreen .editor-custom-btn-container {
-  z-index: 10000;
+  //z-index: 10000;
   position: fixed;
 }
 

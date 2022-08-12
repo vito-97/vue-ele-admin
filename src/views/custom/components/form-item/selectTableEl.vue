@@ -3,9 +3,21 @@
     <template v-if="control">
       <div class="form-item">
         <template v-if="isFormat('image')">
-          <input-el :detail="detail" :form-data="formData" :column="column" :mode="mode" :attr="{clearable:true}" class="item"></input-el>
+          <input-el
+            :detail="detail"
+            :form-data="formData"
+            :column="column"
+            :mode="mode"
+            :attr="{clearable:true}"
+            class="item"></input-el>
         </template>
-        <el-button class="select-btn" type="primary" size="small" @click="onClickChoose" :disabled="disabled">
+        <el-button
+          class="select-btn"
+          type="primary"
+          :icon="opt.btn_icon"
+          :size="opt.btn_size"
+          @click="onClickChoose"
+          :disabled="disabled">
           {{ btnText }}
         </el-button>
       </div>
@@ -107,6 +119,8 @@ export default {
         control: '',
         multiple: false,
         btn_text: '选择',
+        btn_size: 'small',
+        btn_icon: '',
         title: '选择%s',
         name: '', // 展示的名称
         pk: 'id', // 主键
@@ -139,6 +153,7 @@ export default {
     onSelect({ row, index }) {
       this.$set(this.formData, this.field, row[this.opt.pk])
       this.$set(this.detail, this.key, row)
+      this.triggerEvent('select', { value: row[this.opt.pk], row })
       this.visible = false
     },
     // 多选
@@ -157,9 +172,12 @@ export default {
   .form-item {
     display: flex;
     align-items: center;
-    .item{
+    position: relative;
+    width: 100%;
+    .item {
       margin-right: 10px;
     }
+
     //align-items: flex-start;
   }
 

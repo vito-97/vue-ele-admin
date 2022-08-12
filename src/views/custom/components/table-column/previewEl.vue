@@ -7,7 +7,7 @@
       <div class="tip">
         <el-link target="_blank" :href="val" :underline="false">
           <div class="other-type">
-            <img src="/images/file.png" alt="">
+            <img src="/static/images/file.png" alt="">
             <div class="ext">{{ ext.toUpperCase() }}</div>
           </div>
         </el-link>
