@@ -7,7 +7,7 @@
         size="mini"
         class="mr10"
         type="primary"
-        title="将编辑器里面外部图片上传至服务器"
+        :title="`将编辑器里${otherImage.length}张外部图片上传至服务器`"
         icon="el-icon-document-copy"
         @click="onClickTransformImage"
       >
@@ -94,7 +94,7 @@ export default {
       hasInit: false,
       tinymceId: this.id,
       fullscreen: false,
-      imagePattern: `<img[\\s\\S]*?src=['"]((?!https?://${process.env.VUE_APP_BASE_HOST}.*?).*?)['"](?:\\s\\S*?alt=['"]([\\s\\S]*?)['"])?`,
+      imagePattern: `<img[\\s\\S]*?src=['"]((?!https?://${process.env.VUE_APP_BASE_HOST}.*?).*?)['"](?:[\\s\\S]*?alt=['"]([\\s\\S]*?)['"])?`,
       column: {
         name: '附件',
         field: 'file',
@@ -129,6 +129,7 @@ export default {
     },
     // 是否存在外部图片
     hasOtherImage() {
+      // img:not([data-mce-object],[data-mce-placeholder])
       let value = this.value
       let reg = new RegExp(this.imagePattern, 'g')
 
@@ -365,7 +366,10 @@ export default {
      */
     async onClickTransformImage() {
       console.log('trans')
+
       let images = this.otherImage
+
+      this.editor.execCommand('mceMedia')
 
       for (var i in images) {
         let image = images[i]
@@ -412,10 +416,12 @@ export default {
             html = `<p><img src="${row.link}" alt="${row.name}"/></p>`
             // 视频
           } else if (type === 'video') {
-            html = `<p><video controls="controls" src="${row.link}"></video></p>`
+            html = `<p><span contenteditable="false" data-mce-object="video" class="mce-preview-object mce-object-video" data-mce-p-controls="controls" data-mce-html="%0A%3Csource%20src%3D%22${encodeURIComponent(row.link)}%22%20type%3D%22video/mp4%22%20/%3E"><video width="300" height="150" controls="controls" src="${row.link}"></video></span></p>`
             // MP3
           } else if (type === 'mp3') {
-            html = `<p><audio controls="controls" src="${row.link}"></audio></p>`
+            html = `<p><span class="mce-preview-object mce-object-audio" contenteditable="false" data-mce-object="audio"
+                  data-mce-p-src="${row.link}"
+                  data-mce-p-controls="controls"><audio controls="controls" src="${row.link}"></audio></span></p>`
             // 其他内容设置为链接
           } else {
             html = `<p><a href="${row.link}" target="_blank" rel="noopener">${row.name}</a></p>`
