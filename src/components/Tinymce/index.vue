@@ -14,12 +14,12 @@
         转换图片
       </el-button>
       <select-table
-:detail="{}"
-:form-data="{}"
-:column="column"
-@event="onEvent"
-class="mr10"
-                    title="选择附件"></select-table>
+        :detail="{}"
+        :form-data="{}"
+        :column="column"
+        @event="onEvent"
+        class="mr10"
+        title="选择附件"></select-table>
       <editorImage class="editor-upload-btn" @successCBK="imageSuccessCBK" title="上传图片"/>
     </div>
   </div>
@@ -295,13 +295,13 @@ export default {
       })
     },
     onPaste(e) {
-      console.log('paste', e)
+      // console.log('paste', e)
       const items = (e.clipboardData || window.clipboardData).items
       const mimes = Object.values(CONFIG.allow_upload_type)
       let len = items.length
       for (let i = 0; i < len; i++) {
         const item = items[i]
-        console.log('item', item)
+        // console.log('item', item)
         if (item.kind === 'file') {
           console.log('file', item)
           if (mimes.includes(item.type)) {
@@ -316,9 +316,9 @@ export default {
           }
         } else if (item.kind === 'string') {
           if (item.type === 'text/html') {
-            item.getAsString(function (s) {
+            /* item.getAsString(function (s) {
               console.log(s)
-            })
+            }) */
           }
         }
       }
@@ -330,12 +330,16 @@ export default {
      * @param append 是否将资源加入进去
      * @returns {Promise<void>}
      */
-    uploadFile(file, append = true) {
-      showLoading('上传中...')
+    uploadFile(file, opts = {}) {
+      opts = Object.assign({
+        msg: '上传中...',
+        append: true
+      }, opts)
+      showLoading(opts.msg)
       return upload(file).then(res => {
         hideLoading()
         let detail = res.data.detail
-        if (append) {
+        if (opts.append) {
           this.onEvent({
             field: 'file',
             type: 'select',
@@ -373,8 +377,11 @@ export default {
         }
 
         let file = base64ToFile(base64 || image.src, (image.name || '图片') + '.png')
-
-        await this.uploadFile(file, false).then(detail => {
+        let n = Number(i) + 1
+        await this.uploadFile(file, {
+          msg: `正在上传第${n}张图片`,
+          append: false
+        }).then(detail => {
           image.url = detail.link
         })
       }
