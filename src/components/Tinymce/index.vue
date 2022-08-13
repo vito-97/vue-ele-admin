@@ -369,8 +369,6 @@ export default {
 
       let images = this.otherImage
 
-      this.editor.execCommand('mceMedia')
-
       for (var i in images) {
         let image = images[i]
         var base64
