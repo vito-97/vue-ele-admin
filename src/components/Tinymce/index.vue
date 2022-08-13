@@ -2,8 +2,25 @@
   <div :class="{fullscreen:fullscreen}" class="tinymce-container" :style="{width:containerWidth}">
     <textarea :id="tinymceId" class="tinymce-textarea"/>
     <div class="editor-custom-btn-container">
-      <select-table :detail="{}" :form-data="{}" :column="column" @event="onEvent" class="mr10"></select-table>
-      <editorImage class="editor-upload-btn" @successCBK="imageSuccessCBK"/>
+      <el-button
+        v-show="hasOtherImage"
+        size="mini"
+        class="mr10"
+        type="primary"
+        title="将编辑器里面外部图片上传至服务器"
+        icon="el-icon-document-copy"
+        @click="onClickTransformImage"
+      >
+        转换图片
+      </el-button>
+      <select-table
+:detail="{}"
+:form-data="{}"
+:column="column"
+@event="onEvent"
+class="mr10"
+                    title="选择附件"></select-table>
+      <editorImage class="editor-upload-btn" @successCBK="imageSuccessCBK" title="上传图片"/>
     </div>
   </div>
 </template>
@@ -18,9 +35,9 @@ import plugins from './plugins'
 import toolbar from './toolbar'
 import load from './dynamicLoadScript'
 import selectTable from '@/views/custom/components/form-item/selectTableEl'
-import { upload } from '@/api/upload'
+import { base64ToFile, upload, urlToBase64 } from '@/api/upload'
 import CONFIG from '@/utils/config'
-import { showLoading, hideLoading } from '@/utils'
+import { hideLoading, showLoading } from '@/utils'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
 // const tinymceCDN = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
@@ -77,6 +94,7 @@ export default {
       hasInit: false,
       tinymceId: this.id,
       fullscreen: false,
+      imagePattern: `<img[\\s\\S]*?src=['"]((?!https?://${process.env.VUE_APP_BASE_HOST}.*?).*?)['"](?:\\s\\S*?alt=['"]([\\s\\S]*?)['"])?`,
       column: {
         name: '附件',
         field: 'file',
@@ -108,6 +126,28 @@ export default {
         return `${width}px`
       }
       return width
+    },
+    // 是否存在外部图片
+    hasOtherImage() {
+      let value = this.value
+      let reg = new RegExp(this.imagePattern, 'g')
+
+      return reg.test(value)
+    },
+    // 获取外部图片的资源
+    otherImage() {
+      let value = this.value
+      let reg = new RegExp(this.imagePattern, 'g')
+      let source = []
+      var res
+      while ((res = reg.exec(value))) {
+        source.push({
+          src: res[1],
+          name: res[2] || ''
+        })
+      }
+
+      return source
     },
     editor() {
       return window.tinymce.get(this.tinymceId)
@@ -153,7 +193,7 @@ export default {
         content_style: 'img {max-width:100%;}',
         language: this.languageTypeList[this.lang] || this.languageTypeList['zh'],
         height: this.height,
-        body_class: 'panel-body ',
+        body_class: 'panel-body',
         object_resizing: false,
         // statusbar: false,
         toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
@@ -261,9 +301,7 @@ export default {
       let len = items.length
       for (let i = 0; i < len; i++) {
         const item = items[i]
-        /* console.log('file', item, item.getAsString(function (s) {
-          console.log(s)
-        })) */
+        console.log('item', item)
         if (item.kind === 'file') {
           console.log('file', item)
           if (mimes.includes(item.type)) {
@@ -276,6 +314,12 @@ export default {
             console.log(file)
             this.$message.error(`${file.name}不支持上传`)
           }
+        } else if (item.kind === 'string') {
+          if (item.type === 'text/html') {
+            item.getAsString(function (s) {
+              console.log(s)
+            })
+          }
         }
       }
       console.log(items)
@@ -283,19 +327,25 @@ export default {
     /**
      * 上传文件
      * @param file
+     * @param append 是否将资源加入进去
      * @returns {Promise<void>}
      */
-    uploadFile(file) {
+    uploadFile(file, append = true) {
       showLoading('上传中...')
       return upload(file).then(res => {
         hideLoading()
-        this.onEvent({
-          field: 'file',
-          type: 'select',
-          payload: {
-            row: res.data.detail
-          }
-        })
+        let detail = res.data.detail
+        if (append) {
+          this.onEvent({
+            field: 'file',
+            type: 'select',
+            payload: {
+              row: detail
+            }
+          })
+        }
+
+        return detail
       }).catch((err) => {
         hideLoading()
         // console.log(err)
@@ -304,6 +354,42 @@ export default {
           this.$message.error(err.message)
         }
       })
+    },
+    /**
+     * 更新外部图片
+     * @returns {Promise<void>}
+     */
+    async onClickTransformImage() {
+      console.log('trans')
+      let images = this.otherImage
+
+      for (var i in images) {
+        let image = images[i]
+        var base64
+        // 不是base64
+        if (!image.src.includes(';base64,')) {
+          base64 = await urlToBase64(image.src)
+          images[i].base64 = base64
+        }
+
+        let file = base64ToFile(base64 || image.src, (image.name || '图片') + '.png')
+
+        await this.uploadFile(file, false).then(detail => {
+          image.url = detail.link
+        })
+      }
+      var value = this.value
+
+      for (var image of images) {
+        if (image.url) {
+          value = value.replaceAll(`src="${image.src}"`, `src="${image.url}"`)
+        }
+      }
+
+      // 不会更新编辑器内容
+      // this.$emit('input', value)
+
+      this.editor.setContent(value)
     },
     // 监听事件
     onEvent(e) {
@@ -316,7 +402,7 @@ export default {
           var html = ''
           // 图片
           if (type === 'image') {
-            html = `<p><img src="${row.link}" /></p>`
+            html = `<p><img src="${row.link}" alt="${row.name}"/></p>`
             // 视频
           } else if (type === 'video') {
             html = `<p><video controls="controls" src="${row.link}"></video></p>`
