@@ -210,7 +210,7 @@ export default {
         // 图片跨域
         imagetools_cors_hosts: [process.env.VUE_APP_BASE_HOST],
         default_link_target: '_blank',
-        link_title: false,
+        link_title: true,
         // 媒体实时预览开关
         media_live_embeds: true,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
