@@ -458,3 +458,13 @@ export function isSuperAdmin(role) {
 export function isPositiveInteger(n) {
   return (/(^[1-9]\d*$)/.test(n))
 }
+
+// 判断当前设备是否为移动端
+export function isMobile() {
+  const ua = navigator.userAgent.toLowerCase()
+  const t1 = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
+    ua
+  )
+  const t2 = !ua.match('iphone') && navigator.maxTouchPoints > 1
+  return t1 || t2
+}

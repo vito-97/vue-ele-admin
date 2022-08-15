@@ -1,7 +1,7 @@
 <template>
   <div :class="{fullscreen:fullscreen}" class="tinymce-container" :style="{width:containerWidth}">
     <textarea :id="tinymceId" class="tinymce-textarea"/>
-    <div class="editor-custom-btn-container">
+    <div class="editor-custom-btn-container hidden-xs-only" v-show="hasInit">
       <el-button
         v-show="hasOtherImage"
         size="mini"
@@ -19,8 +19,11 @@
         :column="column"
         @event="onEvent"
         class="mr10"
-        title="选择附件"></select-table>
-      <editorImage class="editor-upload-btn" @successCBK="imageSuccessCBK" title="上传图片"/>
+        title="选择附件"
+        ref="attachment"
+      >
+      </select-table>
+      <editorImage class="editor-upload-btn" @successCBK="imageSuccessCBK" title="上传图片" ref="editorImage"/>
     </div>
   </div>
 </template>
@@ -40,9 +43,9 @@ import CONFIG from '@/utils/config'
 import { hideLoading, showLoading } from '@/utils'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
-// const tinymceCDN = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
 // const tinymceCDN = 'https://cdn.staticfile.org/tinymce/4.9.3/tinymce.min.js'
 const tinymceCDN = '/static/tinymce/tinymce.min.js'
+const codeHighLight = '/static/tinymce/plugins/becodesample/highlight/highlight.min.js'
 
 export default {
   name: 'Tinymce',
@@ -66,8 +69,7 @@ export default {
       }
     },
     menubar: {
-      type: [String, Boolean],
-      default: 'file edit insert view format table'
+      type: [String, Boolean]
     },
     height: {
       type: [Number, String],
@@ -86,6 +88,10 @@ export default {
     // 只读
     readonly: {
       type: Boolean
+    },
+    // 内容提示
+    placeholder: {
+      type: String
     }
   },
   data() {
@@ -94,7 +100,7 @@ export default {
       hasInit: false,
       tinymceId: this.id,
       fullscreen: false,
-      imagePattern: `<img[\\s\\S]*?src=['"]((?!https?://${process.env.VUE_APP_BASE_HOST}.*?).*?)['"](?:[\\s\\S]*?alt=['"]([\\s\\S]*?)['"])?`,
+      imagePattern: `<img[\\s\\S]*?src=['"]((?!https?://${process.env.VUE_APP_BASE_HOST}.*?).*?)['"](?:(?!data-mce-(?:object|placeholder))[\\s\\S]*?alt=['"]([\\s\\S]*?)['"])?`,
       column: {
         name: '附件',
         field: 'file',
@@ -142,11 +148,14 @@ export default {
       let source = []
       var res
       while ((res = reg.exec(value))) {
+        console.log(res)
         source.push({
           src: res[1],
           name: res[2] || ''
         })
       }
+
+      console.log('image source', source)
 
       return source
     },
@@ -186,6 +195,13 @@ export default {
         }
         this.initTinymce()
       })
+      // 加载代码高亮
+      load(codeHighLight, (err) => {
+        if (err) {
+          this.$message.error(err.message)
+          return
+        }
+      })
     },
     initTinymce() {
       const _this = this
@@ -195,10 +211,11 @@ export default {
         language: this.languageTypeList[this.lang] || this.languageTypeList['zh'],
         height: this.height,
         body_class: 'panel-body',
-        object_resizing: false,
+        // 开关图片、表格、媒体对象在编辑区内的调整大小工具。拖拽工具可调整对象大小。
+        // object_resizing: false,
         // statusbar: false,
         toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
-        menubar: this.menubar,
+        menubar: this.menubar || 'file edit insert view format table',
         plugins: plugins,
         readonly: this.readonly,
         end_container_on_empty_block: true,
@@ -214,6 +231,12 @@ export default {
         // 媒体实时预览开关
         media_live_embeds: true,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
+        content_css: '/static/tinymce/plugins/becodesample/highlight/styles/atom-one-light.css',
+        // 右下角技术支持
+        branding: false,
+        placeholder: this.placeholder,
+        toolbar_mode: 'wrap',
+        // custom_elements: 'style,html,head,body,title,meta',
         init_instance_callback: editor => {
           if (_this.value) {
             editor.setContent(_this.value)
@@ -230,6 +253,10 @@ export default {
           })
 
           editor.on('paste', this.onPaste)
+
+          editor.on('attachment', this.$refs.attachment.open)
+          editor.on('upload-image', this.$refs.editorImage.open)
+          editor.on('transform-image', this.onClickTransformImage)
         },
         // it will try to keep these URLs intact
         // https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
@@ -439,6 +466,9 @@ export default {
           }
         }
       }
+    },
+    onSelectAttachment() {
+
     }
   }
 }

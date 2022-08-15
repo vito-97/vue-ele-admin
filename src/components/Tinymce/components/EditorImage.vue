@@ -4,7 +4,7 @@
       icon="el-icon-upload"
       size="mini"
       type="primary"
-      @click=" dialogVisible=true">
+      @click="open">
       上传
     </el-button>
     <el-dialog :visible.sync="dialogVisible" :append-to-body="true">
@@ -25,10 +25,10 @@
         ref="upload"
       >
         <el-button size="small" type="primary">
-          点击上传
+          点击上传或拖拽至此
         </el-button>
       </el-upload>
-      <el-button @click="dialogVisible = false">
+      <el-button @click="close">
         取消
       </el-button>
       <el-button type="primary" @click="handleSubmit">
@@ -64,6 +64,12 @@ export default {
     }
   },
   methods: {
+    open() {
+      this.dialogVisible = true
+    },
+    close() {
+      this.dialogVisible = false
+    },
     checkAllSuccess() {
       return Object.keys(this.listObj).every(item => this.listObj[item].hasSuccess)
     },

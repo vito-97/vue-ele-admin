@@ -8,6 +8,7 @@
       :toolbar="opt.toolbar"
       :menubar="opt.menubar"
       :readonly="opt.readonly"
+      :placeholder="col.placeholder"
     >
     </tinymce>
   </div>

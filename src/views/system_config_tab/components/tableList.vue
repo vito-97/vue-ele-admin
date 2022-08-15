@@ -36,7 +36,7 @@
         >
           <span slot="label"><i :class="item.icon" v-if="item.icon"></i> {{ item.name }}</span>
           <template v-if="item.children && item.children.length">
-            <el-tabs tabPosition="left">
+            <el-tabs :tabPosition="isMobile ? 'top' : 'left'">
               <template v-for="(child,idx) in item.children">
                 <el-tab-pane
                   v-if="child.status"
@@ -76,6 +76,7 @@
 <script>
 import tableMixin from '@/utils/mixin/custom-table'
 import systemConfigForm from '@/views/system_config_tab/components/systemConfigForm'
+import { isMobile } from '@/utils'
 
 export default {
   data() {
@@ -86,7 +87,8 @@ export default {
         { name: '排序', field: 'sort', width: 100 },
         { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         { name: '添加时间', field: 'create_time', width: 150 }
-      ]
+      ],
+      isMobile: isMobile()
     }
   },
   components: {

@@ -133,9 +133,15 @@ export default {
   },
   methods: {
     onClickChoose() {
+      this.open()
+    },
+    open() {
       if (!this.disabled) {
         this.visible = true
       }
+    },
+    close() {
+      this.visible = false
     },
     onOpen() {
 
