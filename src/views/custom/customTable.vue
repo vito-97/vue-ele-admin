@@ -1,63 +1,69 @@
 <template>
   <div v-if="hasCurdAuth('index')" style="width: 100%;height: 100%;">
     <div class="curd-box">
-      <el-button-group>
-        <!--        默认控制按钮之前-->
-        <slot name="before-head-button" :selection="selection"></slot>
-        <template v-for="(btn) in headBtns">
-          <el-button
-            :type="btn.type"
-            :icon="btn.icon"
-            :disabled="btn.selected && !selection.length"
-            size="mini"
-            v-if="!headBtnDisabled(btn) && (!btn.auth || checkAuth(btn.auth))"
-            @click="onTapHeadBtn(btn)"
-            :key="btn.key"
-          >
-            {{ btn.name }}
-          </el-button>
-        </template>
-        <!--        默认控制按钮之后-->
-        <slot name="after-head-button" :selection="selection"></slot>
-      </el-button-group>
-      <div class="search-group-box" v-if="searchable && hasCurdAuth('index')">
-        <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
-          <el-form-item class="mb0">
-            <el-input
-              v-model="keyword"
-              :placeholder="searchPlaceholder"
-              name="keyword"
-              :clearable="true"
-              @input="onKwInput">
-            </el-input>
-          </el-form-item>
-          <el-form-item class="mb0">
-            <el-button type="primary" icon="el-icon-search" @click="onSearch">
-              {{ searchBtnText }}
-            </el-button>
-          </el-form-item>
-        </el-form>
-        <!--        控制列的显示与隐藏-->
-        <div v-if="!hideColumnsControl">
-          <el-popover
-            placement="bottom"
-            width="200"
-            trigger="click">
-            <div>
-              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAllColumns" @change="showAllColumns">全选
-              </el-checkbox>
-            </div>
-            <el-checkbox-group v-model="showColumns" @change="onChangeShowColumns">
-              <template v-for="(it,i) in columnLabels">
-                <div :key="i">
-                  <el-checkbox :label="i">{{ it }}</el-checkbox>
+      <el-row :gutter="15">
+        <el-col :span="12" :xs="24">
+          <el-button-group size="mini" class="btn-group-box">
+            <!--        默认控制按钮之前-->
+            <slot name="before-head-button" :selection="selection"></slot>
+            <template v-for="(btn) in headBtns">
+              <el-button
+                :type="btn.type"
+                :icon="btn.icon"
+                :disabled="btn.selected && !selection.length"
+                size="mini"
+                v-if="!headBtnDisabled(btn) && (!btn.auth || checkAuth(btn.auth))"
+                @click="onTapHeadBtn(btn)"
+                :key="btn.key"
+              >
+                {{ btn.name }}
+              </el-button>
+            </template>
+            <!--        默认控制按钮之后-->
+            <slot name="after-head-button" :selection="selection"></slot>
+          </el-button-group>
+        </el-col>
+        <el-col :span="12" :xs="24">
+          <div class="search-group-box" v-if="searchable && hasCurdAuth('index')">
+            <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
+              <el-form-item class="mb0">
+                <el-input
+                  v-model="keyword"
+                  :placeholder="searchPlaceholder"
+                  name="keyword"
+                  :clearable="true"
+                  @input="onKwInput">
+                </el-input>
+              </el-form-item>
+              <el-form-item class="mb0">
+                <el-button type="primary" icon="el-icon-search" @click="onSearch">
+                  {{ searchBtnText }}
+                </el-button>
+              </el-form-item>
+            </el-form>
+            <!--        控制列的显示与隐藏-->
+            <div v-if="!hideColumnsControl">
+              <el-popover
+                placement="bottom"
+                width="200"
+                trigger="click">
+                <div>
+                  <el-checkbox :indeterminate="isIndeterminate" v-model="checkAllColumns" @change="showAllColumns">全选
+                  </el-checkbox>
                 </div>
-              </template>
-            </el-checkbox-group>
-            <el-button type="primary" icon="el-icon-s-operation" size="mini" plain slot="reference"></el-button>
-          </el-popover>
-        </div>
-      </div>
+                <el-checkbox-group v-model="showColumns" @change="onChangeShowColumns">
+                  <template v-for="(it,i) in columnLabels">
+                    <div :key="i">
+                      <el-checkbox :label="i">{{ it }}</el-checkbox>
+                    </div>
+                  </template>
+                </el-checkbox-group>
+                <el-button type="primary" icon="el-icon-s-operation" size="mini" plain slot="reference"></el-button>
+              </el-popover>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
     <slot name="content" :column="cols">
       <el-table
@@ -172,7 +178,7 @@
 
         <!--      操作列-->
         <el-table-column
-          fixed="right"
+          :fixed="isMobile ? false : 'right'"
           :label="rowBtnColumn.name"
           :width="rowBtnColumn.width"
           key="control"
@@ -211,6 +217,9 @@
           :page-sizes="pageSizes"
           :limit="limit"
           :auto-scroll="true"
+          :small="isMobile"
+          :pager-count="pagerCount"
+          :layout="pageLayout"
           @pagination="onPaginationChange"/>
       </div>
     </slot>
@@ -520,6 +529,18 @@ export default {
         }*/
   },
   computed: {
+    pageLayout() {
+      let isMobile = this.isMobile
+
+      let arr = [
+        !isMobile && 'total', 'sizes', 'prev', 'pager', 'next', !isMobile && 'jumper'
+      ]
+
+      return arr.filter(v => v).join(',')
+    },
+    pagerCount() {
+      return this.isMobile ? 5 : 11
+    },
     useQuery() {
       return this.mode === 'show'
     },
@@ -1246,11 +1267,12 @@ export default {
 }
 
 .curd-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  /*  display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;*/
+
   margin-bottom: 30px;
-  background: #fff;
 
   /*  position: sticky;
     top: 1px;
@@ -1258,8 +1280,26 @@ export default {
 
   .search-group-box {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
+  }
+}
+
+// 手机端
+@media screen and (max-width: 768px) {
+  .curd-box {
+    .btn-group-box {
+      margin-bottom: 10px;
+    }
+
+    .search-group-box {
+      justify-content: flex-start;
+    }
+  }
+
+  .page-box ::v-deep .pagination-container {
+    padding: 20px 10px;
+    margin-top: 20px;
   }
 }
 

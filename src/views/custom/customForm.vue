@@ -8,7 +8,7 @@
       class="detail-form-dialog"
       @close="onClose"
       :close-on-click-modal="false"
-      width="70%"
+      :width="width"
       :append-to-body="appendToBody"
       @open="onOpen">
       <el-form
@@ -303,6 +303,9 @@ export default {
     }
   },
   computed: {
+    width() {
+      return this.isMobile ? '95%' : '70%'
+    },
     title() {
       return this.isEdit ? (this.editTitle || '编辑') : (this.addTitle || '添加')
     },

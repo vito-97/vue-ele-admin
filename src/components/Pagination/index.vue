@@ -6,7 +6,9 @@
       :page-size.sync="pageSize"
       :layout="layout"
       :page-sizes="pageSizes"
+      :pager-count="pagerCount"
       :total="total"
+      :small="small"
       v-bind="$attrs"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -53,6 +55,13 @@ export default {
     hidden: {
       type: Boolean,
       default: false
+    },
+    small: {
+      type: Boolean
+    },
+    pagerCount: {
+      type: Number,
+      default: 11
     }
   },
   computed: {
@@ -95,6 +104,7 @@ export default {
   background: #fff;
   padding: 32px 16px;
 }
+
 .pagination-container.hidden {
   display: none;
 }

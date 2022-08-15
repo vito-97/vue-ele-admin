@@ -28,7 +28,7 @@
         @close="onClose"
         @open="onOpen"
         :modal="true"
-        width="60%"
+        :width="width"
         top="10vh"
         append-to-body
       >
@@ -110,6 +110,9 @@ export default {
     },
     btnText() {
       return this.getText(this.opt.btn_text)
+    },
+    width() {
+      return this.isMobile ? '95%' : '60%'
     }
   },
   data() {

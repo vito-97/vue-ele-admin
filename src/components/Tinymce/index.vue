@@ -95,12 +95,16 @@ export default {
     }
   },
   data() {
+    // 允许图片存放的域名
+    const serverHost = process.env.VUE_APP_BASE_HOST
     return {
       hasChange: false,
       hasInit: false,
       tinymceId: this.id,
       fullscreen: false,
-      imagePattern: `<img[\\s\\S]*?src=['"]((?!https?://${process.env.VUE_APP_BASE_HOST}.*?).*?)['"](?:(?!data-mce-(?:object|placeholder))[\\s\\S]*?alt=['"]([\\s\\S]*?)['"])?`,
+      serverHost: serverHost,
+      // 匹配外部图片 将外部图片上传到服务器里
+      imagePattern: `<img[\\s\\S]*?src=['"]((?!https?://(?:${serverHost}).*?).*?)['"](?:(?!data-mce-(?:object|placeholder))[\\s\\S]*?alt=['"]([\\s\\S]*?)['"])?`,
       column: {
         name: '附件',
         field: 'file',
@@ -148,15 +152,11 @@ export default {
       let source = []
       var res
       while ((res = reg.exec(value))) {
-        console.log(res)
         source.push({
           src: res[1],
           name: res[2] || ''
         })
       }
-
-      console.log('image source', source)
-
       return source
     },
     editor() {
@@ -167,7 +167,7 @@ export default {
     value(val) {
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() =>
-          window.tinymce.get(this.tinymceId).setContent(val || ''))
+          this.editor.setContent(val || ''))
       }
     }
   },
@@ -210,7 +210,7 @@ export default {
         content_style: 'img {max-width:100%;}',
         language: this.languageTypeList[this.lang] || this.languageTypeList['zh'],
         height: this.height,
-        body_class: 'panel-body',
+        body_class: 'content-body',
         // 开关图片、表格、媒体对象在编辑区内的调整大小工具。拖拽工具可调整对象大小。
         // object_resizing: false,
         // statusbar: false,
@@ -301,7 +301,7 @@ export default {
       })
     },
     destroyTinymce() {
-      const tinymce = window.tinymce.get(this.tinymceId)
+      const tinymce = this.editor
       if (this.fullscreen) {
         tinymce.execCommand('mceFullScreen')
       }
@@ -311,14 +311,14 @@ export default {
       }
     },
     setContent(value) {
-      window.tinymce.get(this.tinymceId).setContent(value)
+      this.editor.setContent(value)
     },
     getContent() {
-      window.tinymce.get(this.tinymceId).getContent()
+      this.editor.getContent()
     },
     imageSuccessCBK(arr) {
       arr.forEach(v => {
-        // window.tinymce.get(this.tinymceId).insertContent(`<img class="wscnph" src="${v.url}" />`)
+        // this.editor.insertContent(`<img class="wscnph" src="${v.url}" />`)
         this.editor.selection.setContent(this.editor.dom.createHTML('img', { src: v.url }))
       })
     },

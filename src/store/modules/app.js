@@ -6,7 +6,8 @@ const state = {
     withoutAnimation: false
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  size: Cookies.get('size') || 'medium',
+  width: document.body.clientWidth
 }
 
 const mutations = {
@@ -30,6 +31,9 @@ const mutations = {
   SET_SIZE: (state, size) => {
     state.size = size
     Cookies.set('size', size)
+  },
+  SET_WIDTH: (state, width) => {
+    state.width = width
   }
 }
 
