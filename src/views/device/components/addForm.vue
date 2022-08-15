@@ -62,6 +62,16 @@ export default {
           }
         },
         { name: '广告灯', field: 'adverts_light', label: true, type: 'switch', opts: { required: true } },
+        {
+          name: '使用套餐类型',
+          field: 'product_type',
+          type: 'radio',
+          opts: { required: true },
+          label: true,
+          visible(formData, detail) {
+            return detail.type == 1 || formData.type == 1
+          }
+        },
         { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },
         {
           name: '禁用', field: 'disabled', label: true, type: 'switch', opts: { required: true }, visible() {

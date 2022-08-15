@@ -61,6 +61,7 @@ export default {
           type: this.checkAuth('change') ? 'switch' : 'tag',
           opts: {}
         },
+        { name: '使用套餐类型', field: 'product_type', label: true, type: 'tag', opts: {}, width: 120 },
         { name: '类型', field: 'type', label: true, type: 'tag', opts: {}, width: 90 },
         { name: '使用状态', field: 'state', label: true, type: 'tag', opts: {}, width: 90 },
         { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
@@ -130,8 +131,9 @@ export default {
               if (obj[id]) {
                 const item = obj[id]
                 for (const [key, value] of Object.entries(item)) {
-                  if (key !== 'id') {
-                    this.$set(this.list[i], key, value)
+                  let detail = this.list[i]
+                  if (key !== 'id' && detail[key] != value) {
+                    this.$set(detail, key, value)
                   }
                 }
               }
@@ -140,6 +142,8 @@ export default {
             // console.log(list)
           }
 
+          this.timer = setTimeout(this.listenState, 2000)
+        }, () => {
           this.timer = setTimeout(this.listenState, 2000)
         })
       }

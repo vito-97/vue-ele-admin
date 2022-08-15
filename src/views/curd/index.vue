@@ -197,7 +197,7 @@ export default {
       }
 
       if (!this.isLoadListLabel) {
-        query._label = 1
+        query.with_label = 1
       }
 
       const method = this.listApi || this.api.index
@@ -314,7 +314,7 @@ export default {
     getEditData() {
       const params = {}
       if (!this.isLoadDetailLabel || this.loadDetailLabel) {
-        params._label = 1
+        params.with_label = 1
       }
 
       // 已加载过label并且为添加状态

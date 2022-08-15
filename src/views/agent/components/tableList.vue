@@ -39,7 +39,7 @@ export default {
         { name: '邮箱', field: 'email' },
         { name: '维护员注册二维码', field: 'extend.repair_register_qrcode', type: 'image' },
         { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
-        { name: '使用套餐类型', field: 'product_type', label: true, type: 'tag', opts: {}, width: 120 },
+        // { name: '使用套餐类型', field: 'product_type', label: true, type: 'tag', opts: {}, width: 120 },
         { name: '最后登录时间', field: 'last_login_time', width: 150 },
         { name: '最后登录IP', field: 'last_login_ip', width: 150 },
         { name: '备注', field: 'mark', type: 'content' },
