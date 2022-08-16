@@ -261,7 +261,7 @@ export default {
         // https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
         // https://stackoverflow.com/questions/5196205/disable-tinymce-absolute-to-relative-url-conversions
         convert_urls: false,
-        // 上传图片
+        // 上传图片 不用上传回调，增加一个上传按钮，不然图片处理一直会上传
         images_upload_handler: (blobInfo, success, failure, progress) => {
           /* var file = new File([blobInfo.blob()], '图片.png')
            progress(0)

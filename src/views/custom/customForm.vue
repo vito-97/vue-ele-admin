@@ -317,6 +317,9 @@ export default {
     }
   },
   created() {
+    if (process.env.NODE_ENV === 'development') {
+      this.init()
+    }
   },
   methods: {
     init() {

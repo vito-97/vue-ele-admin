@@ -80,19 +80,31 @@
           <div class="card-panel-text text-danger">
             今年
           </div>
-          <count-to :start-val="0" :end-val="detail.total_year_used_flow" :duration="2600" class="card-panel-num text-danger"/>
+          <count-to
+:start-val="0"
+:end-val="detail.total_year_used_flow"
+:duration="2600"
+                    class="card-panel-num text-danger"/>
         </div>
         <div class="card-panel-description text-danger hidden-xs-only">
           <div class="card-panel-text text-danger">
             当月
           </div>
-          <count-to :start-val="0" :end-val="detail.total_month_used_flow" :duration="2600" class="card-panel-num text-danger"/>
+          <count-to
+:start-val="0"
+:end-val="detail.total_month_used_flow"
+:duration="2600"
+                    class="card-panel-num text-danger"/>
         </div>
         <div class="card-panel-description text-primary hidden-xs-only">
           <div class="card-panel-text text-primary">
             今日
           </div>
-          <count-to :start-val="0" :end-val="detail.total_today_used_flow" :duration="2600" class="card-panel-num text-primary"/>
+          <count-to
+:start-val="0"
+:end-val="detail.total_today_used_flow"
+:duration="2600"
+                    class="card-panel-num text-primary"/>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
@@ -113,20 +125,20 @@
             故障
           </div>
           <count-to
-:start-val="0"
-:end-val="detail.count_fault_device"
-:duration="3000"
-                    class="card-panel-num text-danger"/>
+            :start-val="0"
+            :end-val="detail.count_fault_device"
+            :duration="3000"
+            class="card-panel-num text-danger"/>
         </div>
         <div class="card-panel-description hidden-xs-only">
           <div class="card-panel-text text-primary">
             在线
           </div>
           <count-to
-:start-val="0"
-:end-val="detail.count_online_device"
-:duration="3000"
-                    class="card-panel-num text-primary"/>
+            :start-val="0"
+            :end-val="detail.count_online_device"
+            :duration="3000"
+            class="card-panel-num text-primary"/>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
@@ -145,7 +157,13 @@
           <div class="card-panel-text">
             销售额
           </div>
-          <div class="card-panel-num">{{ detail.sum_order_money }}</div>
+          <count-to
+            :start-val="0"
+            :end-val="detail.sum_order_money"
+            :decimals="2"
+            :duration="3000"
+            prefix="￥"
+            class="card-panel-num"/>
         </div>
       </div>
     </el-col>
