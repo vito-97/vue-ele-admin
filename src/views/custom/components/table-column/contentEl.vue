@@ -72,10 +72,6 @@ export default {
         string = val
       }
 
-      if (this.opt.html) {
-        // string = filterHtml(string)
-      }
-
       return string
     },
     // 过滤html标签后的文字
@@ -92,6 +88,9 @@ export default {
       let str = this.string
 
       if (this.isOutStr) {
+        if (!str) {
+          return '点击查看'
+        }
         if (this.opt.position === 'between') {
           len = Math.ceil(len / 2)
           str = val.substr(0, len) + this.opt.join + val.substr(-len)
@@ -103,10 +102,10 @@ export default {
       return str
     },
     len() {
-      return this.string.length
+      return this.filterHtmlString.length
     },
     isOutStr() {
-      return this.len > this.opt.len || this.opt.tree
+      return this.len > this.opt.len || this.opt.tree || this.opt.html
     }
   },
   methods: {

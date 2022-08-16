@@ -202,7 +202,7 @@ export default {
 
       const method = this.listApi || this.api.index
 
-      method(query).then(res => {
+      return method(query).then(res => {
         const data = res.data
         this.page = data.page
         this.total = data.total
@@ -217,8 +217,9 @@ export default {
         }
 
         this.listLoading = false
-      }, () => {
+      }, (err) => {
         this.listLoading = false
+        this.$message.error(err.message || '加载数据失败')
       })
     },
     onSave() {
@@ -261,7 +262,7 @@ export default {
     delete(ids) {
       this.showLoading('删除中...')
       const method = this.deleteApi || this.api.delete
-      method(ids).then(res => {
+      return method(ids).then(res => {
         this.hideLoading()
 
         const { list, n } = this.removeItemByID(ids)
@@ -277,7 +278,10 @@ export default {
             type: 'success'
           })
         }
-      }, this.hideLoading)
+      }, (err) => {
+        this.hideLoading()
+        this.$message.error(err.message || '删除数据失败')
+      })
     },
     /**
      * 通过id去删除当前列表数据
@@ -305,10 +309,13 @@ export default {
     onUpdateItem({ id, field, value, index }) {
       this.showLoading('更新中...')
       const method = this.changeApi || this.api.change
-      method(id, field, value).then(res => {
+      return method(id, field, value).then(res => {
         this.hideLoading()
         this.$set(this.list[index], field, value)
-      }, this.hideLoading)
+      }, (err) => {
+        this.hideLoading()
+        this.$message.error(err.message || '更新数据失败')
+      })
     },
     // 获取新增或者编辑数据
     getEditData() {
@@ -325,7 +332,7 @@ export default {
 
       showLoading('获取数据中...')
       let method = this.editApi || this.api.edit
-      method(this.detailID, params).then(res => {
+      return method(this.detailID, params).then(res => {
         this.isLoadDetailLabel = true
         this.isLoadDetailData = true
         this.detail = !Array.isArray(res.data?.detail) && res.data?.detail || {}
@@ -340,7 +347,8 @@ export default {
         }
         hideLoading()
         this.dialogVisible = true
-      }, () => {
+      }, (err) => {
+        this.$message.error(err.message || '获取数据失败')
         hideLoading()
       })
     },
@@ -425,8 +433,8 @@ export default {
     saveErrorHandle(err) {
       this.hideLoading()
 
-      if (err.code !== 0 && err.data) {
-        this.error = err.data
+      if (err.code !== 0 && err?.data) {
+        this.error = err.data || {}
       }
     },
     /**
