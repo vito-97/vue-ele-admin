@@ -1,5 +1,11 @@
 <template>
   <div :class="{fullscreen:fullscreen}" class="tinymce-container" :style="{width:containerWidth}">
+    <div class="loading-tip" v-show="!hasInit">
+      <el-alert
+        title="编辑器正在加载中..."
+        type="info">
+      </el-alert>
+    </div>
     <textarea :id="tinymceId" class="tinymce-textarea"/>
     <div class="editor-custom-btn-container hidden-xs-only" v-show="hasInit">
       <el-button
@@ -261,7 +267,7 @@ export default {
         // https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
         // https://stackoverflow.com/questions/5196205/disable-tinymce-absolute-to-relative-url-conversions
         convert_urls: false,
-        // 上传图片 不用上传回调，增加一个上传按钮，不然图片处理一直会上传
+        // 上传图片
         images_upload_handler: (blobInfo, success, failure, progress) => {
           /* var file = new File([blobInfo.blob()], '图片.png')
            progress(0)
