@@ -128,10 +128,10 @@ export default {
 
             list.forEach((it, i) => {
               const id = it.id
+              const detail = this.list[i]
               if (obj[id]) {
                 const item = obj[id]
                 for (const [key, value] of Object.entries(item)) {
-                  let detail = this.list[i]
                   if (key !== 'id' && detail[key] != value) {
                     this.$set(detail, key, value)
                   }

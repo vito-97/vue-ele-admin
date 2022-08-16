@@ -62,7 +62,7 @@ export default {
       default: ''
     },
     toolbar: {
-      type: Array,
+      type: [Array, String],
       required: false,
       default() {
         return []
@@ -253,51 +253,25 @@ export default {
           })
 
           editor.on('paste', this.onPaste)
-
-          editor.on('attachment', this.$refs.attachment.open)
-          editor.on('upload-image', this.$refs.editorImage.open)
+          editor.on('attachment', this.onSelectAttachment)
+          editor.on('upload-image', this.onUploadImage)
           editor.on('transform-image', this.onClickTransformImage)
         },
         // it will try to keep these URLs intact
         // https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
         // https://stackoverflow.com/questions/5196205/disable-tinymce-absolute-to-relative-url-conversions
         convert_urls: false,
-        images_upload_handler(blobInfo, success, failure, progress) {
-          console.log(blobInfo)
+        // 上传图片
+        images_upload_handler: (blobInfo, success, failure, progress) => {
+          /* var file = new File([blobInfo.blob()], '图片.png')
+           progress(0)
+           this.uploadFile(file, { append: false }).then(detail => {
+             progress(100)
+             success(detail.link)
+           }, err => {
+             failure(err.message)
+           }) */
         }
-        // 整合七牛上传
-        // images_dataimg_filter(img) {
-        //   setTimeout(() => {
-        //     const $image = $(img);
-        //     $image.removeAttr('width');
-        //     $image.removeAttr('height');
-        //     if ($image[0].height && $image[0].width) {
-        //       $image.attr('data-wscntype', 'image');
-        //       $image.attr('data-wscnh', $image[0].height);
-        //       $image.attr('data-wscnw', $image[0].width);
-        //       $image.addClass('wscnph');
-        //     }
-        //   }, 0);
-        //   return img
-        // },
-        // images_upload_handler(blobInfo, success, failure, progress) {
-        //   progress(0);
-        //   const token = _this.$store.getters.token;
-        //   getToken(token).then(response => {
-        //     const url = response.data.qiniu_url;
-        //     const formData = new FormData();
-        //     formData.append('token', response.data.qiniu_token);
-        //     formData.append('key', response.data.qiniu_key);
-        //     formData.append('file', blobInfo.blob(), url);
-        //     upload(formData).then(() => {
-        //       success(url);
-        //       progress(100);
-        //     })
-        //   }).catch(err => {
-        //     failure('出现未知问题，刷新页面，或者联系程序员')
-        //     console.log(err);
-        //   });
-        // },
       })
     },
     destroyTinymce() {
@@ -385,6 +359,7 @@ export default {
         if (err.message) {
           this.$message.error(err.message)
         }
+        return Promise.reject(err)
       })
     },
     /**
@@ -467,8 +442,13 @@ export default {
         }
       }
     },
+    // 选择附件
     onSelectAttachment() {
-
+      this.$refs.attachment.open()
+    },
+    // 上传图片
+    onUploadImage() {
+      this.$refs.editorImage.open()
     }
   }
 }
