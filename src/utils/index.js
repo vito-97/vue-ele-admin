@@ -468,3 +468,20 @@ export function isMobile() {
   const t2 = !ua.match('iphone') && navigator.maxTouchPoints > 1
   return t1 || t2
 }
+
+/**
+ * 过滤html代码
+ * @param string
+ * @returns {string|*}
+ */
+export function filterHtml(string) {
+  // 过滤所有的html标签，不包括内容
+  var reg = new RegExp('<[^>]+>', 'gi')
+
+  // 不是字符串
+  if (typeof string != 'string') {
+    return string
+  }
+
+  return string.replace(reg, '')
+}

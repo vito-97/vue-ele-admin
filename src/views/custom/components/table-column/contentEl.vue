@@ -13,7 +13,11 @@
             </div>
           </template>
           <template v-else>
-            {{ string }}
+            <div v-if="opt.html" v-html="string">
+            </div>
+            <div v-else>
+              {{ string }}
+            </div>
           </template>
         </div>
       </el-dialog>
@@ -23,6 +27,7 @@
 
 <script>
 import tableColumnMixin from './table-column-mixin'
+import { filterHtml } from '@/utils'
 
 export default {
   name: 'ContentEl',
@@ -41,7 +46,8 @@ export default {
         char: '，',
         // 展示为树形结构
         tree: false,
-        children: 'children'
+        children: 'children',
+        html: false
       },
       visible: false
     }
@@ -65,10 +71,23 @@ export default {
       } else {
         string = val
       }
+
+      if (this.opt.html) {
+        // string = filterHtml(string)
+      }
+
+      return string
+    },
+    // 过滤html标签后的文字
+    filterHtmlString() {
+      var string = this.string
+      if (this.opt.html) {
+        string = filterHtml(string)
+      }
       return string
     },
     subVal() {
-      const val = this.string
+      const val = this.filterHtmlString
       let len = this.opt.len
       let str = this.string
 
@@ -111,7 +130,7 @@ export default {
   word-break: normal;
   white-space: normal;
 
-  .tag{
+  .tag {
     margin-right: 5px;
     margin-bottom: 5px;
   }
