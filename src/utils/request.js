@@ -4,6 +4,9 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 import CONFIG from '@/utils/config'
 
+// 给服务器ajax标识
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -20,7 +23,7 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['access-token'] = getToken()
+      config.headers['Access-Token'] = getToken()
     }
     return config
   },
