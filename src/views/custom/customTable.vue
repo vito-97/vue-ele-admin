@@ -1252,7 +1252,16 @@ export default {
       let checked = val ? this.columnFields : []
       this.setShowColumns(checked, true)
       this.isIndeterminate = false
+    },
+    // 获取传入的状态值
+    isCanDo(status, ...args) {
+      if (typeof status === 'function') {
+        return status(...args)
+      }
+
+      return status
     }
+
   }
 }
 </script>

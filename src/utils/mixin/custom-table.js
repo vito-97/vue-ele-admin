@@ -77,6 +77,9 @@ const tableMixin = {
     selectable(row, index) {
       return true
     },
+    optional(row, index) {
+      return true
+    },
     // 是否可删除
     deletable(row, index) {
       return true
@@ -150,7 +153,7 @@ const tableMixin = {
           this.onTapRowBtnUpdate(row, 0)
         }
         // 选择模式
-      } else if (this.mode === 'select') {
+      } else if (this.mode === 'select' && this.optional(row, 0)) {
         this.onTapRowBtnSelect(row, 0)
       }
     },
