@@ -44,7 +44,8 @@ export default {
       },
 
       appendHeaders: {
-        'access-token': getToken()
+        'Access-Token': getToken(),
+        'X-Requested-With': 'XMLHttpRequest'
       },
 
       opts: {

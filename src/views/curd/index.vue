@@ -436,9 +436,11 @@ export default {
     },
     saveErrorHandle(err) {
       this.hideLoading()
-
       if (err.code !== 0 && err?.data) {
-        this.error = err.data || {}
+        var error = err.data || {}
+        if (!Array.isArray(error)) {
+          this.error = error
+        }
       }
     },
     /**
