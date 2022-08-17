@@ -18,6 +18,7 @@
           :select-multiple="selectMultiple"
           :default-expand-all="true"
           :optional="optional"
+          :row-btn="rowBtn"
           @tap-head-btn="onTapHeadBtn"
           @tap-row-btn="onTapRowBtn"
           @row-dblclick="onRowDbClick"
@@ -80,6 +81,11 @@ import systemConfigForm from '@/views/system_config_tab/components/systemConfigF
 export default {
   data() {
     return {
+      rowBtn: [
+        {
+          name: '添加下级配置', key: 'children', mode: ['show'], auth: this.getFullAuth('save'), show: this.optional
+        }
+      ],
       columns: [
         { name: '名称', field: 'name', width: 200 },
         { name: '图标', field: 'icon', width: 150, type: 'icon' },
@@ -118,7 +124,18 @@ export default {
     optional(row, index) {
       // 有上级的就不可选
       return !row.pid
+    },
+
+    onTapRowBtnChildren(row, index) {
+      let data = {
+        detail: {
+          pid: row.id,
+          parent: row
+        }
+      }
+      this.onTapHeadBtnSave({ data })
     }
+
   }
 }
 </script>
