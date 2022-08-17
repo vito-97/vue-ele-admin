@@ -324,10 +324,10 @@ export default {
   methods: {
     init() {
       this.initColumns()
-      if (!this.isInitFormRules) {
-        this.isInitFormRules = true
-        this.formRules = this.initFormRules()
-      }
+      // if (!this.isInitFormRules || true) {
+      this.isInitFormRules = true
+      this.formRules = this.initFormRules()
+      // }
     },
     // 初始化表内容
     initColumns() {
@@ -475,7 +475,7 @@ export default {
     onSubmit() {
       this.$refs.detailForm.validate((valid, obj) => {
         const formData = this.formData
-        console.log('formData', formData)
+        console.log('formData', formData, obj)
         if (valid) {
           this.$emit('submit', formData)
         } else {
