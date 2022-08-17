@@ -51,7 +51,7 @@ export default {
     onUploadSuccess({ mode }) {
       if (mode === 'add') {
         this.close()
-        // this.flush()
+        this.flush()
       }
     }
   }
