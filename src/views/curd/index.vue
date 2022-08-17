@@ -223,9 +223,9 @@ export default {
         this.$message.error(err.message || '加载数据失败')
       })
     },
-    onSave() {
+    onSave(args) {
       this.detailID = 0
-      this.detail = {}
+      this.detail = args.data?.detail || {}
       // this.dialogVisible = true
       this.isLoadDetailData = false
       this.getEditData()
@@ -336,8 +336,10 @@ export default {
       return method(this.detailID, params).then(res => {
         this.isLoadDetailLabel = true
         this.isLoadDetailData = true
-        this.detail = !Array.isArray(res.data?.detail) && res.data?.detail || {}
 
+        if (!Array.isArray(res.data?.detail) && res.data?.detail) {
+          this.detail = res.data?.detail
+        }
         // 获取不到任何数据
         if (!Object.keys(this.detail).length) {
           this.detailID = 0

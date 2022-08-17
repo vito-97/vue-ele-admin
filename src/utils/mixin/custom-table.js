@@ -127,8 +127,8 @@ const tableMixin = {
       this.$emit('delete-multiple', args)
     },
     // 添加
-    onTapHeadBtnSave() {
-      this.$emit('save')
+    onTapHeadBtnSave(args) {
+      this.$emit('save', args)
     },
     // 更新
     onTapRowBtnUpdate(row, index) {

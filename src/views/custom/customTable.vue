@@ -1055,7 +1055,7 @@ export default {
       return string
     },
     // 触发事件
-    headBtnTrigger(btn, data) {
+    headBtnTrigger(btn, data = {}) {
       this.$emit('tap-head-btn', {
         key: btn.key,
         selection: this.selection,
@@ -1063,7 +1063,7 @@ export default {
         data
       })
     },
-    rowBtnTrigger(btn, row, index, column, data) {
+    rowBtnTrigger(btn, row, index, column, data = {}) {
       this.$emit('tap-row-btn', {
         index,
         row,

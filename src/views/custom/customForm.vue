@@ -324,6 +324,7 @@ export default {
   methods: {
     init() {
       this.initColumns()
+      // 必须也初始化规则
       // if (!this.isInitFormRules || true) {
       this.isInitFormRules = true
       this.formRules = this.initFormRules()
