@@ -22,6 +22,7 @@
         @load="onLoad"
         @flush="onFlush"
         @select="onSelect"
+        @submit="onSubmit"
       />
     </template>
     <!--    添加或修改-->
@@ -364,6 +365,9 @@ export default {
      * 提交表单
      */
     onSubmit(detail) {
+      if (detail.id) {
+        this.detailID = detail.id
+      }
       if (this.detailID) {
         this.update(detail)
       } else {
