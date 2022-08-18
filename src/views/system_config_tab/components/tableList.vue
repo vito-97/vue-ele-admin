@@ -83,7 +83,7 @@ export default {
     return {
       rowBtn: [
         {
-          name: '添加下级配置', key: 'children', mode: ['show'], auth: this.getFullAuth('save'), show: this.optional
+          name: '添加下级分类', key: 'children', mode: ['show'], auth: this.getFullAuth('save'), show: this.optional
         }
       ],
       columns: [

@@ -11,63 +11,149 @@
       :width="width"
       :append-to-body="appendToBody"
       @open="onOpen">
-      <custom-form-render
-        v-model="formData"
-        :detail="detail"
-        :error="error"
+      <el-form
+        v-if="Visible"
+        :model="formData"
+        class="detail-form"
         :rules="formRules"
-        :mode="nowMode"
-        :columns="formColumns"
-        ref="customForm"
-        @submit="onSubmit"
-        @event="onEvent"
+        ref="detailForm"
+        @validate="onValidate"
+        @submit.native.prevent="onSubmit"
       >
-        <!-- 遍历子组件非作用域插槽，并对父组件暴露 -->
-        <template v-for="(index, name) in $slots" v-slot:[name]>
-          <slot :name="name"/>
+        <el-alert
+          v-if="!formColumns.length"
+          title="提示"
+          type="error"
+          class="empty-tip"
+          description="未设置表单内容，请先设置表单内容选项"
+          :closable="false"
+        >
+        </el-alert>
+        <template v-for="(col,index) in formColumns">
+          <el-form-item
+            v-if="checkColVisible(col)"
+            :key="index"
+            :label="col.opts.label && col.name || ''"
+            :prop="col.field"
+            :required="col.opts.required"
+            :error="error && error[col.field] || ''"
+            :label-width="col.width"
+          >
+            <slot :name="getColSlot(col)+'-before'" :form-data="formData" :col="col"></slot>
+            <!--          插槽-->
+            <slot :name="getColSlot(col)" :form-data="formData" :col="col">
+
+              <template v-if="items[col.type]">
+                <component
+                  :is="items[col.type]"
+                  :detail="detail"
+                  :column="col"
+                  :form-data="formData"
+                  :mode="nowMode"
+                  @event="onEvent"
+                >
+                </component>
+              </template>
+
+              <template v-else>
+                <el-alert
+                  :title="'未知类型'+col.type"
+                  type="error"
+                  :closable="false"
+                >
+                </el-alert>
+              </template>
+            </slot>
+            <slot :name="getColSlot(col)+'-after'" :form-data="formData" :col="col"></slot>
+            <!--            提示信息-->
+            <div
+              v-if="col.placeholder && formData[col.field] !== '' && checkColVisible(col)"
+              class="placeholder-tip"
+            >
+              {{ col.placeholder }}
+            </div>
+          </el-form-item>
         </template>
-        <!-- 遍历子组件作用域插槽，并对父组件暴露 -->
-        <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-          <slot :name="name" v-bind="data"></slot>
-        </template>
-      </custom-form-render>
+
+      </el-form>
       <div
         slot="footer"
         class="dialog-footer"
         v-if="showButton"
       >
-        <el-button type="primary" @click="onClickSubmit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
+        <el-button type="primary" @click="onSubmit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
         <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
       </div>
     </el-dialog>
     <template v-else>
       <!--  添加或编辑-->
-      <custom-form-render
-        v-model="formData"
-        :detail="detail"
-        :error="error"
+      <el-form
+        :model="formData"
+        class="detail-form"
         :rules="formRules"
-        :mode="nowMode"
-        :columns="formColumns"
-        ref="customForm"
-        @submit="onSubmit"
-        @event="onEvent"
+        ref="detailForm"
+        @validate="onValidate"
+        @submit.native.prevent="onSubmit"
       >
-        <template v-slot>
-          <el-form-item v-if="showButton">
-            <el-button type="primary" native-type="submit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
-            <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
+        <el-alert
+          v-if="!formColumns.length"
+          title="提示"
+          type="error"
+          class="empty-tip"
+          description="未设置表单内容，请先设置表单内容选项"
+          :closable="false"
+        >
+        </el-alert>
+        <template v-for="(col,index) in formColumns">
+          <el-form-item
+            v-if="checkColVisible(col)"
+            :key="index"
+            :label="col.opts.label && col.name || ''"
+            :prop="col.field"
+            :required="col.opts.required"
+            :error="error && error[col.field] || ''"
+            :label-width="col.width"
+          >
+            <slot :name="getColSlot(col)+'-before'" :form-data="formData" :col="col"></slot>
+            <!--          插槽-->
+            <slot :name="getColSlot(col)" :form-data="formData" :col="col">
+
+              <template v-if="items[col.type]">
+                <component
+                  :is="items[col.type]"
+                  :detail="detail"
+                  :column="col"
+                  :form-data="formData"
+                  :mode="nowMode"
+                  @event="onEvent"
+                >
+                </component>
+              </template>
+
+              <template v-else>
+                <el-alert
+                  :title="'未知类型'+col.type"
+                  type="error"
+                  :closable="false"
+                >
+                </el-alert>
+              </template>
+            </slot>
+            <slot :name="getColSlot(col)+'-after'" :form-data="formData" :col="col"></slot>
+            <!--            提示信息-->
+            <div
+              v-if="col.placeholder && formData[col.field] !== '' && checkColVisible(col)"
+              class="placeholder-tip"
+            >
+              {{ col.placeholder }}
+            </div>
           </el-form-item>
         </template>
-        <!-- 遍历子组件非作用域插槽，并对父组件暴露 -->
-        <template v-for="(index, name) in $slots" v-slot:[name]>
-          <slot :name="name"/>
-        </template>
-        <!-- 遍历子组件作用域插槽，并对父组件暴露 -->
-        <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-          <slot :name="name" v-bind="data"></slot>
-        </template>
-      </custom-form-render>
+        <el-form-item v-if="showButton">
+          <el-button type="primary" native-type="submit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
+          <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
+        </el-form-item>
+      </el-form>
     </template>
   </div>
 </template>
@@ -76,15 +162,11 @@
 import visible from '@/utils/mixin/visible'
 import { deepVal, toArray } from '@/utils'
 import itemsCom from '@/utils/form-item'
-import customFormMixin from '@/views/custom/mixin/custom-form'
-import CustomFormRender from './customFormRender'
 
 export default {
   name: 'CustomForm',
-  mixins: [visible, customFormMixin],
-  components: {
-    CustomFormRender
-  },
+  mixins: [visible],
+  components: {},
   data() {
     return {
       formData: {},
@@ -238,8 +320,6 @@ export default {
     }
   },
   created() {
-    console.log('slot', this.$slots)
-    console.log('slot scope', this.$scopedSlots)
     if (process.env.NODE_ENV === 'development') {
       this.init()
     }
@@ -379,24 +459,46 @@ export default {
 
       return rules
     },
-    onClickSubmit() {
-      this.$refs.customForm.submit(false).then(formData => {
-        this.onSubmit(formData)
-      }, err => {
-        console.log('err', err)
-      })
+    /**
+     * 检测元素是否显示
+     * @param col
+     * @returns {boolean|*}
+     */
+    checkColVisible(col) {
+      let status = this.isEdit ? col.editable : col.addable
+      if (typeof col.visible === 'boolean') {
+        status = status && col.visible
+      } else if (typeof col.visible === 'function') {
+        status = status && col.visible.call(this, this.formData, this.detail, col)
+      }
+
+      return status
     },
     // 提交
-    onSubmit(formData) {
-      this.$emit('submit', formData)
+    onSubmit() {
+      this.$refs.detailForm.validate((valid, obj) => {
+        const formData = this.formData
+        console.log('formData', formData, obj)
+        if (valid) {
+          this.$emit('submit', formData)
+        } else {
+          this.$message({
+            type: 'error',
+            message: '请检查输入的内容'
+          })
+        }
+      })
     },
     // 重置表单
     onReset() {
-      this.reset()
+      this.$refs.detailForm.resetFields()
       this.clearValidate()
     },
+    onValidate(field, state, msg) {
+      // console.log('validate', field,state,msg)
+    },
     onClose() {
-      this.reset()
+      this.$refs.detailForm.resetFields()
       this.clearValidate()
     },
     onOpen() {
@@ -408,13 +510,28 @@ export default {
       this.$emit(e.field + '-event', { type: e.type, payload: e.payload })
       this.$emit('event', e)
     },
-    reset() {
-      this.$refs.customForm.reset()
-    },
     clearValidate() {
       setTimeout(() => {
-        this.$refs.customForm.clearValidate()
-      }, 20)
+        this.$refs.detailForm && this.$refs.detailForm.clearValidate()
+      }, 10)
+    },
+    /**
+     * 获取列的插槽名称
+     */
+    getColSlot(col) {
+      return col.slot || col.field
+    },
+    /**
+     * 设置表单内容
+     * @param key
+     * @param value
+     */
+    setFormData(key, value = null) {
+      if (typeof key === 'object') {
+        this.formData = key
+      } else {
+        this.$set(this.formData, key, value)
+      }
     }
   }
 }
@@ -426,5 +543,16 @@ export default {
 
   .detail-form {
   }
+}
+
+.empty-tip {
+  margin-bottom: 20px;
+}
+
+.placeholder-tip {
+  color: #999;
+  font-size: 12px;
+  line-height: 1;
+  padding-top: 4px;
 }
 </style>
