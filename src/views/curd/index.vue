@@ -366,14 +366,14 @@ export default {
     /**
      * 提交表单
      */
-    onSubmit(detail) {
+    onSubmit(detail, args = {}) {
       if (detail.id) {
         this.detailID = detail.id
       }
       if (this.detailID) {
-        this.update(detail)
+        this.update(detail, args)
       } else {
-        this.save(detail)
+        this.save(detail, args)
       }
     },
     /**
@@ -390,22 +390,25 @@ export default {
     },
     /**
      * 添加操作
+     * @param data
+     * @param args
      */
-    save(data) {
+    save(data, args = {}) {
       const id = this.detailID
       if (id) {
         return this.update(data)
       }
-      this.showLoading('添加中...')
+      this.showLoading(args.loading || '添加中...')
       // 清空错误消息
       this.error = {}
       const method = this.saveApi || this.api.save
       return method(data).then(res => {
         this.hideLoading()
-        this.dialogVisible = false
         this.total++
+        this.dialogVisible = false
+        args.success && args.success()
         this.$message({
-          message: res.msg || '添加成功',
+          message: args.msg || res.msg || '添加成功',
           type: 'success'
         })
         this.onFlush({ reload: true })
@@ -414,23 +417,25 @@ export default {
     /**
      * 更新操作
      * @param data
+     * @param args
      * @returns {Promise<void>|*}
      */
-    update(data) {
+    update(data, args = {}) {
       const id = this.detailID
 
       if (!id) {
         return this.save(data)
       }
-      this.showLoading('更新中...')
+      this.showLoading(args.loading || '更新中...')
       // 清空错误消息
       this.error = {}
       const method = this.updateApi || this.api.update
       return method(data, id).then(res => {
         this.hideLoading()
         this.dialogVisible = false
+        args.success && args.success()
         this.$message({
-          message: res.msg,
+          message: args.msg || res.msg || '更新成功',
           type: 'success'
         })
         this.onFlush()
