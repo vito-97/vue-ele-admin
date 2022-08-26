@@ -229,14 +229,26 @@
       :visible.sync="dialogVisible"
       width="30%"
       center>
-      <div class="mb10">{{ confirm.title }}</div>
+      <div class="mb10" v-if="confirm.title">{{ confirm.title }}</div>
       <div v-if="confirm.input">
-        <el-input
-          v-model="confirmContent"
-          :type="typeof confirm.input == 'boolean' ? 'text' : confirm.input"
-          :placeholder="confirm.placeholder || ''"
-        >
-        </el-input>
+        <template v-if="confirmIsCustomForm">
+          <custom-form
+            :columns="confirm.input"
+            :dialog="false"
+            :hide-button="true"
+            :visible.sync="dialogVisible"
+            v-model="confirmFormData"
+            @submit="onSubmitConfirm"
+          ></custom-form>
+        </template>
+        <template v-else>
+          <el-input
+            v-model="confirmContent"
+            :type="typeof confirm.input == 'boolean' ? 'text' : confirm.input"
+            :placeholder="confirm.placeholder || ''"
+          >
+          </el-input>
+        </template>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -252,6 +264,7 @@
 import { getLimit, pageSizes, setLimit } from '@/utils/list'
 import checkPermission from '@/utils/permission'
 import Pagination from '@/components/Pagination'
+import customForm from '@/views/custom/customForm'
 import { deepVal, debounce, isPositiveInteger } from '@/utils'
 import itemsCom from '@/utils/table-column'
 import md5 from 'js-md5'
@@ -278,6 +291,8 @@ export default {
       confirm: {},
       // 确认的输入内容
       confirmContent: '',
+      // 确认的输入表单内容
+      confirmFormData: {},
       params: {},
       filterTimer: '',
       items: itemsCom,
@@ -290,7 +305,7 @@ export default {
       excludeParams: []
     }
   },
-  components: { Pagination },
+  components: { Pagination, customForm },
   props: {
     height: {
       type: [Number, String],
@@ -529,6 +544,9 @@ export default {
         }*/
   },
   computed: {
+    confirmIsCustomForm() {
+      return this.confirm.input && Array.isArray(this.confirm.input)
+    },
     pageLayout() {
       let isMobile = this.isMobile
 
@@ -700,8 +718,10 @@ export default {
         mode: ['show'],
         // 是否显示
         show: true,
-        // 是否显示输入框 字符串类型的话则设置成输入框类型
-        input: false
+        // 是否显示输入框 字符串类型的话则设置成输入框类型 数组的话则使用自定义表单
+        input: false,
+        // 提示信息
+        confirm: null
       }
 
       array.forEach((it, i) => {
@@ -736,7 +756,11 @@ export default {
         // 指定模式才显示
         mode: ['show'],
         // 检测按钮是否禁用函数
-        show: true
+        show: true,
+        // 是否显示输入框 字符串类型的话则设置成输入框类型 数组的话则使用自定义表单
+        input: false,
+        // 提示信息
+        confirm: null
       }
 
       array.forEach((it) => {
@@ -1009,7 +1033,7 @@ export default {
       if (btn.confirm) {
         const args = {
           title: btn.confirm.replace('{n}', this.selection.length),
-          input: btn.input,
+          input: this.getConfirmBtnInput(btn, this.selection),
           placeholder: btn.placeholder || ''
         }
         this.setConfirmInfo(args, (data) => this.headBtnTrigger(btn, data))
@@ -1023,7 +1047,7 @@ export default {
       if (btn.confirm) {
         const args = {
           title: this.replace(btn.confirm, row),
-          input: btn.input,
+          input: this.getConfirmBtnInput(btn, row),
           placeholder: btn.placeholder || ''
         }
         this.setConfirmInfo(args, (data) => this.rowBtnTrigger(btn, row, index, column, data))
@@ -1031,6 +1055,18 @@ export default {
       }
 
       this.rowBtnTrigger(btn, row, index, column)
+    },
+    /**
+     * 获取按钮的输入框内容
+     */
+    getConfirmBtnInput(btn, ...args) {
+      var input = btn.input || false
+
+      if (typeof input === 'function') {
+        input = input(...args)
+      }
+
+      return input
     },
     /**
      * 替换模板字符串
@@ -1086,7 +1122,12 @@ export default {
     },
     // 确认按钮
     onConfirmSuccess() {
-      this.confirm.callback && this.confirm.callback({ content: this.confirmContent })
+      var data = this.confirmIsCustomForm ? this.confirmFormData : { content: this.confirmContent }
+      this.confirm.callback && this.confirm.callback(data)
+    },
+    // 提交表单
+    onSubmitConfirm(formData) {
+      this.confirm.callback && this.confirm.callback(formData)
     },
     /**
      * 获取列的原始值

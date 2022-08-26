@@ -63,6 +63,16 @@ export default {
         },
         { name: '广告灯', field: 'adverts_light', label: true, type: 'switch', opts: { required: true } },
         {
+          name: '设备类型',
+          field: 'type',
+          type: 'radio',
+          opts: { required: true },
+          label: true,
+          visible(formData, detail) {
+            return isSuperAdmin(this.$store.getters.role)
+          }
+        },
+        {
           name: '使用套餐类型',
           field: 'product_type',
           type: 'radio',

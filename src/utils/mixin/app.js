@@ -1,6 +1,5 @@
 import checkPermission from '@/utils/permission'
 import permission from '@/directive/permission'
-import ENUM from '@/utils/enum'
 import { controlName } from '@/utils/index'
 import { mapGetters } from 'vuex'
 
@@ -8,7 +7,6 @@ const app = {
   directives: { permission },
   data() {
     return {
-      ENUM,
       mobileWidth: 992
     }
   },

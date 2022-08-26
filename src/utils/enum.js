@@ -26,7 +26,12 @@ const ENUM = {
   },
   order: {
     status: {
-      paid: 1
+      wait: 0,
+      paid: 1,
+      cancel: 2,
+      timeout: 3,
+      wait_refund: 4,
+      refund: 5
     }
   },
   // 获取组件对应的名称

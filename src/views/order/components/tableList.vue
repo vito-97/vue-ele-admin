@@ -46,7 +46,8 @@ export default {
         { name: '订单金额', field: 'price', before: '￥', type: 'tag', opts: { type: 'primary' } },
         { name: '支付金额', field: 'pay_price', before: '￥', type: 'tag', opts: { type: 'danger' } },
         { name: '状态', field: 'status', label: true, type: 'tag', opts: {} },
-        { name: '退款金额', field: 'refund_money', before: '￥', type: 'tag', opts: { type: 'warning' } },
+        // { name: '待退金额', field: 'refund_money', before: '￥', type: 'tag', opts: { type: 'warning' } },
+        { name: '已退金额', field: 'refund_amount', before: '￥', type: 'tag', opts: { type: 'warning' } },
         { name: '订单号', field: 'order_no', width: 200 },
         { name: '第三方订单号', field: 'outer_trade_no', width: 200 },
         { name: '订单类型', field: 'type', label: true },
@@ -71,10 +72,26 @@ export default {
           auth: this.getFullAuth('refund'),
           key: 'refund',
           confirm: '请输入退款原因！',
-          placeholder: '退款原因',
-          input: 'textarea',
+          // placeholder: '退款原因',
+          // input: 'textarea',
+          input: function (row) {
+            let max = Number((row.pay_price - row.refund_amount).toFixed(2))
+            return [
+              {
+                name: '退款金额', field: 'refund_money', type: 'number', opts: {
+                  precision: 2,
+                  min: 0.01,
+                  max,
+                  required: true
+                },
+                value: max
+              },
+              { name: '退款原因', field: 'mark', type: 'textarea' }
+            ]
+          },
           show: function (row, index) {
-            return row.status == ENUM.order.status.paid
+            let orderStatus = ENUM.order.status
+            return row.status == orderStatus.paid || (row.status == orderStatus.refund && row.pay_price > row.refund_amount)
           }
         }
       ]
@@ -98,7 +115,7 @@ export default {
     // 退款
     onTapRowBtnRefund(row, index, data) {
       showLoading('退款中...')
-      this.curd.post('refund', { id: row.id, mark: data.content }).then(res => {
+      this.curd.post('refund', { id: row.id, ...data }).then(res => {
         hideLoading()
         this.onTapHeadBtnFlush()
         this.$message({
