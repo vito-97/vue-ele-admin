@@ -1,9 +1,13 @@
 <template>
-  <el-tag :type="val ? opt.active_type : opt.inactive_type" size="small">{{ val ? opt.active_text : opt.inactive_text }}</el-tag>
+  <el-tag :type="val ? opt.active_type : opt.inactive_type" size="small">{{
+      val ? opt.active_text : opt.inactive_text
+    }}
+  </el-tag>
 </template>
 
 <script>
 import tableColumnMixin from './table-column-mixin'
+
 export default {
   name: 'SwitchTextEl',
   mixins: [tableColumnMixin],
@@ -17,9 +21,11 @@ export default {
       }
     }
   },
+  list(opts) {
+    return [opts.inactive_text || '否', opts.active_text || '是']
+  },
   filters: {},
-  methods: {
-  }
+  methods: {}
 }
 </script>
 

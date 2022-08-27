@@ -653,8 +653,11 @@ export default {
       cols.forEach((it, i) => {
         const col = { ...def, ...it }
 
-        if (col.type === 'bool') {
-          col.list = [col.opts.inactive_text || '否', col.opts.active_text || '是']
+        // 有默认list值
+        if (typeof itemsCom[col.type]?.list !== 'undefined') {
+          var list = itemsCom[col.type]?.list
+
+          col.list = (typeof list === 'function' ? list(col.opts) : list) || []
         }
 
         if (col.label) {
