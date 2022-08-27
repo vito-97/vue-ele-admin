@@ -38,7 +38,7 @@ export default {
           edit_opts: { readonly: true }
         },
         // { name: '充值金额', field: 'money', opts: { required: true, precision: 2 }, type: 'number' },
-        { name: '充值时间', field: 'second', opts: { required: false, precision: 2 }, type: 'number' },
+        { name: '充值时间', field: 'second', opts: { required: false }, type: 'number' },
         { name: '充值流量', field: 'flow', opts: { required: true }, type: 'number' },
         { name: '订单金额', field: 'price', opts: { required: true, precision: 2 }, type: 'number' },
         { name: '支付金额', field: 'pay_price', opts: { required: true, precision: 2 }, type: 'number' },

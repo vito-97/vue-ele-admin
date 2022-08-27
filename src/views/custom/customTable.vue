@@ -525,6 +525,7 @@ export default {
       this.keyword = val
     },
     list(val) {
+      console.log('list', val)
       if (!this.visible) {
         this.visible = true
       }
@@ -604,6 +605,7 @@ export default {
     },
     cols() {
       const cols = [...this.columns]
+
       const def = {
         name: 'LABEL',
         field: 'undefined',
@@ -686,8 +688,8 @@ export default {
 
         cols[i] = col
       })
+
       console.log('table columns', cols)
-      console.log('list', this.list)
       return cols
     },
     // 头部的按钮
@@ -1222,7 +1224,6 @@ export default {
      * @returns {boolean|boolean}
      */
     rowBtnShow(key) {
-      console.log(this.showRowBtn)
       return this.showRowBtn === '*' || this.showRowBtn.includes(key)
     },
     /**

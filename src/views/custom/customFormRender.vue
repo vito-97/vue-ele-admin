@@ -1,9 +1,11 @@
 <template>
   <div class="custom-form-render-box">
     <el-form
+      :validate-on-rule-change="validateOnRuleChange"
       :model="value"
-      class="detail-form"
       :rules="rules"
+      v-bind="$attrs"
+      class="detail-form"
       ref="detailForm"
       @validate="onValidate"
       @submit.native.prevent="onSubmit"
@@ -113,6 +115,10 @@ export default {
       default: () => {
         return {}
       }
+    },
+    // 是否在更新校验规则后触发验证
+    validateOnRuleChange: {
+      type: Boolean
     }
   },
   methods: {
@@ -154,13 +160,12 @@ export default {
     },
     // 重置表单
     reset() {
-      this.$refs.detailForm.resetFields()
-      this.clearValidate()
+      this.$refs.detailForm?.resetFields()
     },
     // 清除验证
     clearValidate() {
       setTimeout(() => {
-        this.$refs.detailForm && this.$refs.detailForm.clearValidate()
+        this.$refs.detailForm?.clearValidate()
       }, 10)
     }
   }

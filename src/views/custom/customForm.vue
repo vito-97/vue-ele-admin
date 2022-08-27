@@ -18,6 +18,7 @@
         :rules="formRules"
         :mode="nowMode"
         :columns="formColumns"
+        v-bind="$attrs"
         ref="customForm"
         @submit="onSubmit"
         @event="onEvent"
@@ -49,6 +50,7 @@
         :rules="formRules"
         :mode="nowMode"
         :columns="formColumns"
+        v-bind="$attrs"
         ref="customForm"
         @submit="onSubmit"
         @event="onEvent"
@@ -87,10 +89,11 @@ export default {
   },
   data() {
     return {
+      // 初始化后表单数据的默认值
+      initFormData: {},
       formData: {},
       formRules: {},
       formColumns: [],
-      isInitFormRules: false,
       items: itemsCom,
       lock: false
     }
@@ -189,7 +192,7 @@ export default {
       immediate: true,
       deep: true,
       handler(val) {
-        console.log('form', val)
+        // console.log('form', val)
 
         if (!this.lock) {
           this.lock = true
@@ -207,7 +210,7 @@ export default {
       immediate: true,
       deep: true,
       handler(val) {
-        console.log('value', val)
+        // console.log('value', val)
 
         if (!this.lock) {
           this.lock = true
@@ -238,8 +241,9 @@ export default {
     }
   },
   created() {
-    console.log('slot', this.$slots)
-    console.log('slot scope', this.$scopedSlots)
+    // console.log('slot', this.$slots)
+    // console.log('slot scope', this.$scopedSlots)
+    // 开发状态下修改了代码会重新渲染组件不重新初始化不会渲染
     if (process.env.NODE_ENV === 'development') {
       this.init()
     }
@@ -247,14 +251,12 @@ export default {
   methods: {
     init() {
       this.initColumns()
-      // if (!this.isInitFormRules || true) {
-      this.isInitFormRules = true
-      this.formRules = this.initFormRules()
-      // }
+      this.initFormRules()
     },
     // 初始化表内容
     initColumns() {
-      this.setFormData({})
+      var formData = {}
+      // this.setFormData({})
       var columns = [...this.columns]
       var addDefaultOpt = {}
       // 默认单个的配置
@@ -292,7 +294,7 @@ export default {
           item.field = item.key
         }
         // 设置表单数据
-        if (item.field && (typeof this.formData[item.field] === 'undefined' || this.formData[item.field] === '')) {
+        if (item.field && (typeof formData[item.field] === 'undefined' || formData[item.field] === '')) {
           const value = typeof item.value === 'undefined' ? '' : item.value
           let formDataValue = deepVal(item.field, this.detail, value)
 
@@ -301,8 +303,7 @@ export default {
               return isNaN(Number(it)) ? it : Number(it)
             })
           }
-
-          this.setFormData(item.field, formDataValue)
+          formData[item.field] = formDataValue
         }
         // 需要获取详情的标签数据
         if (item.label) {
@@ -319,9 +320,9 @@ export default {
         item.opts = Object.assign({}, column.opts, item.opts || {}, this.isEdit ? item.edit_opts : item.add_opts)
 
         // 默认选中第一个
-        if (item.label && this.formData[item.field] === '' && Object.keys(item.list).length) {
+        if (item.label && formData[item.field] === '' && Object.keys(item.list).length) {
           if (item.type === 'checkbox') {
-            this.setFormData(item.field, [])
+            formData[item.field] = []
           } else {
             let keys = Object.keys(item.list)
 
@@ -336,7 +337,7 @@ export default {
               if (Number.isInteger(Number(value))) {
                 value = Number(value)
               }
-              this.setFormData(item.field, value)
+              formData[item.field] = value
             }
           }
         }
@@ -344,8 +345,9 @@ export default {
         columns[index] = item
       }
 
-      console.log('form columns', columns, this.formData)
-
+      this.setFormData(formData)
+      this.initFormData = { ...formData }
+      console.log('form columns', columns, formData)
       this.formColumns = columns
 
       return columns
@@ -376,7 +378,7 @@ export default {
       })
 
       console.log('rules', rules)
-
+      this.formRules = rules
       return rules
     },
     onClickSubmit() {
@@ -393,14 +395,12 @@ export default {
     // 重置表单
     onReset() {
       this.reset()
-      this.clearValidate()
     },
     onClose() {
-      this.reset()
-      this.clearValidate()
     },
     onOpen() {
       this.clearValidate()
+      // this.reset()
     },
     // 监听表单元素触发的事件
     onEvent(e) {
@@ -409,12 +409,10 @@ export default {
       this.$emit('event', e)
     },
     reset() {
-      this.$refs.customForm.reset()
+      this.setFormData({ ...this.initFormData })
     },
     clearValidate() {
-      setTimeout(() => {
-        this.$refs.customForm.clearValidate()
-      }, 20)
+      this.$refs.customForm?.clearValidate()
     }
   }
 }
