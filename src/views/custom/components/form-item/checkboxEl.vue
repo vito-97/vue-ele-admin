@@ -19,6 +19,7 @@
 
 <script>
 import formItemMixin from './form-item-mixin'
+import { toArray } from '@/utils'
 
 export default {
   name: 'CheckboxEl',
@@ -35,6 +36,12 @@ export default {
         indeterminate: false
       }
     }
+  },
+  // 格式化数据
+  format(value) {
+    return toArray(value).map(it => {
+      return isNaN(Number(it)) ? it : Number(it)
+    })
   },
   watch: {}
 }

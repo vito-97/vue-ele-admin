@@ -32,6 +32,10 @@ const formItemMixin = {
       default: 'add'
     }
   },
+  // 格式化参数
+  format(value) {
+    return value
+  },
   computed: {
     // 获取列参数
     col() {

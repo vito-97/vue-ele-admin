@@ -10,6 +10,7 @@
       :close-on-click-modal="false"
       :width="width"
       :append-to-body="appendToBody"
+      :destroy-on-close="destroyOnClose"
       @open="onOpen">
       <custom-form-render
         v-model="formData"
@@ -76,7 +77,7 @@
 
 <script>
 import visible from '@/utils/mixin/visible'
-import { deepVal, toArray } from '@/utils'
+import { deepVal } from '@/utils'
 import itemsCom from '@/utils/form-item'
 import customFormMixin from '@/views/custom/mixin/custom-form'
 import CustomFormRender from './customFormRender'
@@ -124,6 +125,11 @@ export default {
       type: Object
     },
     appendToBody: {
+      type: Boolean,
+      default: false
+    },
+    // 关闭时销毁 Dialog 中的元素
+    destroyOnClose: {
       type: Boolean,
       default: false
     },
@@ -298,11 +304,10 @@ export default {
           const value = typeof item.value === 'undefined' ? '' : item.value
           let formDataValue = deepVal(item.field, this.detail, value)
 
-          if (item.type === 'checkbox') {
-            formDataValue = toArray(formDataValue).map(it => {
-              return isNaN(Number(it)) ? it : Number(it)
-            })
+          if (typeof itemsCom[item.type]?.format === 'function') {
+            formDataValue = itemsCom[item.type].format(formDataValue)
           }
+
           formData[item.field] = formDataValue
         }
         // 需要获取详情的标签数据
@@ -321,24 +326,20 @@ export default {
 
         // 默认选中第一个
         if (item.label && formData[item.field] === '' && Object.keys(item.list).length) {
-          if (item.type === 'checkbox') {
-            formData[item.field] = []
-          } else {
-            let keys = Object.keys(item.list)
+          let keys = Object.keys(item.list)
 
-            if (Array.isArray(item.list)) {
-              keys = keys.map(v => Number(v))
+          if (Array.isArray(item.list)) {
+            keys = keys.map(v => Number(v))
+          }
+
+          const key = keys.length ? keys[0] : null
+
+          if (key !== null) {
+            let value = item.opts.label_value ? item.list[key][item.opts.label_value] : key
+            if (Number.isInteger(Number(value))) {
+              value = Number(value)
             }
-
-            const key = keys.length ? keys[0] : null
-
-            if (key !== null) {
-              let value = item.opts.label_value ? item.list[key][item.opts.label_value] : key
-              if (Number.isInteger(Number(value))) {
-                value = Number(value)
-              }
-              formData[item.field] = value
-            }
+            formData[item.field] = value
           }
         }
 
@@ -397,6 +398,7 @@ export default {
       this.reset()
     },
     onClose() {
+      this.formRules = {}
     },
     onOpen() {
       this.clearValidate()
@@ -409,6 +411,7 @@ export default {
       this.$emit('event', e)
     },
     reset() {
+      // 赋值初始化的数据
       this.setFormData({ ...this.initFormData })
     },
     clearValidate() {
