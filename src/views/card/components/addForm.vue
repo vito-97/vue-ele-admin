@@ -30,7 +30,8 @@ export default {
       // 列配置
       columns: [
         { name: '卡号', field: 'card_no', opts: { required: true, maxlength: 20 }, value: '' },
-        { name: '余额', field: 'money', type: 'number', opts: { required: true }, value: 0 },
+        // { name: '余额', field: 'money', type: 'number', opts: { required: true }, value: 0 },
+        { name: '流量', field: 'flow', type: 'number', opts: { required: true }, value: 0 },
         { name: '用户', field: 'user_id', opts: { required: true, control: 'user', name: 'nickname' }, type: 'select_table' },
         { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },
         { name: '使用时间', field: 'use_time', type: 'date_time' },

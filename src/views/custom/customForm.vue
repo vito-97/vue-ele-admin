@@ -227,6 +227,14 @@ export default {
           }, 10)
         }
       }
+    },
+    columns: {
+      deep: true,
+      handler(val) {
+        if (val) {
+          this.init()
+        }
+      }
     }
   },
   computed: {
@@ -406,8 +414,8 @@ export default {
     },
     // 监听表单元素触发的事件
     onEvent(e) {
-      this.$emit(e.field + '-' + e.type, e.payload)
-      this.$emit(e.field + '-event', { type: e.type, payload: e.payload })
+      // this.$emit(e.field + '-' + e.type, e.payload)
+      // this.$emit(e.field + '-event', { type: e.type, payload: e.payload })
       this.$emit('event', e)
     },
     reset() {

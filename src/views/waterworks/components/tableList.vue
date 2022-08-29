@@ -34,7 +34,7 @@ export default {
         { name: '账号', field: 'username', width: 150 },
         { name: '昵称', field: 'nickname', width: 150 },
         { name: '头像', field: 'avatar', type: 'image' },
-        { name: '手机号', field: 'tel' },
+        { name: '手机号', field: 'tel', width: 120 },
         { name: '邮箱', field: 'email' },
         { name: '供水量', field: 'used_flow', after: 'L' },
         { name: '水务公司', field: 'water_company.nickname' },

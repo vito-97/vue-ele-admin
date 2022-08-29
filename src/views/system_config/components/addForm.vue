@@ -9,6 +9,7 @@
       :rules="rules"
       :append-to-body="appendToBody"
       :error="error"
+      v-model="formData"
       @submit="onSubmit"
     >
 
@@ -22,6 +23,7 @@ import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
 import ENUM from '@/utils/enum'
 import formItemCom from '@/utils/form-item'
+import validateRules from '@/views/system_config/components/validateRules'
 
 const MUST_LIST_ITEM = []
 
@@ -37,7 +39,7 @@ export default {
   data() {
     return {
       rules: {},
-      // 列配置
+      formData: {},
       columns: [
         { name: '名称', field: 'name', opts: { required: true, maxlength: 50 } },
         {
@@ -52,40 +54,16 @@ export default {
           name: '验证规则',
           field: 'validate',
           opts: { required: false, multiple: true },
-          list: {
-            require: '必填',
-            isNotEmpty: '不能为空',
-            email: '邮箱',
-            mobile: '手机号',
-            idCard: '身份证',
-            checkPassword: '密码',
-            number: '数字',
-            integer: '整数',
-            isPositiveInteger: '正整数',
-            float: '浮点数',
-            date: '日期',
-            url: '链接',
-            alpha: '纯字母',
-            alphaNum: '字母和数字',
-            alphaDash: '字母和数字，下划线_及破折号-',
-            chs: '汉字',
-            chsAlpha: '汉字和字母',
-            chsAlphaNum: '汉字、字母和数字',
-            chsDash: '汉字、字母、数字和下划线_及破折号-',
-            lower: '小写字符',
-            upper: '大写字符',
-            checkIDArray: '整数型数字数组',
-            checkSwitch: '开关',
-            activeUrl: '有效的域名或者IP',
-            macAddr: 'MAC地址',
-            zip: '邮政编码',
-            boolean: '布尔值',
-            array: '数组'
-          },
+          list: validateRules,
           type: 'select'
         },
         { name: '变量键', field: 'key', add_opts: { required: true, maxlength: 50 }, edit_opts: { readonly: true } },
-        { name: '变量值', field: 'value', opts: { required: false } },
+        {
+          name: '变量值',
+          field: 'value',
+          opts: { required: this.formData?.validate?.includes('require') },
+          type: this.formData?.type || 'input'
+        },
         {
           name: '变量选项',
           field: 'list',
@@ -109,6 +87,7 @@ export default {
       ]
     }
   },
+  computed: {},
   watch: {},
   methods: {}
 }

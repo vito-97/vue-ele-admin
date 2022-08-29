@@ -13,6 +13,7 @@
     :name="field"
     :picker-options="opt.picker_options"
     :value-format="opt.format"
+    :default-time="opt.defaultTime"
     style="width: 100%;"
   >
   </el-date-picker>
@@ -34,7 +35,8 @@ export default {
         type: 'datetime' + (isRange ? 'range' : ''),
         format: 'yyyy-MM-dd HH:mm:ss',
         is_range: false,
-        picker_options: {}
+        picker_options: {},
+        defaultTime: null
       }
     }
   }

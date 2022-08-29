@@ -13,6 +13,7 @@
     :name="field"
     :picker-options="opt.picker_options"
     :value-format="opt.format"
+    :default-time="opt.defaultTime"
     style="width: 100%;"
   >
 
@@ -35,7 +36,8 @@ export default {
         type: 'date' + (isRange ? 'range' : ''),
         format: 'yyyy-MM-dd',
         is_range: false,
-        picker_options: {}
+        picker_options: {},
+        defaultTime: null
       }
     }
   }

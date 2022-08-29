@@ -10,7 +10,7 @@
       :append-to-body="appendToBody"
       :hide-button="true"
       :error="error"
-      @url-success="onUploadSuccess"
+      @event="onEvent"
       @submit="onSubmit"
     >
 
@@ -48,7 +48,7 @@ export default {
   watch: {},
   methods: {
     // 上传成功事件
-    onUploadSuccess({ mode }) {
+    onEventUrlSuccess({ mode }) {
       if (mode === 'add') {
         this.close()
         this.flush()

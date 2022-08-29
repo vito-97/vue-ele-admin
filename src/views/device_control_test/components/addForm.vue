@@ -163,7 +163,7 @@ export default {
     }
   },
   methods: {
-    onEvent(e) {
+    onEventListener(e) {
       if (['qrcode', 'deviceNo', 'start', 'pause', 'finish', 'clear'].includes(e.field)) {
         return this.request(e.field)
       }

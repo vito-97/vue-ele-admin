@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       columns: [
-        { name: '名称', field: 'name', width: 150 },
+        { name: '名称', field: 'name', width: 200 },
         { name: '价格', field: 'price', after: '元', type: 'tag' },
         { name: '流量', field: 'flow', after: 'L', type: 'tag' },
         { name: '赠送流量', field: 'give_flow', after: 'L', type: 'tag' },

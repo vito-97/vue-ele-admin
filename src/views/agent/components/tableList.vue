@@ -34,7 +34,7 @@ export default {
         { name: '账号', field: 'username', width: 150 },
         { name: '昵称', field: 'nickname', width: 150 },
         { name: '头像', field: 'avatar', type: 'image' },
-        { name: '手机号', field: 'tel' },
+        { name: '手机号', field: 'tel', width: 120 },
         { name: '报障电话', field: 'phone' },
         { name: '邮箱', field: 'email' },
         { name: '维护员注册二维码', field: 'extend.repair_register_qrcode', type: 'image' },

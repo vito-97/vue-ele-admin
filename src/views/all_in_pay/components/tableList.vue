@@ -32,7 +32,7 @@ export default {
       columns: [
         { name: '名称', field: 'name', width: 150 },
         { name: 'APP ID', field: 'app_id' },
-        { name: 'CUS ID', field: 'cus_id' },
+        { name: 'CUS ID', field: 'cus_id', width: 150 },
         { name: '已收款', field: 'amount', before: '￥' },
         { name: '已退款', field: 'refund_amount', before: '￥' },
         { name: '运营商', field: 'agent.nickname' },

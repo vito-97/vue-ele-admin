@@ -485,3 +485,31 @@ export function filterHtml(string) {
 
   return string.replace(reg, '')
 }
+
+/**
+ * 下划线转驼峰（首字母小写）
+ * @param value
+ * @returns {*}
+ */
+export function word2camel(value) {
+  return value.replace(/\_(\w)/g, (_, letter) => letter.toUpperCase())
+}
+
+/**
+ * 下划线转驼峰（首字母大写）
+ * @param value
+ * @returns {*}
+ */
+export function word2studly(value) {
+  value = value.replace(/\_(\w)/g, (_, letter) => letter.toUpperCase())
+  return value.substring(0, 1).toUpperCase() + value.substring(1)
+}
+
+/**
+ * 驼峰转下划线
+ * @param value
+ * @returns {string}
+ */
+export function word2snake(value) {
+  return value.replace(/([A-Z])/g, '_$1').toLowerCase()
+}
