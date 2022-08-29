@@ -443,7 +443,7 @@ export function controlName(index) {
  * @returns {*|*[]}
  */
 export function toArray(data, char = ',') {
-  return Array.isArray(data) ? data : (typeof data === 'undefined' || data === '' ? [] : data.split(char))
+  return Array.isArray(data) ? data : (typeof data === 'undefined' || data === '' ? [] : data.toString().split(char))
 }
 
 export function isSuperAdmin(role) {

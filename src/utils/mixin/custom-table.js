@@ -42,6 +42,18 @@ const tableMixin = {
     selectMultiple: {
       type: Boolean,
       default: false
+    },
+    // 选择模式下已被选择的数据
+    selectedValue: {
+      type: [Number, String, Array],
+      default() {
+        return []
+      }
+    },
+    // 选择模式下取数据的键
+    selectedPk: {
+      type: String,
+      default: 'id'
     }
   },
   data() {

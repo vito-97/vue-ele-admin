@@ -12,6 +12,8 @@
       :control="control"
       :mode="mode"
       :select-multiple="selectMultiple"
+      :selected-value="selectedValue"
+      :selected-pk="selectedPk"
       @tap-head-btn="onTapHeadBtn"
       @tap-row-btn="onTapRowBtn"
       @row-dblclick="onRowDbClick"

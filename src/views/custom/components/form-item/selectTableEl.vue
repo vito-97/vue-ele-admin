@@ -34,10 +34,13 @@
       >
         <!--  可以用v-if动态挂载和移除组件-->
         <component
+          v-if="com"
           :is="com"
           mode="select"
           :query="opt.query"
           :select-multiple="opt.multiple"
+          :selected-value="val"
+          :selected-pk="opt.pk"
           @select="onSelect"
           @select-multiple="onSelectMultiple"
         >
@@ -85,7 +88,12 @@ export default {
     // 获取组件
     com() {
       if (this.control && !com[this.control]) {
-        com[this.control] = require('@/views/' + this.control + '/index').default
+        try {
+          com[this.control] = require('@/views/' + this.control + '/index').default
+        } catch (e) {
+          console.log(`加载控制器${this.control}出错`, e)
+          return ''
+        }
       }
       return com[this.control]
     },
@@ -95,7 +103,7 @@ export default {
     // 获取label名称
     labelName() {
       if (!this.opt.name) {
-        console.warn(this.field, 'select table not set label name')
+        console.warn(this.field, '选择数据列表未设置label名称')
       }
       const key = `${this.key}.${this.opt.name}`
 
@@ -124,7 +132,7 @@ export default {
         btn_text: '选择',
         btn_size: 'small',
         btn_icon: '',
-        title: '选择%s',
+        title: '选择%s', // dialog标题，将%s替换为控制器名称
         name: '', // 展示的名称
         pk: 'id', // 主键
         key: '', // 对象的KEY

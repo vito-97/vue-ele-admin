@@ -9,6 +9,7 @@
       :curd="curd"
       :mode="mode"
       :select-multiple="selectMultiple"
+      v-bind="$attrs"
       @select="onSelect"
       @select-multiple="onSelectMultiple"
     >

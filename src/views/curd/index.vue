@@ -12,6 +12,8 @@
         v-loading="listLoading"
         :mode="mode"
         :select-multiple="selectMultiple"
+        :selected-value="selectedValue"
+        :selected-pk="selectedPk"
         element-loading-text="拼命加载中"
         @save="onSave"
         @update="onUpdate"
@@ -99,6 +101,18 @@ export default {
     mode: {
       type: String,
       default: 'show'
+    },
+    // 选择模式下已被选择的数据
+    selectedValue: {
+      type: [Number, String, Array],
+      default() {
+        return []
+      }
+    },
+    // 选择模式下取数据的键
+    selectedPk: {
+      type: String,
+      default: 'id'
     },
     selectMultiple: {
       type: Boolean

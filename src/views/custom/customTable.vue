@@ -67,6 +67,7 @@
     </div>
     <slot name="content" :column="cols">
       <el-table
+        v-if="hasCurdAuth('index') && visible"
         :data="list"
         :row-key="rowKey"
         :stripe="stripe"
@@ -75,8 +76,8 @@
         :tree-props="treeProps"
         :height="height"
         class="table-box"
-        v-if="hasCurdAuth('index') && visible"
         ref="table"
+        v-bind="$attrs"
         @selection-change="onTableSelectionChange"
         @row-dblclick="onTableRowDbClick"
         @filter-change="onTableFilter"
@@ -265,7 +266,7 @@ import { getLimit, pageSizes, setLimit } from '@/utils/list'
 import checkPermission from '@/utils/permission'
 import Pagination from '@/components/Pagination'
 import customForm from '@/views/custom/customForm'
-import { deepVal, debounce, isPositiveInteger } from '@/utils'
+import { deepVal, debounce, isPositiveInteger, toArray } from '@/utils'
 import itemsCom from '@/utils/table-column'
 import md5 from 'js-md5'
 
@@ -519,6 +520,18 @@ export default {
     },
     hideColumnsControl: {
       type: Boolean
+    },
+    // 选择模式下已被选择的数据
+    selectedValue: {
+      type: [Number, String, Array],
+      default() {
+        return []
+      }
+    },
+    // 选择模式下取数据的键
+    selectedPk: {
+      type: String,
+      default: 'id'
     }
   },
   filters: {},
@@ -531,6 +544,8 @@ export default {
       if (!this.visible) {
         this.visible = true
       }
+
+      this.setSelectedRows()
     }
     // 监听参数的变化
     /*    '$route.query': {
@@ -547,6 +562,12 @@ export default {
         }*/
   },
   computed: {
+    // 选中数据转数组
+    selectedValueArray() {
+      var value = toArray(this.selectedValue)
+
+      return value
+    },
     confirmIsCustomForm() {
       return this.confirm.input && Array.isArray(this.confirm.input)
     },
@@ -905,6 +926,22 @@ export default {
     }
   },
   methods: {
+    /**
+     * 设置已选中的行
+     */
+    setSelectedRows() {
+      if (this.selectedValue) {
+        for (let item of this.list) {
+          let v = (item[this.selectedPk] || '').toString()
+          // 选中行
+          if (v && this.selectedValueArray.includes(v)) {
+            this.$nextTick(() => {
+              this.$refs.table.toggleRowSelection(item, true)
+            })
+          }
+        }
+      }
+    },
     // 合并传入的query string
     mergeQueryString() {
       const query = this.$route.query
