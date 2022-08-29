@@ -256,7 +256,7 @@
       </span>
     </el-dialog>
 
-    <el-backtop v-if="backtop"></el-backtop>
+    <el-backtop v-if="backTop"></el-backtop>
   </div>
 </template>
 
@@ -333,7 +333,8 @@ export default {
     },
     // 数据列表
     list: {
-      type: Array
+      type: Array,
+      required: true
     },
     // 数据列表的label
     listLabel: {
@@ -352,7 +353,8 @@ export default {
     },
     // 渲染列配置
     columns: {
-      type: Array
+      type: Array,
+      required: true
     },
     // 关键词
     kw: {
@@ -487,7 +489,7 @@ export default {
       default: '编号'
     },
     // 是否显示返回顶部
-    backtop: {
+    backTop: {
       type: Boolean,
       default: true
     },

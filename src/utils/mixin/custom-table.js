@@ -1,6 +1,7 @@
 import customTable from '@/views/custom/customTable'
 import checkPermission from '@/utils/permission'
 import curd from '@/api/curd'
+import { word2studly } from '@/utils'
 
 const tableMixin = {
   props: {
@@ -98,7 +99,7 @@ const tableMixin = {
     // 点击头部按钮
     onTapHeadBtn(args) {
       const key = args.key
-      const method = 'onTapHeadBtn' + this.ucfirst(key)
+      const method = 'onTapHeadBtn' + word2studly(key)
 
       if (this[method] && typeof this[method] === 'function') {
         this[method](args)
@@ -109,7 +110,7 @@ const tableMixin = {
     // 点击行的按钮
     onTapRowBtn(args) {
       const key = args.key
-      const method = 'onTapRowBtn' + this.ucfirst(key)
+      const method = 'onTapRowBtn' + word2studly(key)
 
       if (this[method] && typeof this[method] === 'function') {
         this[method](args.row, args.index, args.data)
@@ -156,11 +157,6 @@ const tableMixin = {
       } else if (this.mode === 'select' && this.optional(row, 0)) {
         this.onTapRowBtnSelect(row, 0)
       }
-    },
-    ucfirst(string) {
-      string = string.substring(0, 1).toUpperCase() + string.substring(1)
-
-      return string
     },
     onUpdateItem(args) {
       this.$emit('update-item', args)
