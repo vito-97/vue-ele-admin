@@ -3,7 +3,7 @@
     :column="column"
     :detail="detail"
     :form-data="formData"
-    :attr="{list_type:'picture',accept:'.ppt,.pptx','tip':'只能上传ppt'}"
+    :attr="opt"
     :mode="mode"
     @event="eventBubbling"
   >
@@ -19,7 +19,16 @@ export default {
   name: 'UploadPptEl',
   alias: '上传PPT',
   components: { uploadEl },
-  mixins: [formItemMixin]
+  mixins: [formItemMixin],
+  data() {
+    return {
+      opts: {
+        list_type: 'text',
+        accept: '.ppt,.pptx',
+        tip: '只能上传ppt'
+      }
+    }
+  }
 }
 </script>
 

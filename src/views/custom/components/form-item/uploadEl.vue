@@ -24,7 +24,7 @@
     :before-upload="onBeforeUpload"
     :on-exceed="onExceed">
     <el-button size="small" type="primary">{{ opt.btn_text }}</el-button>
-    <div slot="tip" class="el-upload__tip">{{ opt.tip }}</div>
+    <div slot="tip" class="el-upload__tip" v-if="opt.tip">{{ opt.tip }}</div>
   </el-upload>
 </template>
 
@@ -64,7 +64,7 @@ export default {
         // 自动上传
         auto_upload: true,
         file_list: [],
-        btn_text: '点击上传',
+        btn_text: '上传',
         tip: '只能上传图片/mp4/mp3/文档/图表/ppt/pdf/zip/rar'
       },
       files: {}

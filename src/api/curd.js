@@ -40,7 +40,11 @@ function curd(control, version = 'v1') {
       return request({
         url: `${version}/${control}${uri}`,
         method: 'POST',
-        data
+        data,
+        onUploadProgress: function (progressEvent) {
+          let complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
+          console.log('上传 ' + complete)
+        }
       })
     },
     /**

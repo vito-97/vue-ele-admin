@@ -3,7 +3,7 @@
     :column="column"
     :detail="detail"
     :form-data="formData"
-    :attr="{list_type:'picture',accept:'.mp3,audio/mpeg','tip':'只能上传mp3'}"
+    :attr="opt"
     :mode="mode"
     @event="eventBubbling"
   >
@@ -19,7 +19,16 @@ export default {
   name: 'UploadMp3El',
   alias: '上传MP3',
   components: { uploadEl },
-  mixins: [formItemMixin]
+  mixins: [formItemMixin],
+  data() {
+    return {
+      opts: {
+        list_type: 'text',
+        accept: '.mp3,audio/mpeg',
+        tip: '只能上传mp3'
+      }
+    }
+  }
 }
 </script>
 

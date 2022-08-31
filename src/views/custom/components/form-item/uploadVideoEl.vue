@@ -3,7 +3,7 @@
     :column="column"
     :detail="detail"
     :form-data="formData"
-    :attr="{list_type:'picture',accept:'video/mp4','tip':'只能上传mp4'}"
+    :attr="opt"
     :mode="mode"
     @event="eventBubbling"
   >
@@ -19,7 +19,16 @@ export default {
   name: 'UploadVideoEl',
   alias: '上传视频',
   components: { uploadEl },
-  mixins: [formItemMixin]
+  mixins: [formItemMixin],
+  data() {
+    return {
+      opts: {
+        list_type: 'text',
+        accept: 'video/mp4',
+        tip: '只能上传mp4'
+      }
+    }
+  }
 }
 </script>
 

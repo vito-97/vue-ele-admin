@@ -3,7 +3,7 @@
     :column="column"
     :detail="detail"
     :form-data="formData"
-    :attr="{list_type:'picture',accept:'.xls,.xlsx','tip':'只能上传xls'}"
+    :attr="opt"
     :mode="mode"
     @event="eventBubbling"
   >
@@ -19,7 +19,16 @@ export default {
   name: 'UploadXlsEl',
   alias: '上传表格',
   components: { uploadEl },
-  mixins: [formItemMixin]
+  mixins: [formItemMixin],
+  data() {
+    return {
+      opts: {
+        list_type: 'text',
+        accept: '.xls,.xlsx',
+        tip: '只能上传xls'
+      }
+    }
+  }
 }
 </script>
 

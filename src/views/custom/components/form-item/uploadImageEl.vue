@@ -3,7 +3,7 @@
     :column="column"
     :detail="detail"
     :form-data="formData"
-    :attr="{list_type:'picture',accept:'image/*','tip':'只能上传jpg/png/gif'}"
+    :attr="opt"
     :mode="mode"
     @event="eventBubbling"
   >
@@ -18,7 +18,16 @@ export default {
   name: 'UploadImageEl',
   alias: '上传图片',
   components: { uploadEl },
-  mixins: [formItemMixin]
+  mixins: [formItemMixin],
+  data() {
+    return {
+      opts: {
+        list_type: 'picture',
+        accept: 'image/*',
+        tip: '只能上传jpg/png/gif'
+      }
+    }
+  }
 }
 </script>
 

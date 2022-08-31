@@ -3,7 +3,7 @@
     :column="column"
     :detail="detail"
     :form-data="formDataValue"
-    :attr="{list_type:'picture',accept:'.pdf','tip':'只能上传pdf'}"
+    :attr="opt"
     :mode="mode"
     @event="eventBubbling"
   >
@@ -19,7 +19,16 @@ export default {
   name: 'UploadPdfEl',
   alias: '上传PDF',
   components: { uploadEl },
-  mixins: [formItemMixin]
+  mixins: [formItemMixin],
+  data() {
+    return {
+      opts: {
+        list_type: 'text',
+        accept: '.pdf',
+        tip: '只能上传pdf'
+      }
+    }
+  }
 }
 </script>
 

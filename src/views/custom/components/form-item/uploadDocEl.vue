@@ -2,7 +2,7 @@
   <upload-el
     :column="column"
     :detail="detail"
-    :attr="{list_type:'picture',accept:'.doc,.docx',tip:'只能上传Word文档'}"
+    :attr="opt"
     @event="eventBubbling"
   >
   </upload-el>
@@ -16,7 +16,16 @@ export default {
   name: 'UploadDocEl',
   alias: '上传文档',
   components: { uploadEl },
-  mixins: [formItemMixin]
+  mixins: [formItemMixin],
+  data() {
+    return {
+      opts: {
+        list_type: 'text',
+        accept: '.doc,.docx',
+        tip: '只能上传word文档'
+      }
+    }
+  }
 }
 </script>
 
