@@ -30,6 +30,7 @@
     <!--    添加或修改-->
     <template v-if="hasCurdAuth('edit') && (hasCurdAuth('save') || hasCurdAuth('update')) && formCom">
       <component
+        v-if="dialogVisible"
         :is="formCom"
         :detail.sync="detail"
         :id.sync="detailID"

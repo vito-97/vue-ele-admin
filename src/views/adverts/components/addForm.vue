@@ -53,7 +53,7 @@ export default {
           type: 'select_table',
           edit_opts: { disabled: false }
         },
-        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } }
+        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true }, value: 1 }
       ]
     }
   },
