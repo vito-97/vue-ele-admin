@@ -94,7 +94,7 @@
           v-if="!hidePk && isShowColumn('pk')"
           :prop="pk"
           :label="pkLabel"
-          key="pk"
+          :key="pk"
           width="80">
         </el-table-column>
         <!--      渲染列-->

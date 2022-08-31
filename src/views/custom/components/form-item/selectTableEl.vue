@@ -9,7 +9,17 @@
             :column="column"
             :mode="mode"
             :attr="{clearable:true}"
-            class="item"></input-el>
+            class="item">
+          </input-el>
+          <el-button
+            class="select-btn"
+            type="primary"
+            :icon="opt.btn_icon"
+            :size="opt.btn_size"
+            @click="onClickUploadImage"
+            :disabled="disabled">
+            {{ uploadBtnText }}
+          </el-button>
         </template>
         <el-button
           class="select-btn"
@@ -73,9 +83,10 @@
 
 <script>
 import formItemMixin from './form-item-mixin'
-import { deepVal } from '@/utils'
+import { deepVal, showLoading, hideLoading } from '@/utils'
 import imageEl from '@/views/custom/components/table-column/imageEl'
 import inputEl from '@/views/custom/components/form-item/inputEl'
+import { upload } from '@/api/upload'
 
 const com = {}
 
@@ -126,6 +137,10 @@ export default {
     btnText() {
       return this.getText(this.opt.btn_text)
     },
+    // 上传按钮文字
+    uploadBtnText() {
+      return this.getText(this.opt.upload_btn_text)
+    },
     width() {
       return this.isMobile ? '95%' : '60%'
     }
@@ -138,6 +153,7 @@ export default {
         multiple: false,
         btn_text: '选择',
         btn_size: 'small',
+        upload_btn_text: '上传',
         btn_icon: '',
         title: '选择%s', // dialog标题，将%s替换为控制器名称
         name: '', // 展示的名称
@@ -150,6 +166,37 @@ export default {
     }
   },
   methods: {
+    /**
+     * 点击上传按钮
+     * @returns {Promise<void>}
+     */
+    async onClickUploadImage() {
+      // 打开文件选择器
+      var handlers = await window.showOpenFilePicker(
+        {
+          types: [{
+            accept: {
+              'image/*': ['.png', '.gif', '.jpeg', '.jpg']
+            }
+          }]
+        }
+      )
+
+      // 遍历选择的文件
+      for (const image of handlers) {
+        // 获取文件内容
+        const file = await image.getFile()
+        showLoading('上传中...')
+        await upload(file).then(res => {
+          hideLoading()
+          var detail = res.data.detail
+          this.onSelect({ row: detail, index: 0 })
+        }, err => {
+          console.log(err)
+          hideLoading()
+        })
+      }
+    },
     onClickChoose() {
       this.open()
     },
