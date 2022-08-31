@@ -1,6 +1,11 @@
 <template>
   <div>
-    <el-tabs type="card" :addable="checkAuth('edit') && checkAuth('save') && mode === 'page'" @tab-add="onTabPaneAdd">
+    <el-tabs
+      type="card"
+      :addable="checkAuth('edit') && checkAuth('save') && mode === 'show'"
+      v-model="configActive"
+      @tab-add="onTabPaneAdd"
+    >
       <!--      管理配置菜单-->
       <el-tab-pane label="配置管理" v-if="checkAuth('index')">
         <span slot="label"><i class="el-icon-menu"></i> 配置管理</span>
@@ -28,7 +33,7 @@
         </custom-table>
       </el-tab-pane>
       <!--      获取所有配置菜单-->
-      <template v-for="(item,index) in list">
+      <template v-for="(item,index) in tabs">
         <el-tab-pane
           v-if="'show' === mode && item.status && checkAuth('index') && checkPermission('system_config/index') && checkPermission('system_config/save')"
           :label="item.name"
@@ -37,7 +42,10 @@
         >
           <span slot="label"><i :class="item.icon" v-if="item.icon"></i> {{ item.name }}</span>
           <template v-if="item.children && item.children.length">
-            <el-tabs :tabPosition="isMobile ? 'top' : 'left'">
+            <el-tabs
+              :tabPosition="isMobile ? 'top' : 'left'"
+              v-model="configSubActive[item.key]"
+            >
               <template v-for="(child,idx) in item.children">
                 <el-tab-pane
                   v-if="child.status"
@@ -77,10 +85,15 @@
 <script>
 import tableMixin from '@/utils/mixin/custom-table'
 import systemConfigForm from '@/views/system_config_tab/components/systemConfigForm'
+import { deepClone } from '@/utils'
 
 export default {
   data() {
     return {
+      configActive: '1',
+      configSubActive: {},
+      isSetActive: false,
+      tabs: [],
       rowBtn: [
         {
           name: '添加下级分类', key: 'children', mode: ['show'], auth: this.getFullAuth('save'), show: this.optional
@@ -88,6 +101,7 @@ export default {
       ],
       columns: [
         { name: '名称', field: 'name', width: 200 },
+        { name: '键名', field: 'key', width: 200 },
         { name: '图标', field: 'icon', width: 150, type: 'icon' },
         { name: '排序', field: 'sort', width: 100 },
         { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
@@ -101,7 +115,11 @@ export default {
   mixins: [
     tableMixin
   ],
-  computed: {},
+  computed: {
+    currentKey() {
+      return this.$route.query.key || ''
+    }
+  },
   props: {
     pagination: {
       type: Boolean,
@@ -109,13 +127,62 @@ export default {
     }
   },
   filters: {},
-  watch: {},
+  watch: {
+    list: {
+      // immediate: true,
+      handler(value) {
+        if (value.length) {
+          this.setTabs()
+
+          if (this.currentKey && !this.isSetActive) {
+            this.isSetActive = true
+            this.setActiveTab()
+          }
+        }
+      }
+    }
+  },
   created() {
 
   },
   destroyed() {
   },
   methods: {
+    /**
+     * 深度拷贝一份数据用来遍历生成
+     * 添加、刷新操作不会影响到现已生成的
+     */
+    setTabs() {
+      this.tabs = deepClone(this.list)
+    },
+    // 设置激活的tab
+    setActiveTab() {
+      var key = this.currentKey
+      var b = false
+      for (let [index, item] of this.list.entries()) {
+        let n = (index + 1).toString()
+        if (item.key === key) {
+          this.$nextTick(() => {
+            this.configActive = n
+          })
+          break
+        } else {
+          for (let [i, it] of item.children.entries()) {
+            if (it.key === key) {
+              this.$nextTick(() => {
+                this.configActive = n
+                this.$set(this.configSubActive, item.key, i.toString())
+              })
+              b = true
+              break
+            }
+          }
+          if (b) {
+            break
+          }
+        }
+      }
+    },
     // 添加配置分类
     onTabPaneAdd() {
       this.onTapHeadBtnSave()

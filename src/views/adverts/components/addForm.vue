@@ -30,7 +30,6 @@ export default {
       // 列配置
       columns: [
         { name: '标题', field: 'title', opts: { required: true, maxlength: 50 } },
-        { name: '标签', field: 'tag', opts: { required: true, maxlength: 50 }, type: 'tag' },
         // { name: '图片', field: 'image', opts: { required: true, maxlength: 255 }, type: 'upload_image' },
         {
           name: '图片',

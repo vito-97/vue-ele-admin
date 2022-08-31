@@ -98,10 +98,10 @@
           width="80">
         </el-table-column>
         <!--      渲染列-->
-        <template v-for="(it,i) in cols">
+        <template v-for="it in cols">
           <el-table-column
             v-if="checkColVisible(it)"
-            :key="i"
+            :key="it.field"
             :fixed="it.fixed"
             :prop="it.prop || it.field"
             :label="it.name"
@@ -208,7 +208,6 @@
 
           </template>
         </el-table-column>
-
       </el-table>
       <!--    分页-->
       <div class="page-box" v-if="pagination">

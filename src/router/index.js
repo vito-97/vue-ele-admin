@@ -209,6 +209,14 @@ export const asyncRoutes = [
           title: '服务费管理',
           auth: ['service_charge/index']
         }
+      },
+      {
+        path: '/system_config_tab/index?key=service_charge',
+        name: 'ServiceChargeSetting',
+        meta: {
+          title: '服务费设置',
+          auth: ['system_config_tab/index', 'system_config/index', 'system_config/save']
+        }
       }
     ]
   },

@@ -30,6 +30,7 @@ export default {
       // 列配置
       columns: [
         { name: '名称', field: 'name', opts: { required: true, maxlength: 50 } },
+        { name: '键名', field: 'key', opts: { required: true, maxlength: 30 } },
         { name: '图标', field: 'icon', opts: { required: false, maxlength: 30 }, type: 'icon' },
         { name: '排序', field: 'sort', type: 'number' },
         {

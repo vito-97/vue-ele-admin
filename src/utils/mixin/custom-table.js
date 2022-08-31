@@ -139,11 +139,11 @@ const tableMixin = {
       this.$emit('flush')
     },
     // 删除
-    onTapHeadBtnDelete(args) {
+    onTapHeadBtnDelete(args = {}) {
       this.$emit('delete-multiple', args)
     },
     // 添加
-    onTapHeadBtnSave(args) {
+    onTapHeadBtnSave(args = {}) {
       this.$emit('save', args)
     },
     // 更新
