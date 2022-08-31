@@ -174,7 +174,7 @@ export default {
   watch: {
     // 是否展示
     Visible: {
-      // immediate: true,
+      immediate: true,
       handler(val) {
         if (val) {
           this.init()
