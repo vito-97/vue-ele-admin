@@ -276,7 +276,7 @@ export default {
     // 请求接口删除
     delete(ids) {
       this.showLoading('删除中...')
-      const method = this.deleteApi || this.api.delete
+      const method = this.deleteApi || this.api.destroy
       return method(ids).then(res => {
         this.hideLoading()
 
@@ -326,7 +326,7 @@ export default {
       const method = this.changeApi || this.api.change
       return method(id, field, value).then(res => {
         this.hideLoading()
-        this.$set(this.list[index], field, value)
+        this.$set(this.list[index], { field, value })
       }, (err) => {
         this.hideLoading()
         this.$message.error(err.message || '更新数据失败')
