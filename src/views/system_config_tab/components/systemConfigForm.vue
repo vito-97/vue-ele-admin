@@ -1,6 +1,14 @@
 <template>
   <div class="system-config-form-box">
-    <el-button type="primary" icon="el-icon-plus" size="mini" @click="onSaveConfig" class="add-config-btn">添加配置</el-button>
+    <el-button
+      type="primary"
+      icon="el-icon-plus"
+      size="mini"
+      @click="onSaveConfig"
+      class="add-config-btn"
+      v-if="showAddBtn"
+    >添加配置
+    </el-button>
     <!--    配置信息-->
     <custom-form
       :columns="columns"
@@ -28,7 +36,6 @@ import { showLoading, hideLoading } from '@/utils'
 import systemConfigAddForm from '@/views/system_config/components/addForm'
 
 const API = curd('system_config')
-
 export default {
   name: 'SystemConfigForm',
   components: { customForm, systemConfigAddForm },
@@ -37,7 +44,8 @@ export default {
       rules: {},
       error: {},
       configError: {},
-      visible: false
+      visible: false,
+      showAddBtn: process.env.NODE_ENV === 'development'
     }
   },
   props: {
@@ -107,7 +115,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add-config-btn{
+.add-config-btn {
   margin-bottom: 15px;
 }
 </style>

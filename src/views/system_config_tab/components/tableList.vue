@@ -90,7 +90,7 @@ import { deepClone } from '@/utils'
 export default {
   data() {
     return {
-      configActive: '1',
+      configActive: '0',
       configSubActive: {},
       isSetActive: false,
       tabs: [],
@@ -139,6 +139,11 @@ export default {
             this.setActiveTab()
           }
         }
+      }
+    },
+    currentKey(value) {
+      if (value) {
+        this.setActiveTab()
       }
     }
   },
