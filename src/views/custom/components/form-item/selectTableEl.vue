@@ -50,7 +50,14 @@
       <div v-if="isFormat('image')" class="label-name">
         <image-el :val="labelName" :col="{opts:{size:opt.imageSize}}" v-if="formData[field]"></image-el>
       </div>
-      <el-tag v-show="labelName" size="medium" class="label-name" @click="onClickChoose" v-else>
+      <el-tag
+        v-show="labelName"
+        :closable="!disabled"
+        size="medium"
+        class="label-name"
+        @click="onClickChoose"
+        @close="onTagClose"
+        v-else>
         {{ labelName }}
       </el-tag>
     </template>
@@ -158,7 +165,12 @@ export default {
 
     },
     onClose() {
-
+    },
+    onTagClose() {
+      if (!this.disabled) {
+        this.$set(this.formData, this.field, '')
+        this.$set(this.detail, this.key, {})
+      }
     },
     isFormat(s) {
       return s === this.opt.format

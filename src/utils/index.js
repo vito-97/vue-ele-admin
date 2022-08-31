@@ -446,6 +446,23 @@ export function toArray(data, char = ',') {
   return Array.isArray(data) ? data : (typeof data === 'undefined' || data === '' ? [] : data.toString().split(char))
 }
 
+/**
+ * 转字符串
+ * @param data
+ * @param join
+ * @returns {string|*}
+ */
+export function toString(data, join = ',') {
+  var type = typeof data
+  if (type === 'string') {
+    return data
+  } else if (Array.isArray(data)) {
+    return data.join(join)
+  } else {
+    return JSON.stringify(data)
+  }
+}
+
 export function isSuperAdmin(role) {
   return role && role.key === 'admin'
 }

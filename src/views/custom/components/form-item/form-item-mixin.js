@@ -1,4 +1,4 @@
-import { deepVal, toArray } from '@/utils'
+import { deepVal, toArray, toString } from '@/utils'
 
 const formItemMixin = {
   data() {
@@ -47,7 +47,9 @@ const formItemMixin = {
     },
     // 获取值
     val() {
-      return deepVal(this.col.field, this.detail)
+      var val = deepVal(this.col.field, this.formData, null)
+
+      return (val !== null && val) || deepVal(this.col.field, this.detail)
     },
     // 获取配置
     opt() {
@@ -100,8 +102,18 @@ const formItemMixin = {
      * @param val
      */
     updateValue(val) {
-      // this.formData[this.col.field] = val
-      console.log(this.field, val)
+      var type = typeof this.val
+      var newType = typeof val
+
+      if (val) {
+        if (type === 'string' && newType !== 'string') {
+          val = this.toString(val)
+          console.log(val)
+        } else if (type === 'array' && newType !== 'array') {
+          val = this.toArray(val)
+        }
+      }
+
       this.$set(this.formData, this.field, val)
     },
     /**
@@ -111,6 +123,9 @@ const formItemMixin = {
      */
     toArray(data) {
       return toArray(data)
+    },
+    toString(data) {
+      return toString(data)
     },
     /**
      * 触发事件
