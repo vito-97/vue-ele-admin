@@ -63,14 +63,14 @@ const actions = {
         const { data } = response
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('验证失败，请重新登录')
         }
 
         const { role, detail, menu } = data
 
         // auth must be a non-empty array
         if (!role.auth || role.auth.length <= 0) {
-          reject('getInfo: auths must be a non-null array!')
+          reject('返回的权限数据不为数组')
         }
 
         commit('SET_USERINFO', detail)

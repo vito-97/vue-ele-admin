@@ -28,6 +28,11 @@ export default {
   data() {
     var siteID = this.$store.getters.userinfo.site_id
     var isMain = siteID == 1
+
+    function easyTipVisible(formData) {
+      return formData.type === 2
+    }
+
     return {
       rules: {},
       // 列配置
@@ -36,6 +41,20 @@ export default {
         { name: 'IMEI', field: 'imei', add_opts: { required: true }, edit_opts: { readonly: true } },
         { name: '经度', field: 'lng', opts: { required: false, maxlength: 20 } },
         { name: '纬度', field: 'lat', opts: { required: false, maxlength: 20 } },
+        {
+          name: '启动语音',
+          field: 'start_tip',
+          opts: { required: false, maxlength: 150 },
+          visible: easyTipVisible,
+          placeholder: '请输入设备启动播报的语音（留空使用全局）'
+        },
+        {
+          name: '停止语音',
+          field: 'finish_tip',
+          opts: { required: false, maxlength: 150 },
+          visible: easyTipVisible,
+          placeholder: '请输入设备停止播报的语音（留空使用全局）'
+        },
         { name: '脉冲', field: 'l_to_pulse', type: 'number', opts: { required: true, max: 255 }, value: 0 },
         { name: '温度', field: 'temperature', type: 'number', opts: { required: true, max: 50 }, value: 0 },
         { name: '暂停定时停止时间', field: 'finish_timeout', type: 'number', opts: { required: true, max: 1000 }, value: 240 },
