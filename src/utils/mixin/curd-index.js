@@ -21,16 +21,7 @@ const indexMixin = {
       type: Object
     }
   },
-  methods: {
-    // 选择
-    onSelect(args) {
-      this.$emit('select', args)
-    },
-    // 多选
-    onSelectMultiple(args) {
-      this.$emit('select-multiple', args)
-    }
-  }
+  methods: {}
 }
 
 export default indexMixin

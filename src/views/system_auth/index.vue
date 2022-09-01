@@ -10,8 +10,7 @@
       :mode="mode"
       :pagination="false"
       :select-multiple="selectMultiple"
-      @select="onSelect"
-      @select-multiple="onSelectMultiple"
+      v-on="$listeners"
     >
     </curd-index>
   </div>

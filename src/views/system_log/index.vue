@@ -7,6 +7,7 @@
       :searchable="searchable"
       :curd="curd"
       :mode="mode"
+      v-on="$listeners"
     >
     </curd-index>
   </div>

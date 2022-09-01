@@ -10,7 +10,6 @@
       :error="error"
       @submit="onSubmit"
     >
-
     </custom-form>
   </div>
 
