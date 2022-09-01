@@ -1,6 +1,6 @@
 <template>
-  <div v-if="hasCurdAuth('index')" style="width: 100%;height: 100%;">
-    <div class="curd-box">
+  <div v-if="hasCurdAuth('index')" :class="{ pad: fixedHeader,hideSidebar:!this.sidebar.opened }">
+    <div class="tool-box" :class="{ fixed: fixedHeader }">
       <el-row :gutter="15">
         <el-col :span="12" :xs="24">
           <el-button-group size="mini" class="btn-group-box">
@@ -268,6 +268,7 @@ import customForm from '@/views/custom/customForm'
 import { deepVal, debounce, isPositiveInteger, toArray } from '@/utils'
 import itemsCom from '@/utils/table-column'
 import md5 from 'js-md5'
+import { mapState } from 'vuex'
 
 export default {
   name: 'CustomTable',
@@ -561,6 +562,10 @@ export default {
         }*/
   },
   computed: {
+    ...mapState({
+      fixedHeader: state => state.settings.fixedHeader,
+      sidebar: state => state.app.sidebar
+    }),
     // 选中数据转数组
     selectedValueArray() {
       var value = toArray(this.selectedValue)
@@ -1350,6 +1355,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "~@/styles/variables.scss";
+
 .mb0 {
   margin-bottom: 0;
 }
@@ -1358,17 +1365,24 @@ export default {
   margin-bottom: 10px;
 }
 
-.curd-box {
-  /*  display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fff;*/
+.pad {
+  padding-top: 45px;
+}
 
+.tool-box {
+  background: #fff;
   margin-bottom: 30px;
+  width: 100%;
 
-  /*  position: sticky;
-    top: 1px;
-    z-index: 99;*/
+  &.fixed {
+    position: fixed;
+    top: 84px;
+    padding: 15px;
+    margin: 0;
+    z-index: 9;
+    width: calc(100% - #{$sideBarWidth});
+    box-sizing: border-box;
+  }
 
   .search-group-box {
     display: flex;
@@ -1376,10 +1390,24 @@ export default {
     align-items: center;
   }
 }
+// 隐藏了侧边栏
+.hideSidebar {
+  .tool-box.fixed {
+    width: calc(100% - 54px);
+  }
+}
 
 // 手机端
 @media screen and (max-width: 768px) {
-  .curd-box {
+  .pad {
+    padding-top: 85px;
+  }
+
+  .tool-box {
+    &.fixed {
+      width: calc(100% - 30px);
+    }
+
     .btn-group-box {
       margin-bottom: 10px;
     }

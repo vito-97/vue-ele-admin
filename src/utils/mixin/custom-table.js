@@ -135,7 +135,7 @@ const tableMixin = {
       this.$emit('select-multiple', args)
     },
     // 点击刷新
-    onTapHeadBtnFlush(args) {
+    onTapHeadBtnFlush(args = {}) {
       this.$emit('flush')
     },
     // 删除
@@ -170,6 +170,7 @@ const tableMixin = {
         this.onTapRowBtnSelect(row, 0)
       }
     },
+    // 更新数据
     onUpdateItem(args) {
       this.$emit('update-item', args)
     },

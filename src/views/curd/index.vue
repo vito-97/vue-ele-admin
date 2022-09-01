@@ -30,11 +30,11 @@
     <!--    添加或修改-->
     <template v-if="hasCurdAuth('edit') && (hasCurdAuth('save') || hasCurdAuth('update')) && formCom">
       <component
-        v-if="dialogVisible"
+        v-if="formVisible"
         :is="formCom"
         :detail.sync="detail"
         :id.sync="detailID"
-        :visible.sync="dialogVisible"
+        :visible.sync="formVisible"
         :list.sync="detailLabel"
         :control="control"
         :append-to-body="appendToBody"
@@ -61,7 +61,7 @@ export default {
       kw: '',
       list: [],
       listLabel: {},
-      dialogVisible: false,
+      formVisible: false,
       visible: {},
       detail: {},
       // 服务器返回的错误信息
@@ -93,12 +93,15 @@ export default {
       type: Array,
       default: () => ['*']
     },
+    // 表单组件
     formCom: {
       type: Object
     },
+    // 列表组件
     tableCom: {
       type: Object
     },
+    // 模式
     mode: {
       type: String,
       default: 'show'
@@ -115,12 +118,15 @@ export default {
       type: String,
       default: 'id'
     },
+    // 是否可多选
     selectMultiple: {
       type: Boolean
     },
+    // 参数
     query: {
       type: Object
     },
+    // 是否分页
     pagination: {
       type: Boolean,
       default: true
@@ -241,7 +247,6 @@ export default {
     onSave(args) {
       this.detailID = 0
       this.detail = args.data?.detail || {}
-      // this.dialogVisible = true
       this.isLoadDetailData = false
       this.getEditData()
     },
@@ -249,7 +254,6 @@ export default {
       this.detailID = args.id
       this.detail = args.row
       console.log(args)
-      // this.dialogVisible = true
       this.isLoadDetailData = false
       this.getEditData()
     },
@@ -342,7 +346,7 @@ export default {
 
       // 已加载过label并且为添加状态
       if (!this.detailID && this.isLoadDetailLabel) {
-        this.dialogVisible = true
+        this.formVisible = true
         return
       }
 
@@ -364,7 +368,7 @@ export default {
           this.detailLabel = res.data.label
         }
         hideLoading()
-        this.dialogVisible = true
+        this.formVisible = true
       }, (err) => {
         this.$message.error(err.message || '获取数据失败')
         hideLoading()
@@ -420,7 +424,7 @@ export default {
       return method(data).then(res => {
         this.hideLoading()
         this.total++
-        this.dialogVisible = false
+        this.formVisible = false
         args.success && args.success()
         this.$message({
           message: args.msg || res.msg || '添加成功',
@@ -447,7 +451,7 @@ export default {
       const method = this.updateApi || this.api.update
       return method(data, id).then(res => {
         this.hideLoading()
-        this.dialogVisible = false
+        this.formVisible = false
         args.success && args.success()
         this.$message({
           message: args.msg || res.msg || '更新成功',
