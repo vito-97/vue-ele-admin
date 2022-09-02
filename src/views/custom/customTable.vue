@@ -1341,3 +1341,15 @@ export default {
   justify-content: center;
 }
 </style>
+<style lang="scss">
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  .custom-table-box {
+    &.fixed {
+      .tool-box{
+        width: 100%;
+      }
+    }
+  }
+}
+</style>
