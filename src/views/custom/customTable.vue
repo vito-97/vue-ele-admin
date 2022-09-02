@@ -1383,6 +1383,7 @@ export default {
     width: calc(100% - #{$sideBarWidth});
     transition: width 0.28s;
     box-sizing: border-box;
+    margin: 0 -15px;
   }
 
   .search-group-box {
