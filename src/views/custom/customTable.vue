@@ -310,39 +310,21 @@ export default {
   },
   components: { Pagination, customForm },
   props: {
-    height: {
-      type: [Number, String],
-      default: null
-    },
+    height: { type: [Number, String], default: null },
     // 控制器名
-    control: {
-      type: String
-    },
+    control: { type: String },
     // 隐藏默认的头部按钮
-    hideDefaultHeadBtn: {
-      type: Boolean
-    },
+    hideDefaultHeadBtn: { type: Boolean },
     // 隐藏默认的行按钮
-    hideDefaultRowBtn: {
-      type: Boolean
-    },
+    hideDefaultRowBtn: { type: Boolean },
     // 隐藏选项框
-    hideSelection: {
-      type: Boolean
-    },
+    hideSelection: { type: Boolean },
     // 隐藏操作列
-    hideRowBtn: {
-      type: Boolean
-    },
+    hideRowBtn: { type: Boolean },
     // 数据列表
-    list: {
-      type: Array,
-      required: true
-    },
+    list: { type: Array, required: true },
     // 数据列表的label
-    listLabel: {
-      type: [Object, Array]
-    },
+    listLabel: { type: [Object, Array] },
     // 树形的配置
     treeProps: {
       type: Object,
@@ -350,94 +332,43 @@ export default {
         return { children: 'children', hasChildren: 'hasChildren' }
       }
     },
-    rowKey: {
-      type: String,
-      default: 'id'
-    },
+    rowKey: { type: String, default: 'id' },
     // 渲染列配置
-    columns: {
-      type: Array,
-      required: true
-    },
+    columns: { type: Array, required: true },
     // 关键词
-    kw: {
-      type: String
-    },
+    kw: { type: String },
     // 是否可以搜索
-    searchable: {
-      type: Boolean,
-      default: true
-    },
+    searchable: { type: Boolean, default: true },
     // 搜索框描述
-    searchPlaceholder: {
-      type: String,
-      default: '请输入关键词'
-    },
+    searchPlaceholder: { type: String, default: '请输入关键词' },
     // 搜索按钮名称
-    searchBtnText: {
-      type: String,
-      default: '搜索'
-    },
+    searchBtnText: { type: String, default: '搜索' },
     // 查询条件
-    query: {
-      type: Object
-    },
+    query: { type: Object },
     // 是否分页
-    pagination: {
-      type: Boolean,
-      default: true
-    },
+    pagination: { type: Boolean, default: true },
     // 页码可选数量
-    pageSizes: {
-      type: Array,
-      default: () => pageSizes
-    },
+    pageSizes: { type: Array, default: () => pageSizes },
     // 总数
-    total: {
-      type: Number
-    },
+    total: { type: Number },
     // 斑马纹
-    stripe: {
-      type: Boolean,
-      default: false
-    },
+    stripe: { type: Boolean, default: false },
     // 纵向边框
-    border: {
-      type: Boolean
-    },
+    border: { type: Boolean },
     // 展开所有
-    defaultExpandAll: {
-      type: Boolean
-    },
+    defaultExpandAll: { type: Boolean },
     // 头按钮追加按钮的位置 before在默认按钮之前 after在默认按钮之后
-    headBtnPosition: {
-      type: String,
-      default: 'before'
-    },
+    headBtnPosition: { type: String, default: 'before' },
     // 追加头部按钮
-    headBtn: {
-      type: Array,
-      default: () => []
-    },
+    headBtn: { type: Array, default: () => [] },
     // 行按钮追加按钮的位置 before在默认按钮之前 after在默认按钮之后
-    rowBtnPosition: {
-      type: String,
-      default: 'before'
-    },
+    rowBtnPosition: { type: String, default: 'before' },
     // 追加行按钮
-    rowBtn: {
-      type: Array,
-      default: () => []
-    },
+    rowBtn: { type: Array, default: () => [] },
     // 模式
-    mode: {
-      type: String,
-      default: 'show'
-    },
+    mode: { type: String, default: 'show' },
     // 是否多选
-    selectMultiple: {
-      type: Boolean
-    },
+    selectMultiple: { type: Boolean },
     // 按钮列的配置
     rowBtnColumn: {
       type: Object,
@@ -447,99 +378,41 @@ export default {
       })
     },
     // 删除提示
-    deleteConfirm: {
-      type: String
-    },
+    deleteConfirm: { type: String },
     // 多选删除提示
-    deleteMultipleConfirm: {
-      type: String
-    },
+    deleteMultipleConfirm: { type: String },
     // 判断是否可以勾选
     // 传入row index
-    selectable: {
-      type: Function
-    },
+    selectable: { type: Function },
     // 判断是否可以删除
-    deletable: {
-      type: [Function, Boolean],
-      default: true
-    },
+    deletable: { type: [Function, Boolean], default: true },
     // 判断是否可以编辑
-    editable: {
-      type: [Function, Boolean],
-      default: true
-    },
+    editable: { type: [Function, Boolean], default: true },
     // 判断是否可以选择
-    optional: {
-      type: [Function, Boolean],
-      default: true
-    },
+    optional: { type: [Function, Boolean], default: true },
     // 是否过滤
-    filter: {
-      type: Boolean,
-      default: true
-    },
+    filter: { type: Boolean, default: true },
     // 隐藏ID
-    hidePk: {
-      type: Boolean
-    },
-    pk: {
-      type: String,
-      default: 'id'
-    },
-    pkLabel: {
-      type: String,
-      default: '编号'
-    },
+    hidePk: { type: Boolean },
+    pk: { type: String, default: 'id' },
+    pkLabel: { type: String, default: '编号' },
     // 是否显示返回顶部
-    backTop: {
-      type: Boolean,
-      default: true
-    },
+    backTop: { type: Boolean, default: true },
     // 头部按钮文字
-    headBtnText: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
+    headBtnText: { type: Object, default: () => ({}) },
     // 行按钮文字
-    rowBtnText: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
+    rowBtnText: { type: Object, default: () => ({}) },
     // 显示头部指定按钮
-    showHeadBtn: {
-      type: [Array, String],
-      default: '*'
-    },
+    showHeadBtn: { type: [Array, String], default: '*' },
     // 显示行的指定按钮
-    showRowBtn: {
-      type: [Array, String],
-      default: '*'
-    },
-    hideColumnsControl: {
-      type: Boolean
-    },
+    showRowBtn: { type: [Array, String], default: '*' },
+    hideColumnsControl: { type: Boolean },
     // 选择模式下已被选择的数据
-    selectedValue: {
-      type: [Number, String, Array],
-      default() {
-        return []
-      }
-    },
+    selectedValue: { type: [Number, String, Array], default: () => ([]) },
     // 选择模式下取数据的键
-    selectedPk: {
-      type: String,
-      default: 'id'
-    },
+    selectedPk: { type: String, default: 'id' },
     // 工具栏是否置顶
-    toolFixed: {
-      type: Boolean,
-      default: true
-    }
+    toolFixed: { type: Boolean, default: true }
   },
   filters: {},
   watch: {
@@ -574,7 +447,10 @@ export default {
       sidebar: state => state.app.sidebar
     }),
     customTableClass() {
-      return { fixed: this.toolFixed && this.fixedHeader && this.mode === 'show', hideSidebar: !this.sidebar.opened }
+      return {
+        fixed: this.toolFixed && this.fixedHeader && this.mode === 'show',
+        hideSidebar: !this.sidebar.opened
+      }
     },
     // 选中数据转数组
     selectedValueArray() {
@@ -1364,7 +1240,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @import "~@/styles/variables.scss";
 
 .mb0 {
@@ -1377,13 +1253,16 @@ export default {
 
 .custom-table-box {
   width: 100%;
-  .container{
+
+  .container {
     width: 100%;
   }
+
   .tool-box {
     background: #fff;
     margin-bottom: 30px;
     width: 100%;
+    height: 60px;
     box-sizing: border-box;
 
     .search-group-box {
@@ -1398,7 +1277,7 @@ export default {
       // 不设置任何偏移量将直接置顶在父容器里
       position: fixed;
       padding: 15px;
-      z-index: 1;
+      z-index: 8;
       width: calc(100% - #{$sideBarWidth});
       transition: width 0.28s;
       margin: -15px -15px 0;
@@ -1406,7 +1285,7 @@ export default {
     }
 
     .container {
-      padding-top: 45px;
+      padding-top: 48px;
     }
 
     // 隐藏了侧边栏
@@ -1421,6 +1300,18 @@ export default {
 // 手机端
 @media screen and (max-width: 768px) {
   .custom-table-box {
+    .tool-box {
+      height: 100px;
+
+      .btn-group-box {
+        margin-bottom: 10px;
+      }
+
+      .search-group-box {
+        justify-content: flex-start;
+      }
+    }
+
     &.fixed {
       .container {
         padding-top: 85px;
@@ -1431,16 +1322,6 @@ export default {
           width: 100%;
         }
       }
-    }
-  }
-
-  .tool-box {
-    .btn-group-box {
-      margin-bottom: 10px;
-    }
-
-    .search-group-box {
-      justify-content: flex-start;
     }
   }
 
