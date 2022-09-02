@@ -200,7 +200,6 @@ export default {
           query: args.query
         })
       }
-
       this.getList(args.query, args.init)
     },
     initParams() {

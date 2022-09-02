@@ -1,6 +1,6 @@
 <template>
-  <div v-if="hasCurdAuth('index')" :class="{ pad: fixedHeader,hideSidebar:!this.sidebar.opened }">
-    <div class="tool-box" :class="{ fixed: fixedHeader }">
+  <div v-if="hasCurdAuth('index')" class="custom-table-box" :class="customTableClass">
+    <div class="tool-box">
       <el-row :gutter="15">
         <el-col :span="12" :xs="24">
           <el-button-group size="mini" class="btn-group-box">
@@ -65,164 +65,166 @@
         </el-col>
       </el-row>
     </div>
-    <slot name="content" :column="cols">
-      <el-table
-        v-if="hasCurdAuth('index') && visible"
-        :data="list"
-        :row-key="rowKey"
-        :stripe="stripe"
-        :border="border"
-        :default-expand-all="defaultExpandAll"
-        :tree-props="treeProps"
-        :height="height"
-        class="table-box"
-        ref="table"
-        v-bind="$attrs"
-        @selection-change="onTableSelectionChange"
-        @row-dblclick="onTableRowDbClick"
-        @filter-change="onTableFilter"
-      >
-        <!--      选项列-->
-        <el-table-column
-          v-if="!hideSelection && isShowColumn('selection')"
-          type="selection"
-          :selectable="selectable"
-          key="selection"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          v-if="!hidePk && isShowColumn('pk')"
-          :prop="pk"
-          :label="pkLabel"
-          :key="pk"
-          width="80">
-        </el-table-column>
-        <!--      渲染列-->
-        <template v-for="it in cols">
+    <div class="container">
+      <slot name="content" :column="cols">
+        <el-table
+          v-if="hasCurdAuth('index') && visible"
+          :data="list"
+          :row-key="rowKey"
+          :stripe="stripe"
+          :border="border"
+          :default-expand-all="defaultExpandAll"
+          :tree-props="treeProps"
+          :height="height"
+          class="table-box"
+          ref="table"
+          v-bind="$attrs"
+          @selection-change="onTableSelectionChange"
+          @row-dblclick="onTableRowDbClick"
+          @filter-change="onTableFilter"
+        >
+          <!--      选项列-->
           <el-table-column
-            v-if="checkColVisible(it)"
-            :key="it.field"
-            :fixed="it.fixed"
-            :prop="it.prop || it.field"
-            :label="it.name"
-            :width="it.width"
-            :sortable="it.sortable"
-            :resizable="it.resizable"
-            :formatter="it.formatter"
-            :show-overflow-tooltip="it.show_overflow_tooltip"
-            :align="it.align"
-            :class-name="it.class_name"
-            :label-class-name="it.label_class_name"
-            :filters="it.filters"
-            :filter-multiple="it.filter_multiple"
-            :column-key="it.field"
+            v-if="!hideSelection && isShowColumn('selection')"
+            type="selection"
+            :selectable="selectable"
+            key="selection"
+            width="50">
+          </el-table-column>
+          <el-table-column
+            v-if="!hidePk && isShowColumn('pk')"
+            :prop="pk"
+            :label="pkLabel"
+            :key="pk"
+            width="80">
+          </el-table-column>
+          <!--      渲染列-->
+          <template v-for="it in cols">
+            <el-table-column
+              v-if="checkColVisible(it)"
+              :key="it.field"
+              :fixed="it.fixed"
+              :prop="it.prop || it.field"
+              :label="it.name"
+              :width="it.width"
+              :sortable="it.sortable"
+              :resizable="it.resizable"
+              :formatter="it.formatter"
+              :show-overflow-tooltip="it.show_overflow_tooltip"
+              :align="it.align"
+              :class-name="it.class_name"
+              :label-class-name="it.label_class_name"
+              :filters="it.filters"
+              :filter-multiple="it.filter_multiple"
+              :column-key="it.field"
+            >
+              <template slot-scope="{row,column,$index}">
+
+                <slot
+                  :name="(it.slot || it.field)+'-before'"
+                  v-if="getColValue(it, row)"
+                  :row="row"
+                  :column="column"
+                  :$index="$index"
+                  :value="getColValue(it, row)"></slot>
+
+                <slot
+                  :name="(it.slot || it.field)"
+                  :row="row"
+                  :column="column"
+                  :$index="$index"
+                  :value="getColValue(it, row)"
+                  :label="listLabel">
+
+                  <template v-if="!isEmpty(it,row)">
+
+                    <template v-if="it.type && items[it.type]">
+                      <component
+                        :is="items[it.type]"
+                        :row="row"
+                        :col="it"
+                        :index="$index"
+                        :val="getColValue(it, row)"
+                        :format-val="getFormatColValue(it, row)"
+                        @update-item="onUpdateItem"></component>
+                    </template>
+
+                    <template v-else>
+                      {{ getFormatColValue(it, row) }}
+                    </template>
+
+                  </template>
+
+                </slot>
+
+                <slot
+                  :name="(it.slot || it.field)+'-empty'"
+                  v-if="!row[it.field]"
+                  :row="row"
+                  :column="column"
+                  :$index="$index"
+                  :value="getColValue(it, row)"></slot>
+
+                <slot
+                  :name="(it.slot || it.field)+'-after'"
+                  v-if="row[it.field]"
+                  :row="row"
+                  :column="column"
+                  :$index="$index"
+                  :value="getColValue(it, row)"></slot>
+
+              </template>
+
+            </el-table-column>
+          </template>
+
+          <!--      操作列-->
+          <el-table-column
+            :fixed="isMobile ? false : 'right'"
+            :label="rowBtnColumn.name"
+            :width="rowBtnColumn.width"
+            key="control"
+            v-if="!hideRowBtn && isShowColumn('control')"
           >
             <template slot-scope="{row,column,$index}">
 
-              <slot
-                :name="(it.slot || it.field)+'-before'"
-                v-if="getColValue(it, row)"
-                :row="row"
-                :column="column"
-                :$index="$index"
-                :value="getColValue(it, row)"></slot>
+              <slot name="before-row-btn" :row="row" :column="column" :$index="$index"></slot>
 
-              <slot
-                :name="(it.slot || it.field)"
-                :row="row"
-                :column="column"
-                :$index="$index"
-                :value="getColValue(it, row)"
-                :label="listLabel">
-
-                <template v-if="!isEmpty(it,row)">
-
-                  <template v-if="it.type && items[it.type]">
-                    <component
-                      :is="items[it.type]"
-                      :row="row"
-                      :col="it"
-                      :index="$index"
-                      :val="getColValue(it, row)"
-                      :format-val="getFormatColValue(it, row)"
-                      @update-item="onUpdateItem"></component>
-                  </template>
-
-                  <template v-else>
-                    {{ getFormatColValue(it, row) }}
-                  </template>
-
+              <slot name="row-btn" :row="row" :column="column" :$index="$index">
+                <template v-for="(btn) in rowBtns">
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="onTapRowBtn(btn,row,$index,column)"
+                    v-if="btn.show && (!btn.auth || checkAuth(btn.auth))"
+                    :disabled="rowBtnDisabled(btn,row,$index)"
+                    :key="btn.key"
+                  >
+                    {{ btn.name }}
+                  </el-button>
                 </template>
-
               </slot>
 
-              <slot
-                :name="(it.slot || it.field)+'-empty'"
-                v-if="!row[it.field]"
-                :row="row"
-                :column="column"
-                :$index="$index"
-                :value="getColValue(it, row)"></slot>
-
-              <slot
-                :name="(it.slot || it.field)+'-after'"
-                v-if="row[it.field]"
-                :row="row"
-                :column="column"
-                :$index="$index"
-                :value="getColValue(it, row)"></slot>
+              <slot name="after-row-btn" :row="row" :column="column" :$index="$index"></slot>
 
             </template>
-
           </el-table-column>
-        </template>
-
-        <!--      操作列-->
-        <el-table-column
-          :fixed="isMobile ? false : 'right'"
-          :label="rowBtnColumn.name"
-          :width="rowBtnColumn.width"
-          key="control"
-          v-if="!hideRowBtn && isShowColumn('control')"
-        >
-          <template slot-scope="{row,column,$index}">
-
-            <slot name="before-row-btn" :row="row" :column="column" :$index="$index"></slot>
-
-            <slot name="row-btn" :row="row" :column="column" :$index="$index">
-              <template v-for="(btn) in rowBtns">
-                <el-button
-                  type="text"
-                  size="small"
-                  @click="onTapRowBtn(btn,row,$index,column)"
-                  v-if="btn.show && (!btn.auth || checkAuth(btn.auth))"
-                  :disabled="rowBtnDisabled(btn,row,$index)"
-                  :key="btn.key"
-                >
-                  {{ btn.name }}
-                </el-button>
-              </template>
-            </slot>
-
-            <slot name="after-row-btn" :row="row" :column="column" :$index="$index"></slot>
-
-          </template>
-        </el-table-column>
-      </el-table>
-      <!--    分页-->
-      <div class="page-box" v-if="pagination">
-        <pagination
-          :total="total"
-          :page="page"
-          :page-sizes="pageSizes"
-          :limit="limit"
-          :auto-scroll="true"
-          :small="isMobile"
-          :pager-count="pagerCount"
-          :layout="pageLayout"
-          @pagination="onPaginationChange"/>
-      </div>
-    </slot>
+        </el-table>
+        <!--    分页-->
+        <div class="page-box" v-if="pagination">
+          <pagination
+            :total="total"
+            :page="page"
+            :page-sizes="pageSizes"
+            :limit="limit"
+            :auto-scroll="true"
+            :small="isMobile"
+            :pager-count="pagerCount"
+            :layout="pageLayout"
+            @pagination="onPaginationChange"/>
+        </div>
+      </slot>
+    </div>
 
     <el-dialog
       title="提示"
@@ -532,6 +534,11 @@ export default {
     selectedPk: {
       type: String,
       default: 'id'
+    },
+    // 工具栏是否置顶
+    toolFixed: {
+      type: Boolean,
+      default: true
     }
   },
   filters: {},
@@ -566,6 +573,9 @@ export default {
       fixedHeader: state => state.settings.fixedHeader,
       sidebar: state => state.app.sidebar
     }),
+    customTableClass() {
+      return { fixed: this.toolFixed && this.fixedHeader, hideSidebar: !this.sidebar.opened }
+    },
     // 选中数据转数组
     selectedValueArray() {
       var value = toArray(this.selectedValue)
@@ -1365,51 +1375,64 @@ export default {
   margin-bottom: 10px;
 }
 
-.pad {
-  padding-top: 45px;
-}
-
-.tool-box {
-  background: #fff;
-  margin-bottom: 30px;
+.custom-table-box {
   width: 100%;
 
-  &.fixed {
-    position: fixed;
-    top: 84px;
-    padding: 15px;
-    margin: 0;
-    z-index: 9;
-    width: calc(100% - #{$sideBarWidth});
-    transition: width 0.28s;
-    box-sizing: border-box;
-    margin: 0 -15px;
+  .tool-box {
+    background: #fff;
+    margin-bottom: 30px;
+    width: 100%;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+
+    .search-group-box {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
   }
 
-  .search-group-box {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-}
-// 隐藏了侧边栏
-.hideSidebar {
-  .tool-box.fixed {
-    width: calc(100% - 54px);
+  &.fixed {
+    .tool-box {
+      // 不设置任何偏移量将直接置顶在父容器里
+      position: fixed;
+      padding: 15px;
+      z-index: 9;
+      width: calc(100% - #{$sideBarWidth});
+      transition: width 0.28s;
+      box-sizing: border-box;
+      margin: -15px -15px 0;
+    }
+
+    .container {
+      padding-top: 45px;
+    }
+
+    // 隐藏了侧边栏
+    &.hideSidebar {
+      .tool-box {
+        width: calc(100% - 54px);
+      }
+    }
   }
 }
 
 // 手机端
 @media screen and (max-width: 768px) {
-  .pad {
-    padding-top: 85px;
+  .custom-table-box {
+    &.fixed {
+      .container {
+        padding-top: 85px;
+      }
+
+      &.hideSidebar {
+        .tool-box {
+          width: 100%;
+        }
+      }
+    }
   }
 
   .tool-box {
-    &.fixed {
-      width: calc(100% - 30px);
-    }
-
     .btn-group-box {
       margin-bottom: 10px;
     }

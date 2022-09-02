@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-tabs
+      class="tabs-box"
       type="card"
       :addable="checkAuth('edit') && checkAuth('save') && mode === 'show'"
       v-model="configActive"
@@ -24,6 +25,7 @@
           :default-expand-all="true"
           :optional="optional"
           :row-btn="rowBtn"
+          :tool-fixed="false"
           @tap-head-btn="onTapHeadBtn"
           @tap-row-btn="onTapRowBtn"
           @row-dblclick="onRowDbClick"
@@ -212,6 +214,5 @@ export default {
 }
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
 </style>
