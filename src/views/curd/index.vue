@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="curd-box">
     <!--    数据列表-->
     <template v-if="hasCurdAuth('index') && tableCom">
       <component
@@ -9,11 +9,11 @@
         :total="total"
         :kw="kw"
         :control="control"
-        v-loading="listLoading"
         :mode="mode"
         :select-multiple="selectMultiple"
         :selected-value="selectedValue"
         :selected-pk="selectedPk"
+        v-loading="listLoading"
         element-loading-text="拼命加载中"
         @save="onSave"
         @update="onUpdate"

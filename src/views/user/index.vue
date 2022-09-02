@@ -21,6 +21,7 @@ import addForm from './components/addForm'
 import indexMixin from '@/utils/mixin/curd-index'
 
 export default {
+  name: 'UserIndex',
   data() {
     return {
       tableList,

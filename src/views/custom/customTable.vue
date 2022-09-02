@@ -574,7 +574,7 @@ export default {
       sidebar: state => state.app.sidebar
     }),
     customTableClass() {
-      return { fixed: this.toolFixed && this.fixedHeader, hideSidebar: !this.sidebar.opened }
+      return { fixed: this.toolFixed && this.fixedHeader && this.mode === 'show', hideSidebar: !this.sidebar.opened }
     },
     // 选中数据转数组
     selectedValueArray() {
@@ -1377,12 +1377,14 @@ export default {
 
 .custom-table-box {
   width: 100%;
-
+  .container{
+    width: 100%;
+  }
   .tool-box {
     background: #fff;
     margin-bottom: 30px;
     width: 100%;
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+    box-sizing: border-box;
 
     .search-group-box {
       display: flex;
@@ -1396,11 +1398,11 @@ export default {
       // 不设置任何偏移量将直接置顶在父容器里
       position: fixed;
       padding: 15px;
-      z-index: 9;
+      z-index: 1;
       width: calc(100% - #{$sideBarWidth});
       transition: width 0.28s;
-      box-sizing: border-box;
       margin: -15px -15px 0;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
     }
 
     .container {
