@@ -22,6 +22,11 @@ import './utils/error-log' // error log
 import AppMixin from '@/utils/mixin/app'
 
 import * as filters from './filters' // global filters
+import { UTable, UTableColumn } from 'umy-ui'
+
+// 使用umy的表格，可以虚拟dom，大数据量下效果好
+Vue.component(UTable.name, UTable)
+Vue.component(UTableColumn.name, UTableColumn)
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size

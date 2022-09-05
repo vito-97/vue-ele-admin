@@ -67,8 +67,9 @@
     </div>
     <div class="container">
       <slot name="content" :column="cols">
-        <el-table
+        <component
           v-if="hasCurdAuth('index') && visible"
+          :is="tableCom"
           :data="list"
           :row-key="rowKey"
           :stripe="stripe"
@@ -76,6 +77,7 @@
           :default-expand-all="defaultExpandAll"
           :tree-props="treeProps"
           :height="height"
+          :big-data-checkbox="!hideSelection && isShowColumn('selection')"
           class="table-box"
           ref="table"
           v-bind="$attrs"
@@ -84,13 +86,14 @@
           @filter-change="onTableFilter"
         >
           <!--      选项列-->
-          <el-table-column
+          <component
             v-if="!hideSelection && isShowColumn('selection')"
+            :is="tableColumnCom"
             type="selection"
             :selectable="selectable"
             key="selection"
             width="50">
-          </el-table-column>
+          </component>
           <el-table-column
             v-if="!hidePk && isShowColumn('pk')"
             :prop="pk"
@@ -100,8 +103,9 @@
           </el-table-column>
           <!--      渲染列-->
           <template v-for="it in cols">
-            <el-table-column
+            <component
               v-if="checkColVisible(it)"
+              :is="tableColumnCom"
               :key="it.field"
               :fixed="it.fixed"
               :prop="it.prop || it.field"
@@ -175,16 +179,17 @@
 
               </template>
 
-            </el-table-column>
+            </component>
           </template>
 
           <!--      操作列-->
-          <el-table-column
+          <component
+            v-if="!hideRowBtn && isShowColumn('control')"
+            :is="tableColumnCom"
             :fixed="isMobile ? false : 'right'"
             :label="rowBtnColumn.name"
             :width="rowBtnColumn.width"
             key="control"
-            v-if="!hideRowBtn && isShowColumn('control')"
           >
             <template slot-scope="{row,column,$index}">
 
@@ -208,8 +213,8 @@
               <slot name="after-row-btn" :row="row" :column="column" :$index="$index"></slot>
 
             </template>
-          </el-table-column>
-        </el-table>
+          </component>
+        </component>
         <!--    分页-->
         <div class="page-box" v-if="pagination">
           <pagination
@@ -310,7 +315,9 @@ export default {
   },
   components: { Pagination, customForm },
   props: {
-    height: { type: [Number, String], default: null },
+    height: {
+      type: [Number, String], default: null
+    },
     // 控制器名
     control: { type: String },
     // 隐藏默认的头部按钮
@@ -352,7 +359,7 @@ export default {
     // 总数
     total: { type: Number },
     // 斑马纹
-    stripe: { type: Boolean, default: false },
+    stripe: { type: Boolean },
     // 纵向边框
     border: { type: Boolean },
     // 展开所有
@@ -412,7 +419,11 @@ export default {
     // 选择模式下取数据的键
     selectedPk: { type: String, default: 'id' },
     // 工具栏是否置顶
-    toolFixed: { type: Boolean, default: true }
+    toolFixed: { type: Boolean, default: true },
+    // 每行高度
+    rowHeight: { type: Number, default: 55 },
+    // 使用虚拟模式
+    useVirtual: { type: Boolean, default: false }
   },
   filters: {},
   watch: {
@@ -434,6 +445,12 @@ export default {
       sidebar: state => state.app.sidebar,
       scroll: state => state.app.scroll
     }),
+    tableCom() {
+      return this.useVirtual ? 'UTable' : 'ElTable'
+    },
+    tableColumnCom() {
+      return this.useVirtual ? 'UTableColumn' : 'ElTableColumn'
+    },
     customTableClass() {
       return {
         fixed: this.toolFixed && this.fixedHeader && this.mode === 'show',
@@ -1352,9 +1369,10 @@ export default {
   .el-popup-parent--hidden {
     .custom-table-box {
       &.fixed {
-        .tool-box{
+        .tool-box {
           padding-right: 15px;
         }
+
         // 有滚动条
         .tool-box.scroll-bar {
           padding-right: 32px;
