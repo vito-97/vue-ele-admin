@@ -96,7 +96,8 @@ export default {
       formRules: {},
       formColumns: [],
       items: itemsCom,
-      lock: false
+      lock: false,
+      isInit: false
     }
   },
   props: {
@@ -264,8 +265,13 @@ export default {
   },
   methods: {
     init() {
-      this.initColumns()
-      this.initFormRules()
+      // 判断是否正在初始化
+      if (!this.isInit) {
+        this.isInit = true
+        this.initColumns()
+        this.initFormRules()
+        this.isInit = false
+      }
     },
     // 初始化表内容
     initColumns() {

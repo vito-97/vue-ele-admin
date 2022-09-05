@@ -2,7 +2,7 @@
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
-        <router-view :key="key" />
+        <router-view :key="key"/>
       </keep-alive>
     </transition>
   </section>
@@ -31,7 +31,7 @@ export default {
   overflow: hidden;
 }
 
-.fixed-header+.app-main {
+.fixed-header + .app-main {
   padding-top: 50px;
 }
 
@@ -41,7 +41,7 @@ export default {
     min-height: calc(100vh - 84px);
   }
 
-  .fixed-header+.app-main {
+  .fixed-header + .app-main {
     padding-top: 84px;
   }
 }
@@ -49,9 +49,11 @@ export default {
 
 <style lang="scss">
 // fix css style bug in open el-dialog
-.el-popup-parent--hidden {
-  .fixed-header {
-    padding-right: 15px;
+@media screen and (min-width: 768px) {
+  .el-popup-parent--hidden {
+    .fixed-header {
+      padding-right: 17px;
+    }
   }
 }
 </style>

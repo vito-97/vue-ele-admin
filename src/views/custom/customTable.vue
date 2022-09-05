@@ -1359,4 +1359,17 @@ export default {
     }
   }
 }
+
+@media screen and (min-width: 768px) {
+  .el-popup-parent--hidden {
+    .custom-table-box {
+      &.fixed {
+        .tool-box{
+          padding-right: 32px;
+        }
+      }
+    }
+  }
+}
+
 </style>
