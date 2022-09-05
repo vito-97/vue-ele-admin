@@ -25,7 +25,9 @@ import { isSuperAdmin } from '@/utils'
 export default {
   name: 'AddForm',
   mixins: [visible, customFromMixin],
-  data: () => {
+  data() {
+    var siteID = this.$store.getters.userinfo.site_id
+    var isMain = siteID == 1
     return {
       rules: {},
       // 列配置
@@ -35,12 +37,25 @@ export default {
         { name: '昵称', field: 'nickname', opts: { required: true, maxlength: 20 } },
         { name: '姓名', field: 'real_name', opts: { required: false, maxlength: 20 } },
         {
-          name: '运营商',
+          name: isMain ? '运营商' : '水厂',
           field: 'agent_id',
-          opts: { required: true, control: 'agent', name: 'nickname' },
+          opts: { required: true, control: isMain ? 'agent' : 'waterworks', name: 'nickname', key: 'agent' },
           type: 'select_table',
-          edit_opts: { disabled: true }
+          edit_opts: { disabled: false },
+          visible(formData) {
+            return !formData.site_id || formData.site_id === 1
+          }
         },
+        (isSuperAdmin(this.$store.getters.role) ? {
+          name: '水厂',
+          field: 'agent_id',
+          opts: { required: true, control: 'waterworks', name: 'nickname', key: 'agent' },
+          type: 'select_table',
+          edit_opts: { disabled: false },
+          visible(formData) {
+            return formData.site_id === 2
+          }
+        } : null),
         {
           field: 'site_id',
           name: '站点',

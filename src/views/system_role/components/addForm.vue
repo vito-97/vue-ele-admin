@@ -13,14 +13,14 @@
       <!--      权限插槽-->
       <template v-slot:auth_ids="{formData,col}">
         <br>
-        <div
-          v-for="(item,index) in col.list"
-          :key="index"
+        <el-checkbox-group
+          v-model="formData[col.field]"
         >
-          <el-divider content-position="left">{{ item.name }}</el-divider>
-          <el-checkbox-group
-            v-model="formData[col.field]"
+          <div
+            v-for="(item,index) in col.list"
+            :key="index"
           >
+            <el-divider content-position="left">{{ item.name }}</el-divider>
             <el-checkbox
               :label="item.id"
               :name="col.field"
@@ -37,9 +37,8 @@
             >
               {{ it.name }}
             </el-checkbox>
-          </el-checkbox-group>
-        </div>
-
+          </div>
+        </el-checkbox-group>
       </template>
     </custom-form>
   </div>
@@ -88,7 +87,7 @@ export default {
   methods: {
     onParentChange(index, formData, col, status) {
       let children = this.getChildrenID(index, formData, col)
-      let value = formData[col.field]
+      let value = [...formData[col.field]]
 
       // 父类选中
       if (status) {
@@ -114,7 +113,7 @@ export default {
       formData[col.field] = value
     },
     onChildrenChange(index, formData, col, status) {
-      let value = formData[col.field]
+      let value = [...formData[col.field]]
       let pid = col.list[index].id
       let children = this.getChildrenID(index, formData, col)
       if (status) {
@@ -141,6 +140,7 @@ export default {
 
       formData[col.field] = value
     },
+    // 获取所有下级的ID
     getChildrenID(index, formData, col) {
       let children = []
 

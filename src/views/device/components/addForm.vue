@@ -71,7 +71,7 @@ export default {
             return !formData.site_id || formData.site_id === 1
           }
         },
-        (isMain ? {
+        (isSuperAdmin(this.$store.getters.role) ? {
           name: '水厂',
           field: 'agent_id',
           opts: { required: true, control: 'waterworks', name: 'nickname', key: 'agent' },
@@ -114,7 +114,7 @@ export default {
             return detail.type == 1 || formData.type == 1
           }
         },
-        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },
+        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true }, value: 1 },
         {
           name: '禁用', field: 'disabled', label: true, type: 'switch', opts: { required: true }, visible() {
             return isSuperAdmin(this.$store.getters.role)
