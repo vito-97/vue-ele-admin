@@ -45,8 +45,8 @@
           <span slot="label"><i :class="item.icon" v-if="item.icon"></i> {{ item.name }}</span>
           <template v-if="item.children && item.children.length">
             <el-tabs
-              :tabPosition="isMobile ? 'top' : 'left'"
               v-model="configSubActive[item.key]"
+              :tabPosition="isMobile ? 'top' : 'left'"
             >
               <template v-for="(child,idx) in item.children">
                 <el-tab-pane
@@ -94,6 +94,7 @@ export default {
     return {
       configActive: '0',
       configSubActive: {},
+      configSubActiveOld: {},
       isSetActive: false,
       tabs: [],
       rowBtn: [
@@ -147,6 +148,32 @@ export default {
       if (value) {
         this.setActiveTab()
       }
+    },
+    // 一级配置项的选择
+    configActive(value) {
+      var n = Number(value)
+      if (n > 0) {
+        this.redirectUrl(this.tabs[n - 1].key)
+      } else {
+        this.redirectUrl(null)
+      }
+    },
+    // 二级配置项的选择
+    configSubActive: {
+      deep: true,
+      handler(value) {
+        var old = this.configSubActiveOld
+        for (let [i, it] of Object.entries(value)) {
+          if (typeof old[i] !== 'undefined' && it !== old[i]) {
+            // 获取下级的key
+            var key = this.tabs[Number(this.configActive) - 1].children[it].key
+            this.redirectUrl(key)
+            break
+          }
+        }
+        // 保存成为旧副本
+        this.configSubActiveOld = { ...value }
+      }
     }
   },
   created() {
@@ -161,6 +188,19 @@ export default {
      */
     setTabs() {
       this.tabs = deepClone(this.list)
+    },
+    // 重定向链接
+    redirectUrl(key) {
+      if (this.$route.query?.key !== key) {
+        var query = {}
+        if (key) {
+          query.key = key
+        }
+        this.$router.replace({
+          path: '/system_config_tab/index',
+          query
+        })
+      }
     },
     // 设置激活的tab
     setActiveTab() {
@@ -209,7 +249,6 @@ export default {
       }
       this.onTapHeadBtnSave({ data })
     }
-
   }
 }
 </script>
