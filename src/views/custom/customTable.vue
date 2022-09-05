@@ -1,6 +1,6 @@
 <template>
   <div v-if="hasCurdAuth('index')" class="custom-table-box" :class="customTableClass">
-    <div class="tool-box">
+    <div class="tool-box" :class="{'scroll-bar':scroll.y}">
       <el-row :gutter="15">
         <el-col :span="12" :xs="24">
           <el-button-group size="mini" class="btn-group-box">
@@ -427,29 +427,17 @@ export default {
 
       this.setSelectedRows()
     }
-    // 监听参数的变化
-    /*    '$route.query': {
-          handler(val, old) {
-            if (val) {
-              const query = this.mergeQueryString()
-              this.keyword = query.keyword
-              this.page = query.page
-              this.limit = query.limit
-              this.loadTrigger()
-            }
-          },
-          immediate: true
-        }*/
   },
   computed: {
     ...mapState({
       fixedHeader: state => state.settings.fixedHeader,
-      sidebar: state => state.app.sidebar
+      sidebar: state => state.app.sidebar,
+      scroll: state => state.app.scroll
     }),
     customTableClass() {
       return {
         fixed: this.toolFixed && this.fixedHeader && this.mode === 'show',
-        hideSidebar: !this.sidebar.opened
+        'hide-sidebar': !this.sidebar.opened
       }
     },
     // 选中数据转数组
@@ -1295,7 +1283,7 @@ export default {
     }
 
     // 隐藏了侧边栏
-    &.hideSidebar {
+    &.hide-sidebar {
       .tool-box {
         width: calc(100% - 54px);
       }
@@ -1323,7 +1311,7 @@ export default {
         padding-top: 85px;
       }
 
-      &.hideSidebar {
+      &.hide-sidebar {
         .tool-box {
           width: 100%;
         }
@@ -1365,6 +1353,10 @@ export default {
     .custom-table-box {
       &.fixed {
         .tool-box{
+          padding-right: 15px;
+        }
+        // 有滚动条
+        .tool-box.scroll-bar {
           padding-right: 32px;
         }
       }

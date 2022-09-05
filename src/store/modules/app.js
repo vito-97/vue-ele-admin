@@ -7,8 +7,15 @@ const state = {
   },
   device: 'desktop',
   size: Cookies.get('size') || 'medium',
-  width: document.body.clientWidth
+  width: document.body.clientWidth,
+  scroll: {
+    y: 0
+  }
 }
+
+window.addEventListener('resize', function (e) {
+  console.log(e)
+})
 
 const mutations = {
   TOGGLE_SIDEBAR: state => {
@@ -34,6 +41,18 @@ const mutations = {
   },
   SET_WIDTH: (state, width) => {
     state.width = width
+  },
+  SET_SCROLL: (state) => {
+    var scroll = {
+      y: 0
+    }
+
+    // 获取到滚动条的宽度
+    if (window.innerWidth > document.body.clientWidth) {
+      scroll.y = window.innerWidth - document.body.clientWidth
+    }
+
+    state.scroll = scroll
   }
 }
 

@@ -1,5 +1,6 @@
 const getters = {
   sidebar: state => state.app.sidebar,
+  scroll: state => state.app.scroll,
   size: state => state.app.size,
   device: state => state.app.device,
   width: state => state.app.width,

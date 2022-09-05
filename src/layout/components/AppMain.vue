@@ -51,7 +51,7 @@ export default {
 // fix css style bug in open el-dialog
 @media screen and (min-width: 768px) {
   .el-popup-parent--hidden {
-    .fixed-header {
+    .fixed-header.scroll-bar {
       padding-right: 17px;
     }
   }
