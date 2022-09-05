@@ -303,9 +303,19 @@ export default {
       }
 
       for (let [index, item] of columns.entries()) {
+        // 不是对象则删除
+        if (typeof item !== 'object') {
+          columns.splice(index, 1)
+          continue
+        }
         item = Object.assign({}, column, item)
         if (typeof item.field === 'undefined' && item.key) {
           item.field = item.key
+        }
+        // 未设置字段名直接删除
+        if (!item.field) {
+          columns.splice(index, 1)
+          continue
         }
         // 设置表单数据
         if (item.field && (typeof formData[item.field] === 'undefined' || formData[item.field] === '')) {

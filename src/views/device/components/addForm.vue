@@ -66,8 +66,21 @@ export default {
           field: 'agent_id',
           opts: { required: true, control: isMain ? 'agent' : 'waterworks', name: 'nickname', key: 'agent' },
           type: 'select_table',
-          edit_opts: { disabled: false }
+          edit_opts: { disabled: false },
+          visible(formData) {
+            return !formData.site_id || formData.site_id === 1
+          }
         },
+        (isMain ? {
+          name: '水厂',
+          field: 'agent_id',
+          opts: { required: true, control: 'waterworks', name: 'nickname', key: 'agent' },
+          type: 'select_table',
+          edit_opts: { disabled: false },
+          visible(formData) {
+            return formData.site_id === 2
+          }
+        } : null),
         {
           field: 'site_id',
           name: '站点',

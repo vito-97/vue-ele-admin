@@ -563,7 +563,13 @@ export default {
         opts: {},
         visible: true
       }
-      cols.forEach((it, i) => {
+
+      for (let [i, it] of cols.entries()) {
+        if (typeof it !== 'object') {
+          cols.splice(i, 1)
+          continue
+        }
+
         const col = { ...def, ...it }
 
         // 有默认list值
@@ -603,7 +609,7 @@ export default {
         }
 
         cols[i] = col
-      })
+      }
 
       console.log('table columns', cols)
       return cols
@@ -1342,11 +1348,12 @@ export default {
 }
 </style>
 <style lang="scss">
+// 动画状态会影响fixed
 .fade-transform-leave-active,
 .fade-transform-enter-active {
   .custom-table-box {
     &.fixed {
-      .tool-box{
+      .tool-box {
         width: 100%;
       }
     }
