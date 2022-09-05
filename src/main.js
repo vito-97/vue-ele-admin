@@ -23,14 +23,15 @@ import AppMixin from '@/utils/mixin/app'
 
 import * as filters from './filters' // global filters
 import { UTable, UTableColumn } from 'umy-ui'
-
-// 使用umy的表格，可以虚拟dom，大数据量下效果好
-Vue.component(UTable.name, UTable)
-Vue.component(UTableColumn.name, UTableColumn)
+import 'umy-ui/lib/theme-chalk/index.css'// 引入样式
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
+
+// 使用umy的表格，可以虚拟dom，大数据量下效果好
+Vue.component(UTable.name, UTable)
+Vue.component(UTableColumn.name, UTableColumn)
 
 // register global utility filters
 Object.keys(filters).forEach(key => {

@@ -77,6 +77,8 @@
           :default-expand-all="defaultExpandAll"
           :tree-props="treeProps"
           :height="height"
+          :use-virtual="useVirtual"
+          :data-changes-scroll-top="false"
           :big-data-checkbox="!hideSelection && isShowColumn('selection')"
           class="table-box"
           ref="table"
@@ -94,13 +96,14 @@
             key="selection"
             width="50">
           </component>
-          <el-table-column
+          <component
             v-if="!hidePk && isShowColumn('pk')"
+            :is="tableColumnCom"
             :prop="pk"
             :label="pkLabel"
             :key="pk"
             width="80">
-          </el-table-column>
+          </component>
           <!--      渲染列-->
           <template v-for="it in cols">
             <component
@@ -315,9 +318,7 @@ export default {
   },
   components: { Pagination, customForm },
   props: {
-    height: {
-      type: [Number, String], default: null
-    },
+    height: { type: [Number, String], default: null },
     // 控制器名
     control: { type: String },
     // 隐藏默认的头部按钮
@@ -421,7 +422,7 @@ export default {
     // 工具栏是否置顶
     toolFixed: { type: Boolean, default: true },
     // 每行高度
-    rowHeight: { type: Number, default: 55 },
+    rowHeight: { type: Number, default: 60 },
     // 使用虚拟模式
     useVirtual: { type: Boolean, default: false }
   },
