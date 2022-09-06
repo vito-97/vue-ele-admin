@@ -105,7 +105,6 @@ const formItemMixin = {
       if (val) {
         if (type === 'string' && newType !== 'string') {
           val = this.toString(val)
-          console.log(val)
         } else if (type === 'array' && newType !== 'array') {
           val = this.toArray(val)
         }

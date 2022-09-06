@@ -1,6 +1,6 @@
 <template>
   <div class="icon-box">
-    <el-tag v-show="icon" size="medium" :class="[icon]" class="icon-name">
+    <el-tag v-show="icon" size="medium" :class="[icon]" class="icon-name" :closable="true" @close="onCloseTag" :key="field">
       {{ icon }}
     </el-tag>
     <el-button class="select-btn" type="primary" size="mini" @click="onClickChoose" :disabled="opt.disabled">
@@ -106,7 +106,7 @@ export default {
       return !this.keyword || icon.includes(this.keyword)
     },
     onClickIcon(prefix, icon) {
-      this.$set(this.formData, this.field, prefix + icon)
+      this.updateValue(prefix + icon)
       this.visible = false
     },
     onClickChoose() {
@@ -117,6 +117,9 @@ export default {
     },
     onClose() {
 
+    },
+    onCloseTag() {
+      this.updateValue('')
     }
   }
 }
