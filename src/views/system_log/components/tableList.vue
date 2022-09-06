@@ -20,8 +20,6 @@
 
 <script>
 import tableMixin from '@/utils/mixin/custom-table'
-import { showLoading, hideLoading } from '@/utils'
-import CURD from '@/api/curd'
 
 export default {
   data() {
@@ -45,22 +43,12 @@ export default {
     tableMixin
   ],
   computed: {
-    api() {
-      return CURD(this.control)
-    }
   },
   props: {},
   filters: {},
   created() {
   },
   methods: {
-    onTapHeadBtnFlushAuth(args) {
-      showLoading('刷新权限中...')
-      this.api.post('flush').then(res => {
-        hideLoading()
-        this.onTapHeadBtnFlush({})
-      }, hideLoading)
-    }
   }
 }
 </script>

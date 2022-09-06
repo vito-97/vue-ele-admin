@@ -44,9 +44,6 @@ const tableMixin = {
     mode() {
       return this.$attrs?.mode || 'show'
     },
-    control() {
-      return this.$attrs?.control || ''
-    },
     ids() {
       const id = []
       this.list.forEach(it => {
@@ -57,8 +54,8 @@ const tableMixin = {
     curd() {
       var api
 
-      if (this.control) {
-        api = curd(this.control)
+      if (this.$attrs?.control) {
+        api = curd(this.$attrs?.control)
       }
 
       return api
@@ -152,7 +149,7 @@ const tableMixin = {
      * @returns {String}
      */
     checkAuth(auth) {
-      let s = this.control
+      let s = this.$attrs?.control
 
       s += (s ? ('/') : '') + auth
 
@@ -160,9 +157,10 @@ const tableMixin = {
     },
     // 填充权限前缀
     getFullAuth(auth) {
+      var control = this.$attrs?.control
       let s = ''
-      if (this.control) {
-        s += this.control + '/'
+      if (control) {
+        s += control + '/'
       }
       s += auth
 

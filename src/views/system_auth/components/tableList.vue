@@ -6,6 +6,7 @@
       :head-btn="headBtn"
       v-bind="$attrs"
       v-on="listeners"
+      :pagination="false"
       @tap-head-btn="onTapHeadBtn"
       @tap-row-btn="onTapRowBtn"
       @row-dblclick="onRowDbClick"
@@ -18,7 +19,6 @@
 <script>
 import tableMixin from '@/utils/mixin/custom-table'
 import { showLoading, hideLoading } from '@/utils'
-import CURD from '@/api/curd'
 
 export default {
   data() {
@@ -50,11 +50,7 @@ export default {
   mixins: [
     tableMixin
   ],
-  computed: {
-    api() {
-      return CURD(this.control)
-    }
-  },
+  computed: {},
   props: {
     pagination: {
       type: Boolean,
@@ -67,7 +63,7 @@ export default {
   methods: {
     onTapHeadBtnFlushAuth(args) {
       showLoading('刷新权限中...')
-      this.api.post('flush').then(res => {
+      this.curd.post('flush').then(res => {
         hideLoading()
         this.onTapHeadBtnFlush({})
       }, hideLoading)

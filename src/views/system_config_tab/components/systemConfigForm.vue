@@ -7,7 +7,8 @@
       @click="onSaveConfig"
       class="add-config-btn"
       v-if="showAddBtn"
-    >添加配置
+    >
+      添加配置
     </el-button>
     <!--    配置信息-->
     <custom-form
@@ -95,6 +96,7 @@ export default {
       showLoading('更新中...')
       API.put('config', data).then(res => {
         hideLoading()
+        this.$emit('update:detail', { ...this.detail, ...data })
         this.$message({
           message: res.msg,
           type: 'success'

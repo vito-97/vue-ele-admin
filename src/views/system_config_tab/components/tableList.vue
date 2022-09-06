@@ -22,7 +22,6 @@
           @tap-head-btn="onTapHeadBtn"
           @tap-row-btn="onTapRowBtn"
           @row-dblclick="onRowDbClick"
-          @load="onLoad"
         >
         </custom-table>
       </el-tab-pane>
@@ -50,7 +49,7 @@
                   <span slot="label"><i :class="child.icon" v-if="child.icon"></i> {{ child.name }}</span>
                   <system-config-form
                     :columns="child.config"
-                    :detail="listLabel.config.option || {}"
+                    :detail.sync="configs"
                     :id="child.id"
                     :config="child"
                     @flush="onTapHeadBtnFlush"
@@ -62,7 +61,7 @@
           <template v-else>
             <system-config-form
               :columns="item.config"
-              :detail="listLabel.config.option || {}"
+              :detail.sync="configs"
               :id="item.id"
               :config="item"
               @flush="onTapHeadBtnFlush"
@@ -101,7 +100,8 @@ export default {
         { name: '排序', field: 'sort', width: 100 },
         { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         { name: '添加时间', field: 'create_time', width: 150 }
-      ]
+      ],
+      configData: null
     }
   },
   components: {
@@ -113,6 +113,14 @@ export default {
   computed: {
     currentKey() {
       return this.$route.query.key || ''
+    },
+    configs: {
+      get() {
+        return this.configData || this.$attrs['list-label'].config?.option || {}
+      },
+      set(value) {
+        this.configData = value
+      }
     }
   },
   props: {},
@@ -164,7 +172,6 @@ export default {
     }
   },
   created() {
-    console.log(this.$attrs)
   },
   destroyed() {
   },
