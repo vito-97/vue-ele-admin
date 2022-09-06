@@ -2,7 +2,6 @@
   <div>
     <custom-form
       :columns="columns"
-      :detail.sync="detail"
       :id="id"
       :list="list"
       :rules="rules"

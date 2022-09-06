@@ -2,7 +2,6 @@
   <div>
     <custom-form
       :columns="columns"
-      :detail.sync="detail"
       :rules="rules"
       v-model="formData"
       v-bind="$attrs"

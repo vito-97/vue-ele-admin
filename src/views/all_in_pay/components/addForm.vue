@@ -2,7 +2,6 @@
   <div>
     <custom-form
       :columns="columns"
-      :detail.sync="detail"
       :rules="rules"
       v-bind="$attrs"
       v-on="$listeners"

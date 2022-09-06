@@ -3,25 +3,20 @@ import checkPermission from '@/utils/permission'
 import { word2studly } from '@/utils'
 
 const customFromMixin = {
-  props: {
-    // 数据详情
-    detail: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    }
-  },
+  props: {},
   components: { customForm },
   computed: {
     id() {
-      return this.$attrs.id || 0
+      return this.$attrs?.id || 0
     },
     list() {
-      return this.$attrs.list || {}
+      return this.$attrs?.list || {}
     },
     error() {
-      return this.$attrs.error || {}
+      return this.$attrs?.error || {}
+    },
+    detail() {
+      return this.$attrs?.detail || {}
     }
   },
   methods: {

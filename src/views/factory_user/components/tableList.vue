@@ -4,12 +4,10 @@
       :columns="columns"
       :query="queryParams"
       v-bind="$attrs"
-      v-on="$listeners"
+      v-on="listeners"
       @tap-head-btn="onTapHeadBtn"
       @tap-row-btn="onTapRowBtn"
       @row-dblclick="onRowDbClick"
-      @update-item="onUpdateItem"
-      @load="onLoad"
     >
 
     </custom-table>

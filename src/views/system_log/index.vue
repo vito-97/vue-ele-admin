@@ -1,11 +1,9 @@
 <template>
   <div class="content-box">
     <curd-index
-      :query="query"
       :table-com="tableList"
       :control="control"
       :curd="curd"
-      :mode="mode"
       v-bind="$attrs"
       v-on="$listeners"
     >

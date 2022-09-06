@@ -12,12 +12,29 @@ const tableMixin = {
   },
   data() {
     return {
-      lastQuery: {},
       params: {}
     }
   },
   components: { customTable },
   computed: {
+    /**
+     * 获取要透传的事件
+     * 排除自定义事件
+     * @returns {{}}
+     */
+    listeners() {
+      var exclude = ['tap-head-btn', 'tap-row-btn', 'select-multiple', 'flush', 'delete-multiple', 'save', 'update', 'delete', 'select']
+
+      var listeners = {}
+
+      for (let [index, item] of Object.entries(this.$listeners)) {
+        if (!exclude.includes(index)) {
+          listeners[index] = item
+        }
+      }
+
+      return listeners
+    },
     list() {
       return this.$attrs?.list || []
     },
@@ -25,10 +42,10 @@ const tableMixin = {
       return this.$attrs['list-label'] || {}
     },
     mode() {
-      return this.$attrs.mode || 'show'
+      return this.$attrs?.mode || 'show'
     },
     control() {
-      return this.$attrs.control || ''
+      return this.$attrs?.control || ''
     },
     ids() {
       const id = []
@@ -66,13 +83,6 @@ const tableMixin = {
     // 是否可编辑
     editable(row, index) {
       return true
-    },
-    // 加载列表
-    onLoad(args) {
-      if (args.query) {
-        this.lastQuery = args.query
-      }
-      this.$emit('load', args)
     },
     // 点击头部按钮
     onTapHeadBtn(args) {
@@ -135,10 +145,6 @@ const tableMixin = {
       } else if (this.mode === 'select' && this.optional(row, 0)) {
         this.onTapRowBtnSelect(row, 0)
       }
-    },
-    // 更新数据
-    onUpdateItem(args) {
-      this.$emit('update-item', args)
     },
     /**
      * 检测权限

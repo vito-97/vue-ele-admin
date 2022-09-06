@@ -5,15 +5,13 @@
       :query="queryParams"
       :selectable="selectable"
       :deletable="selectable"
+      :editable="editable"
       v-bind="$attrs"
-      v-on="$listeners"
+      v-on="listeners"
       @tap-head-btn="onTapHeadBtn"
       @tap-row-btn="onTapRowBtn"
       @row-dblclick="onRowDbClick"
-      @update-item="onUpdateItem"
-      @load="onLoad"
     >
-
     </custom-table>
   </div>
 
@@ -31,7 +29,13 @@ export default {
         { name: '邮箱', field: 'email' },
         { name: '角色', field: 'role_id', label: 'role', list_field: 'name', list_value: 'id' },
         { name: '添加IP', field: 'add_ip' },
-        { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {/* inactive_text:'禁用',active_text:'启用'*/} },
+        {
+          name: '状态',
+          field: 'status',
+          label: true,
+          type: this.checkAuth('change') ? 'switch' : 'tag',
+          opts: {/* inactive_text:'禁用',active_text:'启用'*/ }
+        },
         { name: '最后登录时间', field: 'last_login_time', width: 150 },
         { name: '最后登录IP', field: 'last_login_ip' },
         { name: '备注', field: 'mark', type: 'content' },
@@ -51,6 +55,9 @@ export default {
   },
   methods: {
     selectable(row, index) {
+      return row.id !== 1
+    },
+    editable(row, index) {
       return row.id !== 1
     }
   }
