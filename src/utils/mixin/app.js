@@ -17,6 +17,10 @@ const app = {
       let width = this.screenWidth
 
       return width <= this.mobileWidth
+    },
+    // 统一dialog宽度
+    dialogWidth() {
+      return this.isMobile ? '95%' : '60%'
     }
   },
   methods: {

@@ -7,7 +7,7 @@
       @click="open">
       上传
     </el-button>
-    <el-dialog :visible.sync="dialogVisible" :append-to-body="true">
+    <el-dialog :visible.sync="dialogVisible" :append-to-body="true" :width="dialogWidth">
       <el-upload
         :multiple="true"
         :file-list="fileList"

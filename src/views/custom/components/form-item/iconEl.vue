@@ -88,9 +88,6 @@ export default {
     }
   },
   computed: {
-    dialogWidth() {
-      return this.isMobile ? '95%' : '60%'
-    },
     icon() {
       return this.formData[this.field] || ''
     },
