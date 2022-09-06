@@ -13,19 +13,12 @@
         <custom-table
           :columns="columns"
           :query="queryParams"
-          :searchable="searchable"
-          :list="list"
-          :list-label="listLabel"
-          :pagination="pagination"
-          :total="total"
-          :kw="kw"
-          :control="control"
-          :mode="mode"
-          :select-multiple="selectMultiple"
           :default-expand-all="true"
           :optional="optional"
           :row-btn="rowBtn"
           :tool-fixed="false"
+          v-bind="$attrs"
+          v-on="$listeners"
           @tap-head-btn="onTapHeadBtn"
           @tap-row-btn="onTapRowBtn"
           @row-dblclick="onRowDbClick"
@@ -58,7 +51,7 @@
                   <span slot="label"><i :class="child.icon" v-if="child.icon"></i> {{ child.name }}</span>
                   <system-config-form
                     :columns="child.config"
-                    :detail="listLabel.config.option"
+                    :detail="listLabel.config.option || {}"
                     :id="child.id"
                     :config="child"
                     @flush="onTapHeadBtnFlush"
@@ -70,7 +63,7 @@
           <template v-else>
             <system-config-form
               :columns="item.config"
-              :detail="listLabel.config.option"
+              :detail="listLabel.config.option || {}"
               :id="item.id"
               :config="item"
               @flush="onTapHeadBtnFlush"
@@ -123,12 +116,7 @@ export default {
       return this.$route.query.key || ''
     }
   },
-  props: {
-    pagination: {
-      type: Boolean,
-      default: false
-    }
-  },
+  props: {},
   filters: {},
   watch: {
     list: {
@@ -177,7 +165,7 @@ export default {
     }
   },
   created() {
-
+    console.log(this.$attrs)
   },
   destroyed() {
   },

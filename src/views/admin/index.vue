@@ -6,7 +6,7 @@
       :table-com="tableList"
       :control="control"
       :mode="mode"
-      :select-multiple="selectMultiple"
+      v-bind="$attrs"
       v-on="$listeners"
     >
     </curd-index>
@@ -24,7 +24,6 @@ export default {
       tableList,
       addForm,
       control: 'admin',
-      searchable: true,
       curd: ['*']
     }
   },

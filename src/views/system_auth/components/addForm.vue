@@ -1,14 +1,11 @@
 <template>
   <div>
     <custom-form
-      :visible.sync="Visible"
       :columns="columns"
       :detail.sync="detail"
-      :id="id"
-      :list="list"
       :rules="rules"
-      :error="error"
-      @submit="onSubmit"
+      v-bind="$attrs"
+      v-on="$listeners"
     >
 
     </custom-form>
@@ -17,12 +14,11 @@
 </template>
 
 <script>
-import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
 
 export default {
   name: 'AddForm',
-  mixins: [visible, customFromMixin],
+  mixins: [customFromMixin],
   data() {
     return {
       rules: {},

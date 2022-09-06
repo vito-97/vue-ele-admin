@@ -5,55 +5,9 @@ import { word2studly } from '@/utils'
 
 const tableMixin = {
   props: {
-    list: {
-      type: Array
-    },
-    listLabel: {
-      type: [Object, Array]
-    },
-    total: {
-      type: Number
-    },
-    // 是否可以搜索
-    searchable: {
-      type: Boolean,
-      default: true
-    },
     // 查询条件
     query: {
       type: Object
-    },
-    // 是否分页
-    pagination: {
-      type: Boolean,
-      default: true
-    },
-    kw: {
-      type: String
-    },
-    control: {
-      type: String
-    },
-    mode: {
-      type: String,
-      default: 'show'
-    },
-    // 是否支持多选
-    selectMultiple: {
-      type: Boolean,
-      default: false
-    },
-    // 选择模式下已被选择的数据
-    selectedValue: {
-      type: [Number, String, Array],
-      default() {
-        return []
-      }
-    },
-    // 选择模式下取数据的键
-    selectedPk: {
-      type: String,
-      default: 'id'
     }
   },
   data() {
@@ -64,6 +18,18 @@ const tableMixin = {
   },
   components: { customTable },
   computed: {
+    list() {
+      return this.$attrs?.list || []
+    },
+    listLabel() {
+      return this.$attrs['list-label'] || {}
+    },
+    mode() {
+      return this.$attrs.mode || 'show'
+    },
+    control() {
+      return this.$attrs.control || ''
+    },
     ids() {
       const id = []
       this.list.forEach(it => {

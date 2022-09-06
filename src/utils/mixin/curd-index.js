@@ -12,10 +12,6 @@ const indexMixin = {
       type: String,
       default: 'show'
     },
-    // 是否支持多选
-    selectMultiple: {
-      type: Boolean
-    },
     // 查询参数
     query: {
       type: Object

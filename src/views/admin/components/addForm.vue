@@ -1,14 +1,11 @@
 <template>
   <div>
     <custom-form
-      :visible.sync="Visible"
       :columns="columns"
       :detail.sync="detail"
-      :id="id"
-      :list="list"
       :rules="rules"
-      :error="error"
-      @submit="onSubmit"
+      v-bind="$attrs"
+      v-on="$listeners"
     >
     </custom-form>
   </div>
@@ -16,7 +13,6 @@
 </template>
 
 <script>
-import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
 import { isSuperAdmin } from '@/utils'
 
@@ -47,7 +43,7 @@ import { isSuperAdmin } from '@/utils'
 // { validator: check, trigger: 'blur' }
 export default {
   name: 'AddForm',
-  mixins: [visible, customFromMixin],
+  mixins: [customFromMixin],
   data() {
     return {
       rules: {
@@ -60,9 +56,9 @@ export default {
       },
       // 列配置
       columns: [
-        { field: 'username', name: '账号', edit_opts: { readonly: true } },
-        { field: 'password', name: '密码', add_opts: { required: true }, edit_opts: { required: false } },
         { field: 'nickname', name: '昵称', opts: { required: true } },
+        { field: 'username', name: '账号', opts: { required: true }, edit_opts: { readonly: true, disabled: true } },
+        { field: 'password', name: '密码', add_opts: { required: true }, edit_opts: { required: false } },
         { field: 'tel', name: '手机' },
         { field: 'email', name: '邮箱' },
         {
@@ -84,7 +80,7 @@ export default {
             return isSuperAdmin(this.$store.getters.role)
           }
         },
-        { field: 'status', name: '状态', label: true, type: 'radio', opts: { required: true } },
+        { field: 'status', name: '状态', label: true, type: 'radio', opts: { required: true }, value: 1 },
         { field: 'mark', name: '备注', type: 'textarea' },
         { field: 'disabled_mark', name: '禁用备注', type: 'textarea' }
       ]

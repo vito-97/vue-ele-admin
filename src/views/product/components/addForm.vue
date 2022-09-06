@@ -1,15 +1,11 @@
 <template>
   <div>
     <custom-form
-      :visible.sync="Visible"
       :columns="columns"
       :detail.sync="detail"
-      :id="id"
-      :list="list"
       :rules="rules"
-      :append-to-body="appendToBody"
-      :error="error"
-      @submit="onSubmit"
+      v-bind="$attrs"
+      v-on="$listeners"
     >
 
     </custom-form>
@@ -18,13 +14,12 @@
 </template>
 
 <script>
-import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
 import { isSuperAdmin } from '@/utils'
 
 export default {
   name: 'AddForm',
-  mixins: [visible, customFromMixin],
+  mixins: [customFromMixin],
   data() {
     var siteID = this.$store.getters.userinfo.site_id
     var isMain = siteID == 1
@@ -86,7 +81,7 @@ export default {
         { name: 'VIP', field: 'is_vip', type: 'switch', opts: { required: true } },
         { name: '是否可退', field: 'allow_refund', type: 'switch', opts: { required: true } },
         { name: '类型', field: 'type', type: 'radio', opts: { required: true }, label: true },
-        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } },
+        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true }, value: 1 },
         { name: '备注', field: 'mark', type: 'textarea', opts: { maxlength: 120 } }
       ]
     }

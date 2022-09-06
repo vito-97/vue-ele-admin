@@ -1,16 +1,12 @@
 <template>
   <div>
     <custom-form
-      :visible.sync="Visible"
       :columns="columns"
       :detail.sync="detail"
-      :id="id"
-      :list="list"
       :rules="rules"
-      :append-to-body="appendToBody"
-      :error="error"
       v-model="formData"
-      @submit="onSubmit"
+      v-bind="$attrs"
+      v-on="$listeners"
     >
 
     </custom-form>
@@ -19,7 +15,6 @@
 </template>
 
 <script>
-import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
 import ENUM from '@/utils/enum'
 import formItemCom from '@/utils/form-item'
@@ -35,7 +30,7 @@ for (let [key, item] of Object.entries(formItemCom)) {
 
 export default {
   name: 'AddForm',
-  mixins: [visible, customFromMixin],
+  mixins: [customFromMixin],
   data() {
     return {
       rules: {},

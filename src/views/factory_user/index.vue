@@ -5,9 +5,9 @@
       :form-com="addForm"
       :table-com="tableList"
       :control="control"
-      :searchable="searchable"
       :curd="curd"
       :mode="mode"
+      v-bind="$attrs"
       v-on="$listeners"
     >
     </curd-index>
@@ -25,7 +25,6 @@ export default {
       tableList,
       addForm,
       control: 'factory_user',
-      searchable: true,
       curd: ['*']
     }
   },

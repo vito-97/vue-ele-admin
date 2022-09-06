@@ -10,32 +10,21 @@ const customFromMixin = {
       default: () => {
         return {}
       }
-    },
-    id: {
-      type: Number,
-      default: 0
-    },
-    list: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
-    appendToBody: {
-      type: Boolean
-    },
-    error: {
-      type: Object,
-      default: () => {
-        return {}
-      }
     }
   },
   components: { customForm },
-  methods: {
-    onSubmit(detail) {
-      this.$emit('submit', detail)
+  computed: {
+    id() {
+      return this.$attrs.id || 0
     },
+    list() {
+      return this.$attrs.list || {}
+    },
+    error() {
+      return this.$attrs.error || {}
+    }
+  },
+  methods: {
     flush() {
       this.$emit('flush')
     },

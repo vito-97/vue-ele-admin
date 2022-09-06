@@ -6,10 +6,10 @@
       :id="id"
       :list="list"
       :rules="rules"
-      :append-to-body="appendToBody"
       :dialog="false"
       :error="error"
-      @submit="onSubmit"
+      v-bind="$attrs"
+      v-on="$listeners"
     >
     </custom-form>
   </div>

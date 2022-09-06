@@ -55,9 +55,6 @@ const formItemMixin = {
     opt() {
       return this.col.opts
     },
-    events() {
-      return this.column.events
-    },
     // 获取字段
     field() {
       return this.col.field

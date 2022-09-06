@@ -13,10 +13,6 @@ const state = {
   }
 }
 
-window.addEventListener('resize', function (e) {
-  console.log(e)
-})
-
 const mutations = {
   TOGGLE_SIDEBAR: state => {
     state.sidebar.opened = !state.sidebar.opened

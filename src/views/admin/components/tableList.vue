@@ -3,17 +3,10 @@
     <custom-table
       :columns="columns"
       :query="queryParams"
-      :searchable="searchable"
       :selectable="selectable"
       :deletable="selectable"
-      :list="list"
-      :list-label="listLabel"
-      :pagination="pagination"
-      :total="total"
-      :kw="kw"
-      :control="control"
-      :mode="mode"
-      :select-multiple="selectMultiple"
+      v-bind="$attrs"
+      v-on="$listeners"
       @tap-head-btn="onTapHeadBtn"
       @tap-row-btn="onTapRowBtn"
       @row-dblclick="onRowDbClick"
@@ -33,7 +26,7 @@ export default {
   data() {
     return {
       columns: [
-        { name: '用户名', field: 'username' },
+        { name: '账号', field: 'username' },
         { name: '昵称', field: 'nickname' },
         { name: '邮箱', field: 'email' },
         { name: '角色', field: 'role_id', label: 'role', list_field: 'name', list_value: 'id' },

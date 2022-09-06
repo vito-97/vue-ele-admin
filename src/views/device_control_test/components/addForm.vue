@@ -6,12 +6,12 @@
       :id="id"
       :list="list"
       :rules="rules"
-      :append-to-body="appendToBody"
       :dialog="false"
       :error="error"
       :hide-button="true"
       v-model="formData"
-      @submit="onSubmit"
+      v-bind="$attrs"
+      v-on="$listeners"
       @event="onEvent"
     >
       <template v-slot:start-before>

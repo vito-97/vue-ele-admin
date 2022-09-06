@@ -4,9 +4,9 @@
       :query="query"
       :table-com="tableList"
       :control="control"
-      :searchable="searchable"
       :curd="curd"
       :mode="mode"
+      v-bind="$attrs"
       v-on="$listeners"
     >
     </curd-index>
@@ -22,7 +22,6 @@ export default {
     return {
       tableList,
       control: 'system_log',
-      searchable: true,
       curd: ['*']
     }
   },

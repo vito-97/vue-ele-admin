@@ -304,21 +304,6 @@ export const asyncRoutes = [
           title: '订单管理',
           auth: ['order/index']
         }
-      },
-      {
-        path: 'index',
-        query: {
-          'filter[status]': '4,5',
-          'op[status]': 'IN'
-        },
-        hidden: true,
-        // redirect: '/order/index?filter[status]=4,5&op[status]=IN',
-        component: () => import('@/views/order/refund'),
-        name: 'OrderRefund',
-        meta: {
-          title: '退款管理',
-          auth: ['order/index']
-        }
       }
     ]
   },

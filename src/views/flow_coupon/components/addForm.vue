@@ -1,15 +1,11 @@
 <template>
   <div>
     <custom-form
-      :visible.sync="Visible"
       :columns="columns"
       :detail.sync="detail"
-      :id="id"
-      :list="list"
       :rules="rules"
-      :append-to-body="appendToBody"
-      :error="error"
-      @submit="onSubmit"
+      v-bind="$attrs"
+      v-on="$listeners"
     >
 
     </custom-form>
@@ -18,12 +14,11 @@
 </template>
 
 <script>
-import visible from '@/utils/mixin/visible'
 import customFromMixin from '@/utils/mixin/custom-form'
 
 export default {
   name: 'AddForm',
-  mixins: [visible, customFromMixin],
+  mixins: [customFromMixin],
   data() {
     return {
       rules: {},
@@ -72,7 +67,7 @@ export default {
         // { name: '开始使用时间', field: 'use_start_time', opts: { required: true }, type: 'date_time' },
         // { name: '结束使用时间', field: 'use_end_time', opts: { required: true }, type: 'date_time' },
         { name: '领取有效期', field: 'coupon_day', type: 'number', opts: { required: true }, value: 0 },
-        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true } }
+        { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true }, value: 1 }
       ]
     }
   },

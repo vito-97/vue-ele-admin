@@ -5,11 +5,10 @@
       :form-com="addForm"
       :table-com="tableList"
       :control="control"
-      :searchable="searchable"
       :curd="curd"
       :mode="mode"
       :pagination="false"
-      :select-multiple="selectMultiple"
+      v-bind="$attrs"
       v-on="$listeners"
     >
     </curd-index>
@@ -27,7 +26,6 @@ export default {
       tableList,
       addForm,
       control: 'system_auth',
-      searchable: true,
       curd: ['*']
     }
   },
