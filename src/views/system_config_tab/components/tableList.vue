@@ -164,7 +164,7 @@ export default {
       handler(value) {
         var old = this.configSubActiveOld
         for (let [i, it] of Object.entries(value)) {
-          if (typeof old[i] !== 'undefined' && it !== old[i]) {
+          if (old[i] && it !== old[i]) {
             // 获取下级的key
             var key = this.tabs[Number(this.configActive) - 1].children[it].key
             this.redirectUrl(key)

@@ -261,8 +261,10 @@
         </template>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false;onConfirmSuccess();">确 定</el-button>
+        <el-button @click="onConfirmCancel">{{ confirm.cancelText }}</el-button>
+        <el-button
+          :type="confirm.btnType || 'primary'"
+          @click="onConfirmSuccess">{{ confirm.confirmText }}</el-button>
       </span>
     </el-dialog>
 
@@ -467,6 +469,7 @@ export default {
     confirmIsCustomForm() {
       return this.confirm.input && Array.isArray(this.confirm.input)
     },
+    // 分页参数
     pageLayout() {
       let isMobile = this.isMobile
 
@@ -476,9 +479,11 @@ export default {
 
       return arr.filter(v => v).join(',')
     },
+    // 分页显示按钮的数量
     pagerCount() {
       return this.isMobile ? 5 : 11
     },
+    // 是否使用页面的Url Query
     useQuery() {
       return this.mode === 'show'
     },
@@ -527,7 +532,7 @@ export default {
 
       const def = {
         name: 'LABEL',
-        field: 'undefined',
+        field: '',
         fixed: null,
         // 宽度
         width: null,
@@ -571,7 +576,7 @@ export default {
       }
 
       for (let [i, it] of cols.entries()) {
-        if (typeof it !== 'object') {
+        if (typeof it !== 'object' || !it.field) {
           cols.splice(i, 1)
           continue
         }
@@ -651,7 +656,9 @@ export default {
         // 是否显示输入框 字符串类型的话则设置成输入框类型 数组的话则使用自定义表单
         input: false,
         // 提示信息
-        confirm: null
+        confirm: null,
+        confirmText: '确 定',
+        cancelText: '取 消'
       }
 
       array.forEach((it, i) => {
@@ -690,7 +697,9 @@ export default {
         // 是否显示输入框 字符串类型的话则设置成输入框类型 数组的话则使用自定义表单
         input: false,
         // 提示信息
-        confirm: null
+        confirm: null,
+        confirmText: '确 定',
+        cancelText: '取 消'
       }
 
       array.forEach((it) => {
@@ -751,7 +760,9 @@ export default {
           key: 'delete',
           selected: true,
           confirm: this.deleteMultipleConfirm || '确定要删除{n}条选中数据吗？',
-          show: this.headBtnShow('delete')
+          show: this.headBtnShow('delete'),
+          btnType: 'danger',
+          confirmText: this.headBtnText.deleteConfirmText || '删除'
         }
       ]
     },
@@ -775,7 +786,9 @@ export default {
           auth: this.getFullAuth('delete'),
           key: 'delete',
           confirm: this.deleteConfirm || '确定要删除吗？',
-          show: this.rowBtnShow('delete') && this.deletable
+          show: this.rowBtnShow('delete') && this.deletable,
+          btnType: 'danger',
+          confirmText: this.rowBtnText.deleteConfirmText || '删除'
         }
       ]
     },
@@ -980,7 +993,10 @@ export default {
         const args = {
           title: btn.confirm.replace('{n}', this.selection.length),
           input: this.getConfirmBtnInput(btn, this.selection),
-          placeholder: btn.placeholder || ''
+          placeholder: btn.placeholder || '',
+          btnType: btn.btnType || '',
+          confirmText: btn.confirmText,
+          cancelText: btn.cancelText
         }
         this.setConfirmInfo(args, (data) => this.headBtnTrigger(btn, data))
         return
@@ -994,7 +1010,10 @@ export default {
         const args = {
           title: this.replace(btn.confirm, row),
           input: this.getConfirmBtnInput(btn, row),
-          placeholder: btn.placeholder || ''
+          placeholder: btn.placeholder || '',
+          btnType: btn.btnType || '',
+          confirmText: btn.confirmText,
+          cancelText: btn.cancelText
         }
         this.setConfirmInfo(args, (data) => this.rowBtnTrigger(btn, row, index, column, data))
         return
@@ -1036,7 +1055,7 @@ export default {
 
       return string
     },
-    // 触发事件
+    // 头按钮触发事件
     headBtnTrigger(btn, data = {}) {
       this.$emit('tap-head-btn', {
         key: btn.key,
@@ -1045,6 +1064,7 @@ export default {
         data
       })
     },
+    // 行按钮触发事件
     rowBtnTrigger(btn, row, index, column, data = {}) {
       this.$emit('tap-row-btn', {
         index,
@@ -1055,12 +1075,10 @@ export default {
       })
     },
     // 设置提示框的内容
-    setConfirmInfo({ title, input, placeholder }, callback) {
+    setConfirmInfo(confirm, callback) {
       this.confirmContent = ''
       this.confirm = {
-        title,
-        input,
-        placeholder,
+        ...confirm,
         callback
       }
 
@@ -1068,8 +1086,13 @@ export default {
     },
     // 确认按钮
     onConfirmSuccess() {
+      this.dialogVisible = false
       var data = this.confirmIsCustomForm ? this.confirmFormData : { content: this.confirmContent }
       this.confirm.callback && this.confirm.callback(data)
+    },
+    // 取消按钮
+    onConfirmCancel() {
+      this.dialogVisible = false
     },
     // 提交表单
     onSubmitConfirm(formData) {
