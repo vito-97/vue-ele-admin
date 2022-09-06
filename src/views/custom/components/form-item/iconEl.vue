@@ -1,6 +1,14 @@
 <template>
   <div class="icon-box">
-    <el-tag v-show="icon" size="medium" :class="[icon]" class="icon-name" :closable="true" @close="onCloseTag" :key="field">
+    <el-tag
+      v-show="icon"
+      size="medium"
+      :class="[icon]"
+      class="icon-name"
+      :closable="true"
+      :key="field"
+      @close="onCloseTag"
+    >
       {{ icon }}
     </el-tag>
     <el-button class="select-btn" type="primary" size="mini" @click="onClickChoose" :disabled="opt.disabled">
@@ -11,8 +19,7 @@
       :visible.sync="visible"
       @close="onClose"
       @open="onOpen"
-      :modal="true"
-      width="60%"
+      :width="dialogWidth"
       top="10vh"
       append-to-body
     >
@@ -81,6 +88,9 @@ export default {
     }
   },
   computed: {
+    dialogWidth() {
+      return this.isMobile ? '95%' : '60%'
+    },
     icon() {
       return this.formData[this.field] || ''
     },
@@ -164,5 +174,16 @@ export default {
     color: $color-primary;
   }
 
+}
+
+// 手机端
+@media screen and (max-width: 768px) {
+  .icon-list-box {
+    .item {
+      width: calc(100% / 5);
+      padding: 5px;
+      justify-content: flex-start;
+    }
+  }
 }
 </style>
