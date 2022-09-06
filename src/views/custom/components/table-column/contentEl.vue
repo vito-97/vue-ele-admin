@@ -2,7 +2,7 @@
   <div>
     <div :class="{pointer:isOutStr}" @click.stop="onClick">{{ subVal }}</div>
     <div class="" v-if="isOutStr">
-      <el-dialog :title="opt.title" :visible.sync="visible" :append-to-body="true">
+      <el-dialog :title="opt.title" :visible.sync="visible" :append-to-body="true" :width="dialogWidth">
         <div class="table-content-box">
           <template v-if="opt.tree">
             <div v-for="(item,index) in val" :key="index">

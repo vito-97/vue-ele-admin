@@ -38,7 +38,7 @@
         @close="onClose"
         @open="onOpen"
         :modal="true"
-        :width="width"
+        :width="dialogWidth"
         top="10vh"
         append-to-body
       >
@@ -140,9 +140,6 @@ export default {
     // 上传按钮文字
     uploadBtnText() {
       return this.getText(this.opt.upload_btn_text)
-    },
-    width() {
-      return this.isMobile ? '95%' : '60%'
     }
   },
   data() {
