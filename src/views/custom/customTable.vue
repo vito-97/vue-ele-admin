@@ -438,8 +438,13 @@ export default {
       if (!this.visible) {
         this.visible = true
       }
-
       this.setSelectedRows()
+    },
+    // 监听已选中的值改变则从新更改选中
+    selectedValue(value) {
+      if (value) {
+        this.setSelectedRows()
+      }
     }
   },
   computed: {
