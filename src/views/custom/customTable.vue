@@ -3,7 +3,7 @@
     <div class="tool-box" :class="{'scroll-bar':scroll.y}">
       <el-row :gutter="15">
         <el-col :span="12" :xs="24">
-          <el-button-group :size="btnSize" class="btn-group-box">
+          <el-button-group size="mini" class="btn-group-box">
             <!--        默认控制按钮之前-->
             <slot name="before-head-button" :selection="selection"></slot>
             <template v-for="(btn) in headBtns">
@@ -11,7 +11,7 @@
                 :type="btn.type"
                 :icon="btn.icon"
                 :disabled="btn.selected && !selection.length"
-                :size="btnSize"
+                size="mini"
                 v-if="!headBtnDisabled(btn) && (!btn.auth || checkAuth(btn.auth))"
                 @click="onTapHeadBtn(btn)"
                 :key="btn.key"
@@ -453,10 +453,6 @@ export default {
       sidebar: state => state.app.sidebar,
       scroll: state => state.app.scroll
     }),
-    // 按钮尺寸
-    btnSize() {
-      return this.isMobile ? 'mini' : 'small'
-    },
     // 确认框的宽度
     confirmWidth() {
       return this.isMobile ? '95%' : '35%'

@@ -38,8 +38,8 @@
         class="dialog-footer"
         v-if="showButton"
       >
-        <el-button type="primary" @click="onClickSubmit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
-        <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
+        <el-button size="small" type="primary" @click="onClickSubmit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
+        <el-button size="small" @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
       </div>
     </el-dialog>
     <template v-else>
