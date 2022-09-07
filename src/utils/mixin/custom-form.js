@@ -18,6 +18,7 @@ const customFromMixin = {
     detail() {
       return this.$attrs?.detail || {}
     },
+    // 获取要透传的事件
     listeners() {
       var exclude = ['close', 'flush']
 
