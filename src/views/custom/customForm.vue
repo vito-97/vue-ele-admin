@@ -388,6 +388,7 @@ export default {
 
       var fieldsCount = this.columnsFieldsCount
 
+      // 判断字段是否只出现一次并且需要显示出来修改
       for (let item of columns) {
         if (fieldsCount[item.field] === 1 && !this.checkColVisible(item, formData)) {
           delete formData[item.field]
