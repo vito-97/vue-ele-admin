@@ -14,6 +14,7 @@
     :disabled="opt.disabled"
     :file-list="fileList"
     :list-type="opt.list_type"
+    :drag="opt.drag"
     :on-preview="onPreview"
     :on-remove="onRemove"
     :before-remove="onBeforeRemove"
@@ -23,7 +24,10 @@
     :on-change="onChange"
     :before-upload="onBeforeUpload"
     :on-exceed="onExceed">
-    <el-button size="small" type="primary">{{ opt.btn_text }}</el-button>
+    <div class="upload-box" :class="{drag:opt.drag}">
+      <el-button size="small" type="primary">{{ opt.btn_text }}</el-button>
+      <div class="el-upload__tip" v-show="opt.drag">{{ opt.drag_text }}</div>
+    </div>
     <div slot="tip" class="el-upload__tip" v-if="opt.tip">{{ opt.tip }}</div>
   </el-upload>
 </template>
@@ -60,12 +64,13 @@ export default {
         // 接受上传的文件类型
         accept: null,
         // 最大允许上传个数
-        limit: 1,
+        limit: 9,
         // 自动上传
         auto_upload: true,
         file_list: [],
         btn_text: '上传',
-        tip: '只能上传图片/mp4/mp3/文档/图表/ppt/pdf/zip/rar'
+        tip: '只能上传图片/mp4/mp3/文档/图表/ppt/pdf/zip/rar',
+        drag_tip: '点击上传或拖拽到此上传'
       },
       files: {}
     }
@@ -184,6 +189,15 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.upload-box {
+  &.drag {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+  }
+}
 </style>

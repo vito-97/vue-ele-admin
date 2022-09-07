@@ -17,11 +17,27 @@ const customFromMixin = {
     },
     detail() {
       return this.$attrs?.detail || {}
+    },
+    listeners() {
+      var exclude = ['close', 'flush']
+
+      var listeners = {}
+
+      for (let [index, item] of Object.entries(this.$listeners)) {
+        if (!exclude.includes(index)) {
+          listeners[index] = item
+        }
+      }
+
+      return listeners
     }
   },
   methods: {
     flush() {
       this.$emit('flush')
+    },
+    close() {
+      this.$emit('close')
     },
     // 检测其他权限
     checkPermission(auth) {

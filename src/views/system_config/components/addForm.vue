@@ -5,7 +5,7 @@
       :rules="rules"
       v-model="formData"
       v-bind="$attrs"
-      v-on="$listeners"
+      v-on="listeners"
     >
 
     </custom-form>

@@ -10,7 +10,7 @@ class="hamburger-container"
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <!--        <search id="header-search" class="right-menu-item" />-->
+                <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect"/>
 
@@ -51,7 +51,7 @@ import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
-// import Search from '@/components/HeaderSearch'
+import Search from '@/components/HeaderSearch'
 
 export default {
   components: {
@@ -59,8 +59,8 @@ export default {
     Hamburger,
     ErrorLog,
     Screenfull,
-    SizeSelect
-    // Search
+    SizeSelect,
+    Search
   },
   computed: {
     ...mapGetters([

@@ -10,7 +10,7 @@
       :hide-button="true"
       v-model="formData"
       v-bind="$attrs"
-      v-on="$listeners"
+      v-on="listeners"
       @event="onEvent"
     >
       <template v-slot:start-before>

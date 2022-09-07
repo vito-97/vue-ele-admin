@@ -8,7 +8,7 @@
       :dialog="false"
       :error="error"
       v-bind="$attrs"
-      v-on="$listeners"
+      v-on="listeners"
     >
     </custom-form>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="curd-box">
     <!--    数据列表-->
-    <template v-if="hasCurdAuth('index') && tableCom">
+    <template v-if="checkAuth('index') && tableCom">
       <component
         :is="tableCom"
         :list="list"
@@ -28,7 +28,7 @@
       />
     </template>
     <!--    添加或修改-->
-    <template v-if="hasCurdAuth('edit') && (hasCurdAuth('save') || hasCurdAuth('update')) && formCom">
+    <template v-if="checkAuth('edit') && (checkAuth('save') || checkAuth('update')) && formCom">
       <component
         :is="formCom"
         :detail.sync="detail"
@@ -38,6 +38,8 @@
         :control="control"
         :append-to-body="appendToBody"
         :error="error"
+        @flush="onFlush"
+        @close="onClose"
         @submit="onSubmit"
       />
     </template>
@@ -377,7 +379,7 @@ export default {
      * @param name
      * @returns {*|boolean}
      */
-    hasCurdAuth(name) {
+    checkAuth(name) {
       return this.auth[name] || false
     },
     /**
@@ -404,6 +406,11 @@ export default {
       }
 
       this.getList(query, true)
+    },
+    // 关闭表单
+    onClose() {
+      this.formVisible = false
+      console.log(this.formVisible)
     },
     /**
      * 添加操作

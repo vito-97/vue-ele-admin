@@ -28,7 +28,7 @@ export default {
         {
           name: '刷新权限',
           // 类型
-          type: 'success',
+          type: 'primary',
           // 图标
           icon: 'el-icon-refresh-right',
           // 权限

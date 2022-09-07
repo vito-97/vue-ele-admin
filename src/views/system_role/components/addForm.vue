@@ -4,7 +4,7 @@
       :columns="columns"
       :rules="rules"
       v-bind="$attrs"
-      v-on="$listeners"
+      v-on="listeners"
     >
       <!--      权限插槽-->
       <template v-slot:auth_ids="{formData,col}">

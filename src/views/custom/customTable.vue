@@ -1,5 +1,5 @@
 <template>
-  <div v-if="hasCurdAuth('index')" class="custom-table-box" :class="tableClass">
+  <div v-if="checkAuth('index')" class="custom-table-box" :class="tableClass">
     <div class="tool-box" :class="{'scroll-bar':scroll.y}">
       <el-row :gutter="15">
         <el-col :span="12" :xs="24">
@@ -12,7 +12,7 @@
                 :icon="btn.icon"
                 :disabled="btn.selected && !selection.length"
                 size="mini"
-                v-if="!headBtnDisabled(btn) && (!btn.auth || checkAuth(btn.auth))"
+                v-if="!headBtnDisabled(btn) && (!btn.auth || checkPermission(btn.auth))"
                 @click="onTapHeadBtn(btn)"
                 :key="btn.key"
               >
@@ -24,7 +24,7 @@
           </el-button-group>
         </el-col>
         <el-col :span="12" :xs="24">
-          <div class="search-group-box" v-if="searchable && hasCurdAuth('index')">
+          <div class="search-group-box" v-if="searchable && checkAuth('index')">
             <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
               <el-form-item class="mb0">
                 <el-input
@@ -68,7 +68,7 @@
     <div class="container">
       <slot name="content" :column="cols">
         <component
-          v-if="hasCurdAuth('index') && visible"
+          v-if="checkAuth('index') && visible"
           :is="tableCom"
           :data="list"
           :row-key="rowKey"
@@ -131,17 +131,15 @@
                   :name="(it.slot || it.field)+'-before'"
                   v-if="getColValue(it, row)"
                   :row="row"
-                  :column="column"
                   :$index="$index"
                   :value="getColValue(it, row)"></slot>
 
                 <slot
                   :name="(it.slot || it.field)"
                   :row="row"
-                  :column="column"
                   :$index="$index"
                   :value="getColValue(it, row)"
-                  :label="listLabel">
+                  >
 
                   <template v-if="!isEmpty(it,row)">
 
@@ -168,7 +166,6 @@
                   :name="(it.slot || it.field)+'-empty'"
                   v-if="!row[it.field]"
                   :row="row"
-                  :column="column"
                   :$index="$index"
                   :value="getColValue(it, row)"></slot>
 
@@ -176,7 +173,6 @@
                   :name="(it.slot || it.field)+'-after'"
                   v-if="row[it.field]"
                   :row="row"
-                  :column="column"
                   :$index="$index"
                   :value="getColValue(it, row)"></slot>
 
@@ -196,15 +192,15 @@
           >
             <template slot-scope="{row,column,$index}">
 
-              <slot name="before-row-btn" :row="row" :column="column" :$index="$index"></slot>
+              <slot name="before-row-btn" :row="row" :$index="$index"></slot>
 
-              <slot name="row-btn" :row="row" :column="column" :$index="$index">
+              <slot name="row-btn" :row="row" :$index="$index">
                 <template v-for="(btn) in rowBtns">
                   <el-button
                     type="text"
                     size="small"
                     @click="onTapRowBtn(btn,row,$index,column)"
-                    v-if="btn.show && (!btn.auth || checkAuth(btn.auth))"
+                    v-if="btn.show && (!btn.auth || checkPermission(btn.auth))"
                     :disabled="rowBtnDisabled(btn,row,$index)"
                     :key="btn.key"
                   >
@@ -212,9 +208,7 @@
                   </el-button>
                 </template>
               </slot>
-
-              <slot name="after-row-btn" :row="row" :column="column" :$index="$index"></slot>
-
+              <slot name="after-row-btn" :row="row" :$index="$index"></slot>
             </template>
           </component>
         </component>
@@ -281,6 +275,7 @@ import { deepVal, debounce, isPositiveInteger, toArray } from '@/utils'
 import itemsCom from '@/utils/table-column'
 import md5 from 'js-md5'
 import { mapState } from 'vuex'
+import Sticky from '@/components/Sticky'
 
 export default {
   name: 'CustomTable',
@@ -318,7 +313,7 @@ export default {
       excludeParams: []
     }
   },
-  components: { Pagination, customForm },
+  components: { Pagination, customForm, Sticky },
   props: {
     height: { type: [Number, String], default: null },
     // 控制器名
@@ -809,8 +804,8 @@ export default {
      * 将传入的列生成hash值
      */
     hash() {
-      let string = JSON.stringify(this.columns)
-      return (this.control ? this.control + '-' : '') + md5(string).substr(0, 10)
+      let string = this.columnFields.join(',')
+      return (this.control ? this.control + '-' : this.$route.path) + md5(string).substr(0, 10)
     },
     /**
      * 获取列的label
@@ -983,11 +978,11 @@ export default {
       this.$emit('load', { query, init, first, excludeParams })
     },
     // 是否有CURD权限
-    hasCurdAuth(auth) {
-      return this.checkAuth(this.getFullAuth(auth))
+    checkAuth(auth) {
+      return this.checkPermission(this.getFullAuth(auth))
     },
     // 检测权限
-    checkAuth(auth) {
+    checkPermission(auth) {
       return checkPermission(auth)
     },
     // 填充权限前缀
