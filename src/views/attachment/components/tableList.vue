@@ -3,7 +3,6 @@
     <custom-table
       :columns="columns"
       :query="queryParams"
-      :editable="editable"
       v-bind="$attrs"
       v-on="listeners"
       @tap-head-btn="onTapHeadBtn"

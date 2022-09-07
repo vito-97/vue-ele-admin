@@ -89,7 +89,7 @@ export default {
     fileList() {
       let val = this.val
       let list = []
-      val = Array.isArray(val) ? val : [val]
+      val = this.toArray(val)
 
       val.forEach((it, i) => {
         if (it) {
@@ -121,7 +121,7 @@ export default {
       const url = file.response?.data?.detail.url || file.url
       let val = this.val
       if (this.opt.multiple) {
-        const index = val.indexOf(url)
+        const index = this.toArray(val).indexOf(url)
         val.splice(index, 1)
       } else {
         val = ''

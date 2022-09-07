@@ -14,6 +14,7 @@
       @open="onOpen">
       <custom-form-render
         v-model="formData"
+        :id="id"
         :detail="detail"
         :error="error"
         :rules="formRules"
@@ -46,6 +47,7 @@
       <!--  添加或编辑-->
       <custom-form-render
         v-model="formData"
+        :id="id"
         :detail="detail"
         :error="error"
         :rules="formRules"
@@ -92,7 +94,6 @@ export default {
     return {
       // 初始化后表单数据的默认值
       initFormData: {},
-      formData: {},
       formRules: {},
       formColumns: [],
       items: itemsCom,
@@ -245,9 +246,6 @@ export default {
     title() {
       return this.isEdit ? (this.editTitle || '编辑') : (this.addTitle || '添加')
     },
-    isEdit() {
-      return this.id
-    },
     nowMode() {
       return this.isEdit ? 'edit' : 'add'
     },
@@ -324,7 +322,7 @@ export default {
           continue
         }
         // 设置表单数据
-        if (item.field && (typeof formData[item.field] === 'undefined' || formData[item.field] === '')) {
+        if (item.field && (typeof formData[item.field] === 'undefined' || formData[item.field] === '') && this.checkColVisible(item)) {
           const value = typeof item.value === 'undefined' ? '' : item.value
           let formDataValue = deepVal(item.field, this.detail, value)
 

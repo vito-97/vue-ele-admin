@@ -2,7 +2,7 @@
   <div>
     <custom-form
       :columns="columns"
-      :hide-button="true"
+      :hide-button="!id"
       @event="onEvent"
       v-bind="$attrs"
       v-on="listeners"
@@ -21,7 +21,7 @@ export default {
     return {
       // 列配置
       columns: [
-        // { name: '名称', field: 'name', opts: { required: true, maxlength: 100 }, addable: false },
+        { name: '名称', field: 'name', opts: { required: true, maxlength: 100 }, addable: false },
         // { name: '分类', field: 'category', label: true, opts: { required: true }, addable: false, type: 'select' },
         {
           name: '附件',

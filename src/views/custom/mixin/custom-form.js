@@ -1,4 +1,14 @@
 const customFormMixin = {
+  data() {
+    return {
+      formData: {}
+    }
+  },
+  computed: {
+    isEdit() {
+      return !!this.id
+    }
+  },
   methods: {
     /**
      * 获取列的插槽名称

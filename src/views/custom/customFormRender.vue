@@ -81,6 +81,10 @@ export default {
   },
   mixins: [customFormMixin],
   props: {
+    id: {
+      type: Number,
+      default: 0
+    },
     // 编辑模式
     mode: {
       type: String,
