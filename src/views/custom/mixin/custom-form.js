@@ -21,12 +21,13 @@ const customFormMixin = {
      * @param col
      * @returns {boolean|*}
      */
-    checkColVisible(col) {
+    checkColVisible(col, formData = null) {
+      formData = formData || this.value
       let status = this.isEdit ? col.editable : col.addable
       if (typeof col.visible === 'boolean') {
         status = status && col.visible
       } else if (typeof col.visible === 'function') {
-        status = status && col.visible.call(this, this.value, this.detail, col)
+        status = status && col.visible.call(this, formData, this.detail, col)
       }
 
       return status

@@ -39,7 +39,10 @@
         class="dialog-footer"
         v-if="showButton"
       >
-        <el-button size="small" type="primary" @click="onClickSubmit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
+        <el-button size="small" type="primary" @click="onClickSubmit" v-if="!hideSubmitButton">{{
+            submitBtnText
+          }}
+        </el-button>
         <el-button size="small" @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
       </div>
     </el-dialog>
@@ -251,6 +254,21 @@ export default {
     },
     showButton() {
       return this.columns.length && !this.hideButton && (!this.hideSubmitButton || !this.hideResetButton)
+    },
+    // 获取所有的字段
+    columnFields() {
+      return this.columns.map(it => it.field)
+    },
+    // 计算每个字段出现的次数
+    columnsFieldsCount() {
+      return this.columnFields.reduce((obj, field) => {
+        if (obj[field]) {
+          obj[field]++
+        } else {
+          obj[field] = 1
+        }
+        return obj
+      }, {})
     }
   },
   created() {
@@ -322,7 +340,7 @@ export default {
           continue
         }
         // 设置表单数据
-        if (item.field && (typeof formData[item.field] === 'undefined' || formData[item.field] === '') && this.checkColVisible(item)) {
+        if (item.field && (typeof formData[item.field] === 'undefined' || formData[item.field] === '')) {
           const value = typeof item.value === 'undefined' ? '' : item.value
           let formDataValue = deepVal(item.field, this.detail, value)
 
@@ -366,6 +384,14 @@ export default {
         }
 
         columns[index] = item
+      }
+
+      var fieldsCount = this.columnsFieldsCount
+
+      for (let item of columns) {
+        if (fieldsCount[item.field] === 1 && !this.checkColVisible(item, formData)) {
+          delete formData[item.field]
+        }
       }
 
       this.setFormData(formData)
