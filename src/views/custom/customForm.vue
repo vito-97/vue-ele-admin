@@ -257,7 +257,7 @@ export default {
     },
     // 获取所有的字段
     columnFields() {
-      return this.columns.map(it => it.field)
+      return this.columns.map(it => it && it.field)
     },
     // 计算每个字段出现的次数
     columnsFieldsCount() {
