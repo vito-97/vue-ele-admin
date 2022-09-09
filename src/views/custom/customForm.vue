@@ -39,9 +39,8 @@
         class="dialog-footer"
         v-if="showButton"
       >
-        <el-button size="small" type="primary" @click="onClickSubmit" v-if="!hideSubmitButton">{{
-            submitBtnText
-          }}
+        <el-button size="small" type="primary" @click="onClickSubmit" v-if="!hideSubmitButton">
+          {{ submitBtnText }}
         </el-button>
         <el-button size="small" @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
       </div>
@@ -272,8 +271,6 @@ export default {
     }
   },
   created() {
-    // console.log('slot', this.$slots)
-    // console.log('slot scope', this.$scopedSlots)
     // 开发状态下修改了代码会重新渲染组件不重新初始化不会渲染
     if (process.env.NODE_ENV === 'development') {
       this.init()
