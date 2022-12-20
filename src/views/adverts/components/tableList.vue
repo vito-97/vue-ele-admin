@@ -24,7 +24,7 @@ export default {
         { name: '标题', field: 'title' },
         { name: '图片', field: 'image', type: 'image' },
         { name: '链接', field: 'link', type: 'link' },
-        { name: '运营商', field: 'agent.nickname' },
+        { name: '管理员', field: 'admin.nickname' },
         { name: '状态', field: 'status', label: true, type: this.checkAuth('change') ? 'switch' : 'tag', opts: {} },
         { name: '添加时间', field: 'create_time' }
       ]

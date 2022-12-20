@@ -172,8 +172,9 @@ export default {
   watch: {
     value(val) {
       if (!this.hasChange && this.hasInit) {
-        this.$nextTick(() =>
-          this.editor.setContent(val || ''))
+        this.$nextTick(() => {
+          this.editor.setContent(val || '')
+        })
       }
     }
   },
@@ -251,6 +252,9 @@ export default {
           editor.on('NodeChange Change KeyUp SetContent', () => {
             this.hasChange = true
             this.$emit('input', editor.getContent())
+            setTimeout(() => {
+              this.hasChange = false
+            }, 100)
           })
         },
         setup: editor => {
@@ -373,8 +377,6 @@ export default {
      * @returns {Promise<void>}
      */
     async onClickTransformImage() {
-      console.log('trans')
-
       let images = this.otherImage
 
       for (var i in images) {
@@ -414,7 +416,6 @@ export default {
       if (e.field === 'file') {
         if (e.type === 'select') {
           var row = e.payload.row
-          console.log(row)
           var type = row.category
           var html = ''
           // 图片
@@ -461,43 +462,43 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.mr10 {
-  margin-right: 10px;
-}
-
-.tinymce-container {
-  position: relative;
-  line-height: normal;
-}
-
-/*.tinymce-container {
-  ::v-deep {
-    .mce-fullscreen {
-      z-index: 10000;
-    }
+  .mr10 {
+    margin-right: 10px;
   }
-}*/
 
-.tinymce-textarea {
-  visibility: hidden;
-  z-index: -1;
-}
+  .tinymce-container {
+    position: relative;
+    line-height: normal;
+  }
 
-.editor-custom-btn-container {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  z-index: 1;
-}
+  /*.tinymce-container {
+    ::v-deep {
+      .mce-fullscreen {
+        z-index: 10000;
+      }
+    }
+  }*/
 
-.fullscreen .editor-custom-btn-container {
-  z-index: 10000;
-  position: fixed;
-}
+  .tinymce-textarea {
+    visibility: hidden;
+    z-index: -1;
+  }
 
-.editor-upload-btn {
-  display: inline-block;
-}
+  .editor-custom-btn-container {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    z-index: 1;
+  }
+
+  .fullscreen .editor-custom-btn-container {
+    z-index: 10000;
+    position: fixed;
+  }
+
+  .editor-upload-btn {
+    display: inline-block;
+  }
 </style>

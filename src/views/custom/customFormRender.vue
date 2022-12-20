@@ -56,7 +56,7 @@
           <slot :name="getColSlot(col)+'-after'" :form-data="value" :col="col"></slot>
           <!--            提示信息-->
           <div
-            v-if="col.placeholder && value[col.field] !== '' && checkColVisible(col)"
+            v-if="col.placeholder && (value[col.field] !== '' || (items[col.type] && items[col.type].placeholder)) && checkColVisible(col)"
             class="placeholder-tip"
           >
             {{ col.placeholder }}

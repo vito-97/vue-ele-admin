@@ -78,7 +78,7 @@ export default {
     filterHtmlString() {
       var string = this.string
       if (this.opt.html) {
-        string = filterHtml(string)
+        string = filterHtml(string).replace(/(&nbsp;)+/g, ' ')
       }
       return string
     },
@@ -119,19 +119,23 @@ export default {
 </script>
 
 <style lang="scss">
-.pointer {
-  cursor: pointer;
-}
-
-.table-content-box {
-  max-width: 100%;
-  word-wrap: break-word;
-  word-break: normal;
-  white-space: normal;
-
-  .tag {
-    margin-right: 5px;
-    margin-bottom: 5px;
+  .pointer {
+    cursor: pointer;
   }
-}
+
+  .table-content-box {
+    max-width: 100%;
+    word-wrap: break-word;
+    word-break: normal;
+    white-space: normal;
+
+    .tag {
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    * {
+      max-width: 100%;
+    }
+  }
 </style>

@@ -47,10 +47,11 @@
           v-if="com"
           :is="com"
           mode="select"
-          :query="opt.query"
+          :query="queryParams"
           :select-multiple="opt.multiple"
           :selected-value="val"
           :selected-pk="opt.pk"
+          ref="table"
           @select="onSelect"
           @select-multiple="onSelectMultiple"
         >
@@ -83,7 +84,7 @@
 
 <script>
 import formItemMixin from './form-item-mixin'
-import { deepVal, showLoading, hideLoading } from '@/utils'
+import { deepVal, showLoading, hideLoading, param2Obj } from '@/utils'
 import imageEl from '@/views/custom/components/table-column/imageEl'
 import inputEl from '@/views/custom/components/form-item/inputEl'
 import { upload } from '@/api/upload'
@@ -94,9 +95,17 @@ export default {
   name: 'SelectTableEl',
   alias: '数据选择器',
   mixins: [formItemMixin],
+  placeholder: true,
   components: {
     imageEl,
     inputEl
+  },
+  watch: {
+    visible(val) {
+      if (val && this.opt.reload && this.$refs.table) {
+        this.$refs.table.flush()
+      }
+    }
   },
   computed: {
     // 获取控制器名称
@@ -140,6 +149,24 @@ export default {
     // 上传按钮文字
     uploadBtnText() {
       return this.getText(this.opt.upload_btn_text)
+    },
+    // 动态获取参数
+    queryParams() {
+      var query = this.opt.query
+
+      if (typeof query === 'function') {
+        query = query(this.formData, this.detail)
+
+        if (!query) {
+          query = {}
+        }
+
+        if (typeof query === 'string') {
+          query = param2Obj(query)
+        }
+      }
+
+      return query
     }
   },
   data() {
@@ -158,7 +185,9 @@ export default {
         key: '', // 对象的KEY
         query: {},
         format: '',
-        imageSize: 300
+        imageSize: 300,
+        // 是否需要重载
+        reload: false
       }
     }
   },
@@ -247,25 +276,25 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.select-table-box {
-  //display: flex;
-  //align-items: center;
-  .form-item {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 100%;
+  .select-table-box {
+    //display: flex;
+    //align-items: center;
+    .form-item {
+      display: flex;
+      align-items: center;
+      position: relative;
+      width: 100%;
 
-    .item {
-      margin-right: 10px;
+      .item {
+        margin-right: 10px;
+      }
+
+      //align-items: flex-start;
     }
 
-    //align-items: flex-start;
+    .label-name {
+      margin-top: 10px;
+      cursor: pointer;
+    }
   }
-
-  .label-name {
-    margin-top: 10px;
-    cursor: pointer;
-  }
-}
 </style>

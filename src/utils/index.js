@@ -101,6 +101,7 @@ export function formatTime(time, option) {
 }
 
 /**
+ * 获取链接的参数
  * @param {string} url
  * @returns {Object}
  */
@@ -168,7 +169,7 @@ export function param(json) {
  * @returns {Object}
  */
 export function param2Obj(url) {
-  const search = decodeURIComponent(url.split('?')[1]).replace(/\+/g, ' ')
+  const search = decodeURIComponent(url.includes('?') ? url.split('?')[1] : url).replace(/\+/g, ' ')
   if (!search) {
     return {}
   }

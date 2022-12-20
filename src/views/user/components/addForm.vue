@@ -39,15 +39,6 @@ export default {
         { name: '手机号', field: 'tel' },
         { name: '邮箱', field: 'email' },
         { name: '余额', field: 'money', value: 0, type: 'number', opts: { precision: 2 } },
-        { name: '流量', field: 'flow', value: 0, type: 'number' },
-        {
-          name: '运营商',
-          field: 'agent_id',
-          opts: { required: true, control: 'agent', name: 'nickname' },
-          type: 'select_table',
-          edit_opts: { disabled: true }
-        },
-        { name: 'VIP', field: 'is_vip', type: 'switch', opts: { required: true } },
         // { name: '类型', field: 'type', label: true, type: 'select', opts: {required: true} },
         { name: '状态', field: 'status', label: true, type: 'radio', opts: { required: true }, value: 1 },
         { name: '备注', field: 'mark', type: 'textarea', opts: { maxlength: 120 } }

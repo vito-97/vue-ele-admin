@@ -43,7 +43,6 @@
 
 <script>
 import customFromMixin from '@/utils/mixin/custom-form'
-import { isSuperAdmin } from '@/utils'
 
 export default {
   name: 'AddForm',
@@ -55,18 +54,6 @@ export default {
       columns: [
         { field: 'name', name: '名称', opts: { maxlength: 30, required: true } },
         { field: 'key', name: '标识', opts: { maxlength: 15, required: true }, edit_opts: { disabled: true } },
-        {
-          field: 'site_id',
-          name: '站点',
-          list: { 1: '居科乐', 2: '市政' },
-          type: 'radio',
-          opts: { required: true },
-          edit_opts: { disabled: true },
-          value: 1,
-          visible(formData, detail) {
-            return isSuperAdmin(this.$store.getters.role)
-          }
-        },
         { field: 'mark', name: '备注', opts: { maxlength: 120, required: false }, type: 'textarea' },
         {
           field: 'auth_ids',

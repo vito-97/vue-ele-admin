@@ -222,6 +222,10 @@ export default {
         query.with_label = 1
       }
 
+      if (this.mode === 'select') {
+        query.with_select = 1
+      }
+
       const method = this.listApi || this.api.index
 
       return method(query).then(res => {
@@ -329,9 +333,9 @@ export default {
     onUpdateItem({ id, field, value, index }) {
       this.showLoading('更新中...')
       const method = this.changeApi || this.api.change
-      return method(id, field, value).then(res => {
+      return method(id, { field, value }).then(res => {
         this.hideLoading()
-        this.$set(this.list[index], { field, value })
+        this.$set(this.list[index], field, value)
       }, (err) => {
         this.hideLoading()
         this.$message.error(err.message || '更新数据失败')
@@ -465,6 +469,7 @@ export default {
         this.onFlush()
       }, this.saveErrorHandle)
     },
+    // 更新失败回调
     saveErrorHandle(err) {
       this.hideLoading()
       if (err.code !== 0 && err?.data) {

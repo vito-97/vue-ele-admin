@@ -5,7 +5,12 @@ const indexMixin = {
     curdIndex
   },
   props: {},
-  methods: {}
+  methods: {
+    // 刷新页面
+    flush() {
+      this.$refs.curd && this.$refs.curd.onFlush()
+    }
+  }
 }
 
 export default indexMixin

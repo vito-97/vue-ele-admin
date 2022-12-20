@@ -36,6 +36,8 @@ const formItemMixin = {
   format(value) {
     return value
   },
+  // 是否一直显示提示语
+  placeholder: false,
   computed: {
     // 获取列参数
     col() {

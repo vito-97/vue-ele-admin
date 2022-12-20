@@ -1,5 +1,5 @@
 <template>
-  <div v-if="checkAuth('index')" class="custom-table-box" :class="tableClass">
+  <div class="custom-table-box" :class="tableClass">
     <div class="tool-box" :class="{'scroll-bar':scroll.y}">
       <el-row :gutter="15">
         <el-col :span="12" :xs="24">
@@ -24,7 +24,7 @@
           </el-button-group>
         </el-col>
         <el-col :span="12" :xs="24">
-          <div class="search-group-box" v-if="searchable && checkAuth('index')">
+          <div class="search-group-box" v-if="searchable">
             <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
               <el-form-item class="mb0">
                 <el-input
@@ -68,7 +68,7 @@
     <div class="container">
       <slot name="content" :column="cols">
         <component
-          v-if="checkAuth('index') && visible"
+          v-if="visible"
           :is="tableCom"
           :data="list"
           :row-key="rowKey"
@@ -400,7 +400,7 @@ export default {
     // 隐藏ID
     hidePk: { type: Boolean },
     pk: { type: String, default: 'id' },
-    pkLabel: { type: String, default: '编号' },
+    pkLabel: { type: String, default: 'ID' },
     // 是否显示返回顶部
     backTop: { type: Boolean, default: true },
     // 头部按钮文字

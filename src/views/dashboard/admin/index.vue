@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-editor-container">
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData" :detail="detail" :site-id="siteID"/>
+    <panel-group @handleSetLineChartData="handleSetLineChartData" :detail="detail"/>
     <el-row style="background:#fff;margin-bottom:32px;" :gutter="32">
       <el-col :xs="24" :sm="24" :lg="12">
         <div class="chart-wrapper">
@@ -29,42 +29,15 @@
     </el-row>
 
     <el-row :gutter="8">
-      <template v-if="siteID === 1">
-        <el-col
-          :xs="{span: 24}"
-          :sm="{span: 24}"
-          :md="{span: 24}"
-          :lg="{span: 24}"
-          :xl="{span: 24}"
-          style="padding-right:8px;margin-bottom:30px;">
-          <transaction-table :list="detail.order_list"/>
-        </el-col>
-      </template>
-      <template v-else-if="siteID === 2">
-        <el-col :span="6" :xs="24" :sm="12" :md="6" v-for="(item,index) in userUsedFlowList" :key="index">
-          <el-card class="box-card" shadow="hover" style="margin-bottom: 15px;">
-            <div slot="header" class="clearfix">
-              <el-tag>{{ item.name }}</el-tag>
-            </div>
-            <el-table :data="detail[item.field]">
-              <el-table-column
-                prop="nickname"
-                label="昵称"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="used_flow"
-                label="流量"
-              >
-                <template slot-scope="{row}">
-                  {{ row.used_flow }}L
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-card>
-        </el-col>
-      </template>
-
+      <el-col
+        :xs="{span: 24}"
+        :sm="{span: 24}"
+        :md="{span: 24}"
+        :lg="{span: 24}"
+        :xl="{span: 24}"
+        style="padding-right:8px;margin-bottom:30px;">
+        <transaction-table :list="detail.order_list"/>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -104,9 +77,6 @@ export default {
     }
   },
   computed: {
-    siteID() {
-      return this.$store.getters.userinfo.site_id
-    }
   },
   created() {
     this.getDashboard()

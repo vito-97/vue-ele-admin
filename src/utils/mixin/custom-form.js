@@ -3,6 +3,11 @@ import checkPermission from '@/utils/permission'
 import { word2studly } from '@/utils'
 
 const customFromMixin = {
+  data() {
+    return {
+      formData: {}
+    }
+  },
   props: {},
   components: { customForm },
   computed: {
@@ -65,6 +70,32 @@ const customFromMixin = {
      */
     onEventListener(e) {
       console.log(`未定义[${e.field}]字段事件[${e.type}]`)
+    },
+    // 设置表单数据
+    setFormData(key, value = null) {
+      this.setProxyObj(this.formData, key, value)
+    },
+    // 设置详情
+    setDetail(key, value = null) {
+      this.setProxyObj(this.$attrs.detail, key, value)
+    },
+    /**
+     * 设置对象的数据
+     * @param target
+     * @param key
+     * @param value
+     */
+    setProxyObj(target, key, value = null) {
+      var obj = {}
+      if (typeof key === 'object') {
+        obj = key
+      } else {
+        obj[key] = value
+      }
+
+      for (let [index, val] of Object.entries(obj)) {
+        this.$set(target, index, val)
+      }
     }
   }
 }

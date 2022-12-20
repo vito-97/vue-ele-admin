@@ -87,7 +87,7 @@ export default {
      * @returns {*[]}
      */
     fileList() {
-      let val = this.val
+      let val = this.formDataValue
       let list = []
       val = this.toArray(val)
 
