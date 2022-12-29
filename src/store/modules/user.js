@@ -89,9 +89,9 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state, dispatch }) {
+  logout({ commit, state, dispatch }, payload = {}) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout(payload).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLE', '')
         commit('SET_MENUS', [])

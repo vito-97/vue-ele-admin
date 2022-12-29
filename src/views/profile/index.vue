@@ -59,7 +59,7 @@ export default {
         if (data.password) {
           // 登出
           this.$set(this.detail, 'password', '')
-          this.$store.dispatch('user/logout')
+          this.$store.dispatch('user/logout',{ all: 1 })
           this.$alert('你已修改密码，需要重新登录！', '提示', {
             confirmButtonText: '确定',
             callback: (action) => {
