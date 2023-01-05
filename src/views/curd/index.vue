@@ -87,7 +87,7 @@ export default {
     // 控制器名称
     control: {
       type: String,
-      default: 'admin'
+      required: true
     },
     // 需要的CURD
     curd: {
