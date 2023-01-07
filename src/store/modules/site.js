@@ -16,6 +16,7 @@ const actions = {
     return getConfig().then(res => {
       var { data } = res
       commit('SET_CONFIG', data)
+      return data
     })
   }
 }
