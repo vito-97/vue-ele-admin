@@ -42,6 +42,9 @@ Vue.config.productionTip = false
 
 Vue.mixin(AppMixin)
 
+// 獲取配置信息
+store.dispatch('site/getConfig')
+
 new Vue({
   el: '#app',
   router,
