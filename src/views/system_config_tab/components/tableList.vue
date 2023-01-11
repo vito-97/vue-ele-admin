@@ -49,6 +49,7 @@
                   <span slot="label"><i :class="child.icon" v-if="child.icon"></i> {{ child.name }}</span>
                   <system-config-form
                     :columns="child.config"
+                    :lang-list="langList"
                     :detail.sync="configs"
                     :id="child.id"
                     :config="child"
@@ -61,6 +62,7 @@
           <template v-else>
             <system-config-form
               :columns="item.config"
+              :lang-list="langList"
               :detail.sync="configs"
               :id="item.id"
               :config="item"
@@ -113,6 +115,9 @@ export default {
   computed: {
     currentKey() {
       return this.$route.query.key || ''
+    },
+    langList() {
+      return this.$attrs['list-label'].lang_list?.option || {}
     },
     configs: {
       get() {

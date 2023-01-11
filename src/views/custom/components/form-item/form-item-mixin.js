@@ -66,7 +66,7 @@ const formItemMixin = {
     formData: {
       immediate: true,
       handler(formData, oldFormData) {
-        if (!oldFormData || typeof oldFormData[this.field] === 'undefined' || formData[this.field] != oldFormData[this.field]) {
+        if (!oldFormData || typeof oldFormData[this.field] === 'undefined' || formData[this.field] != this.formDataValue) {
           let val = formData[this.field] || ''
           if (this.formDataValueType === 'array') {
             val = this.toArray(val)

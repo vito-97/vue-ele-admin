@@ -2,7 +2,7 @@
   <el-select
     v-model="formData[field]"
     :placeholder="col.placeholder"
-    :disabled="opt.disabled"
+    :disabled="disabled()"
     :clearable="opt.clearable"
     :multiple="opt.multiple"
     :multiple-limit="opt.multiple_limit"
@@ -18,6 +18,7 @@
       :label="getListItemLabel(it,i)"
       :value="getListItemValue(it,i)"
       v-for="(it,i) in col.list"
+      :disabled="checkOptionDisabled(it,i)"
       :key="i">
 
     </el-option>
@@ -43,13 +44,36 @@ export default {
         loading: false,
         placeholder: '请选择',
         default_first_option: true,
-        allow_create: false
+        allow_create: false,
+        check: true
       }
     }
   },
   methods: {
     selectRemote(query) {
       console.log('remote query', query)
+    },
+    checkOptionDisabled(it, i) {
+      var check = this.opt.check
+
+      if (typeof check === 'boolean') {
+        return !check
+      } else if (typeof check === 'function') {
+        return !check(this.formData, it, i)
+      }
+
+      return false
+    },
+    disabled() {
+      var status = this.opt.disabled
+
+      if (typeof status === 'boolean') {
+        return status
+      } else if (typeof status === 'function') {
+        return status(this.formData)
+      }
+
+      return false
     }
   }
 }

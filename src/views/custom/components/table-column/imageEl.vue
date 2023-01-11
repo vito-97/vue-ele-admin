@@ -1,18 +1,25 @@
 <template>
   <div class="cover-box">
-    <template v-if="val2array.length">
-      <el-image
-        v-for="(src,index) in val2array"
-        :key="index"
-        class="cover"
-        :style="style"
-        :src="src"
-        fit="contain"
-        :previewSrcList="val2array"
-        @click="onClickImg(index,src)"
-      >
-
-      </el-image>
+    <template v-if="images.length">
+      <div>
+        <el-image
+          v-for="(n,index) in (opt.preview ? 1 : images.length)"
+          :key="index"
+          class="cover"
+          :style="style"
+          :src="images[index]"
+          fit="contain"
+          :previewSrcList="images"
+          ref="image"
+          @click="onClickImg(index,images[index])"
+        >
+        </el-image>
+        <div class="preview-tag" v-if="opt.preview && images.length > 1">
+          <el-tag @click="onPreview" size="mini">
+            看其余{{ images.length - 1 }}张
+          </el-tag>
+        </div>
+      </div>
     </template>
     <template v-else>
       <div class="tip">暂无图片</div>
@@ -30,7 +37,11 @@ export default {
   data() {
     return {
       opts: {
-        size: 100
+        size: 100,
+        // 是否只预览一张
+        preview: false,
+        // 对象中的键
+        key: null
       }
     }
   },
@@ -41,11 +52,27 @@ export default {
         maxHeight: size,
         maxWidth: size
       }
+    },
+    images() {
+      var images = [...this.val2array]
+
+      for (let [index, item] of images.entries()) {
+        var src = typeof item === 'string' ? item : item[this.opt.key]
+
+        if (src && src.indexOf('http') !== 0) {
+          images[index] = 'http://' + process.env.VUE_APP_BASE_HOST + src
+        }
+      }
+
+      return images
     }
   },
   methods: {
     onClickImg(index, src) {
 
+    },
+    onPreview() {
+      this.$refs.image[0].clickHandler()
     },
     onLoadError(e, index, src) {
       console.log('图片加载失败', e, index, src)
@@ -61,6 +88,10 @@ export default {
 
   .tip {
     color: #999;
+  }
+
+  .preview-tag{
+    cursor: pointer;
   }
 }
 </style>

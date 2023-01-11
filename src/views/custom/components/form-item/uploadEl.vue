@@ -25,7 +25,8 @@
     :before-upload="onBeforeUpload"
     :on-exceed="onExceed">
     <div class="upload-box" :class="{drag:opt.drag}">
-      <el-button size="small" type="primary">{{ opt.btn_text }}</el-button>
+      <el-button :size="opt.btn_size" :icon="opt.btn_icon" type="primary" :disabled="opt.disabled">{{ opt.btn_text }}
+      </el-button>
       <div class="el-upload__tip" v-show="opt.drag">{{ opt.drag_text }}</div>
     </div>
     <div slot="tip" class="el-upload__tip" v-if="opt.tip">{{ opt.tip }}</div>
@@ -69,8 +70,12 @@ export default {
         auto_upload: true,
         file_list: [],
         btn_text: '上传',
+        btn_size: 'small',
+        btn_icon: '',
         tip: '只能上传图片/mp4/mp3/文档/图表/ppt/pdf/zip/rar',
-        drag_tip: '点击上传或拖拽到此上传'
+        drag_tip: '点击上传或拖拽到此上传',
+        // 是否禁用上传
+        disabled: false
       },
       files: {}
     }
@@ -132,7 +137,29 @@ export default {
     // 文件上传成功时的钩子
     onSuccess(response, file, fileList) {
       console.log('upload success', response, file, fileList)
+
+      // this.$refs.upload.clearFiles()
+    },
+    // 文件上传失败时的钩子
+    onError(err, file, fileList) {
+      console.log('upload error', err, file, fileList)
+      this.$message({ message: '上传到服务器失败', type: 'error' })
+      this.triggerEvent('error', { mode: this.mode })
+    },
+    // 文件上传时的钩子
+    onProgress(event, file, fileList) {
+    },
+    // 文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
+    onChange(file, fileList) {
+      console.log('upload change', file, fileList)
+
+      var response = file.response || {}
+
       const code = response.code
+
+      if (file.status !== 'success') {
+        return
+      }
 
       if ([0, 50905].includes(code)) {
         this.$message({
@@ -158,25 +185,12 @@ export default {
         this.triggerEvent('success', { url, mode: this.mode })
         this.updateValue(val)
       } else {
-        this.$refs.upload.clearFiles()
         this.$message({
           dangerouslyUseHTMLString: true,
           type: 'error',
           message: response.msg || '上传失败'
         })
       }
-    },
-    // 文件上传失败时的钩子
-    onError(err, file, fileList) {
-      console.log('upload error', err, file, fileList)
-      this.$message({ message: '上传到服务器失败', type: 'error' })
-      this.triggerEvent('error', { mode: this.mode })
-    },
-    // 文件上传时的钩子
-    onProgress(event, file, fileList) {
-    },
-    // 文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
-    onChange(file, fileList) {
     },
     // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者返回 Promise 且被 reject，则停止上传。
     onBeforeUpload(file) {
@@ -190,14 +204,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.upload-box {
-  &.drag {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
+  .upload-box {
+    &.drag {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+    }
   }
-}
 </style>

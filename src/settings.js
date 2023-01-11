@@ -1,4 +1,11 @@
+const DefaultLang = 'zh-cn'
+
 module.exports = {
+  // 默认语言
+  defaultLang: DefaultLang,
+
+  langList: { [DefaultLang]: '中文', 'en-us': '英文' },
+
   title: '后台管理系统',
 
   avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
@@ -61,24 +68,13 @@ module.exports = {
     agent: '运营商',
     admin: '管理员',
     adverts: '广告',
-    cash_coupon: '现金券',
-    cash_coupon_card: '现金券领取',
-    coupon: '优惠券',
-    coupon_card: '优惠券领取',
+    posts: '文章',
+    posts_category: '文章分类',
     user: '用户',
-    factory_user: '出厂设置员',
     attachment: '附件',
-    service_charge: '服务费',
-    all_in_pay: '通联支付',
-    card: 'IC卡',
-    device: '设备',
-    device_control: '设备操作记录',
     system_log: '日志',
     system_role: '角色',
-    user_wallet: '用户钱包',
     user_oauth: '第三方授权',
-    user_rebate: '用户返利',
-    withdrawal: '用户提现',
     system_config_tab: '配置分类',
     system_config: '配置'
   }

@@ -531,3 +531,12 @@ export function word2studly(value) {
 export function word2snake(value) {
   return value.replace(/([A-Z])/g, '_$1').toLowerCase()
 }
+
+/**
+ * 是否为默认语言
+ * @param lang
+ * @returns {boolean}
+ */
+export function isDefaultLang(lang) {
+  return lang === setting.defaultLang || !lang
+}

@@ -3,23 +3,33 @@
     <template v-if="control">
       <div class="form-item">
         <template v-if="isFormat('image')">
-          <input-el
+          <el-input
+            v-if="!opt.multiple"
+            v-model="formData[field]"
+            :clearable="true"
+            class="item">
+          </el-input>
+          <template v-else>
+            <div class="input-box item">
+              <el-input
+                v-model="formData[field][index]"
+                v-for="(item,index) in toArray(val).length || 1"
+                :clearable="true"
+                :key="index"
+                @input="onInputChange($event,index)"
+              >
+              </el-input>
+            </div>
+          </template>
+          <upload-image-el
+            :column="uploadFileColumn"
             :detail="detail"
             :form-data="formData"
-            :column="column"
             :mode="mode"
-            :attr="{clearable:true}"
-            class="item">
-          </input-el>
-          <el-button
+            :attr="attr"
             class="select-btn"
-            type="primary"
-            :icon="opt.btn_icon"
-            :size="opt.btn_size"
-            @click="onClickUploadImage"
-            :disabled="disabled">
-            {{ uploadBtnText }}
-          </el-button>
+          >
+          </upload-image-el>
         </template>
         <el-button
           class="select-btn"
@@ -87,6 +97,7 @@ import formItemMixin from './form-item-mixin'
 import { deepVal, showLoading, hideLoading, param2Obj } from '@/utils'
 import imageEl from '@/views/custom/components/table-column/imageEl'
 import inputEl from '@/views/custom/components/form-item/inputEl'
+import uploadImageEl from '@/views/custom/components/form-item/uploadImageEl'
 import { upload } from '@/api/upload'
 
 const com = {}
@@ -98,16 +109,42 @@ export default {
   placeholder: true,
   components: {
     imageEl,
-    inputEl
+    inputEl,
+    uploadImageEl
   },
   watch: {
     visible(val) {
       if (val && this.opt.reload && this.$refs.table) {
         this.$refs.table.flush()
       }
+    },
+    val: {
+      immediate: true,
+      handler(val) {
+        // 转数组
+        if (this.opt.multiple && !Array.isArray(val)) {
+          this.$set(this.formData, this.field, this.toArray(val))
+        }
+      }
     }
   },
   computed: {
+    // 上传文件组件配置
+    uploadFileColumn() {
+      var { field, opt, uploadBtnText, disabled } = this
+      return {
+        field,
+        opts: {
+          tip: '',
+          btn_text: uploadBtnText,
+          btn_icon: opt.btn_icon,
+          btn_size: opt.btn_size,
+          show_file_list: false,
+          multiple: opt.multiple,
+          disabled
+        }
+      }
+    },
     // 获取控制器名称
     control() {
       return this.opt.control || this.opt.field.endsWith('_id') && this.opt.field.substr(0, this.opt.field.length - 3) || ''
@@ -125,16 +162,23 @@ export default {
       return com[this.control]
     },
     key() {
-      return this.opt.key || this.control
+      // 优先使用key 如果字段值是带id就用控制器名 否则用字段名
+      return this.opt.key || this.field.includes('_id') && this.control || this.field + '_obj'
     },
     // 获取label名称
     labelName() {
       if (!this.opt.name) {
         console.warn(this.field, '选择数据列表未设置label名称')
       }
-      const key = `${this.key}.${this.opt.name}`
+      var value
+      if (this.opt.simple) {
+        value = deepVal(this.field, this.formData) || deepVal(this.key, this.detail)
+      } else {
+        const key = `${this.key}.${this.opt.name}`
+        value = deepVal(key, this.detail) || deepVal(this.field, this.formData)
+      }
 
-      return deepVal(key, this.detail) || deepVal(this.field, this.formData)
+      return value
     },
     // 是否禁用选择按钮
     disabled() {
@@ -187,7 +231,9 @@ export default {
         format: '',
         imageSize: 300,
         // 是否需要重载
-        reload: false
+        reload: false,
+        // 是否为非对象数据
+        simple: false
       }
     }
   },
@@ -216,7 +262,14 @@ export default {
         await upload(file).then(res => {
           hideLoading()
           var detail = res.data.detail
-          this.onSelect({ row: detail, index: 0 })
+          if (this.opt.multiple) {
+            this.onSelectMultiple({
+              selection: [detail],
+              ids: [detail.id]
+            })
+          } else {
+            this.onSelect({ row: detail, index: 0 })
+          }
         }, err => {
           console.log(err)
           hideLoading()
@@ -262,14 +315,34 @@ export default {
     onSelectMultiple({ selection, ids }) {
       // console.log('select multiple', ids, selection)
       let value = []
+      let label = []
 
       selection.forEach((it) => {
         value.push(it[this.opt.pk])
+        label.push(it[this.opt.name])
       })
 
-      this.triggerEvent('select-multiple', { value, items: selection })
+      this.$set(this.formData, this.field, [...this.toArray(this.val), ...value])
+
+      if (this.opt.simple) {
+        this.$set(this.detail, this.key, [...this.toArray(this.detail[this.key]), ...label])
+      } else {
+        this.$set(this.detail, this.key, [...this.toArray(this.detail[this.key]), ...selection])
+      }
+
+      this.triggerEvent('select-multiple', { value, ids, items: selection })
 
       this.visible = false
+    },
+    onInputChange(value, index) {
+      if (!value) {
+        if (this.formData[this.field]) {
+          this.$delete(this.formData[this.field], index)
+        }
+        if (this.detail[this.key]) {
+          this.$delete(this.detail[this.key], index)
+        }
+      }
     }
   }
 }
@@ -290,6 +363,16 @@ export default {
       }
 
       //align-items: flex-start;
+    }
+
+    .select-btn + .select-btn {
+      margin-left: 10px;
+    }
+
+    .input-box {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
 
     .label-name {

@@ -17,6 +17,9 @@
       :rules="rules"
       :dialog="false"
       :error="error"
+      :lang-list="langList"
+      :lang-status="!!langField.length"
+      :lang-field="langField"
       @submit="onSubmitConfig"
     >
     </custom-form>
@@ -35,6 +38,7 @@ import customForm from '@/views/custom/customForm'
 import curd from '@/api/curd'
 import { showLoading, hideLoading } from '@/utils'
 import systemConfigAddForm from '@/views/system_config/components/addForm'
+import { langList } from '@/settings'
 
 const API = curd('system_config')
 export default {
@@ -61,6 +65,10 @@ export default {
     },
     config: {
       type: Object
+    },
+    langList: {
+      type: Object,
+      default: () => langList
     }
   },
   computed: {
@@ -69,6 +77,17 @@ export default {
         system_config_tab_id: this.id,
         system_config_tab: this.config
       }
+    },
+    langField() {
+      var field = []
+
+      this.columns.forEach((item) => {
+        if (item.lang) {
+          field.push(item.key)
+        }
+      })
+
+      return field
     }
   },
   methods: {

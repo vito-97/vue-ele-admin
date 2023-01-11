@@ -13,6 +13,9 @@
         :select-multiple="selectMultiple"
         :selected-value="selectedValue"
         :selected-pk="selectedPk"
+        :lang-status="langStatus"
+        :lang-list="langList"
+        :lang-field="langField"
         v-loading="listLoading"
         element-loading-text="拼命加载中"
         @save="onSave"
@@ -38,6 +41,9 @@
         :control="control"
         :append-to-body="appendToBody"
         :error="error"
+        :lang-status="langStatus"
+        :lang-list="langList"
+        :lang-field="langField"
         @flush="onFlush"
         @close="onClose"
         @submit="onSubmit"
@@ -186,6 +192,26 @@ export default {
     },
     appendToBody() {
       return this.mode === 'select'
+    },
+    langStatus() {
+      return !!this.langField.length
+    },
+    langList() {
+      var list = this.listLabel.lang_list?.option || this.detailLabel.lang_list?.option || {}
+
+      console.log('lang list', list)
+      return list
+    },
+    langField() {
+      var field = this.listLabel.lang_field?.option || this.detailLabel.lang_field?.option || []
+
+      if (!Array.isArray(field)) {
+        field = Object.values(field)
+      }
+
+      console.log('lang field', field)
+
+      return field
     }
   },
   created() {
@@ -335,11 +361,36 @@ export default {
       const method = this.changeApi || this.api.change
       return method(id, { field, value }).then(res => {
         this.hideLoading()
-        this.$set(this.list[index], field, value)
+        var arr = Array.isArray(id) ? id : id.toString().split(',')
+
+        /**
+         * 可能会更新多条
+         */
+        this.deepUpdateItem(this.list, arr, field, value)
       }, (err) => {
         this.hideLoading()
         this.$message.error(err.message || '更新数据失败')
       })
+    },
+    /**
+     * 深度更新单个数据
+     * @param list
+     * @param id
+     * @param field
+     * @param value
+     */
+    deepUpdateItem(list, id, field, value) {
+      /**
+       * 可能会更新多条
+       */
+      for (let [index, item] of list.entries()) {
+        if (id.includes(item.id) || id.includes(item.id?.toString())) {
+          this.$set(list[index], field, value)
+        }
+        if (item?.children && Array.isArray(item.children)) {
+          this.deepUpdateItem(item.children, id, field, value)
+        }
+      }
     },
     // 获取新增或者编辑数据
     getEditData() {

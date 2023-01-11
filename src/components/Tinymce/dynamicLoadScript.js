@@ -3,9 +3,9 @@ function loadedTinymce() {
   // check is successfully downloaded script
   return window.tinymce
 }
+var callbacks = []
 
 const dynamicLoadScript = (src, callback) => {
-  var callbacks = []
   const existingScript = document.getElementById(src)
   const cb = callback || function() {}
 
@@ -35,7 +35,7 @@ const dynamicLoadScript = (src, callback) => {
       for (const cb of callbacks) {
         cb(null, script)
       }
-      callbacks = null
+      callbacks = []
     }
     script.onerror = function() {
       this.onerror = this.onload = null
@@ -50,7 +50,7 @@ const dynamicLoadScript = (src, callback) => {
       for (const cb of callbacks) {
         cb(null, script) // there is no way to catch loading errors in IE8
       }
-      callbacks = null
+      callbacks = []
     }
   }
 }

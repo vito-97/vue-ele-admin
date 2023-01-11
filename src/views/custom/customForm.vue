@@ -1,8 +1,8 @@
 <template>
   <div class="custom-form-box">
     <!--    添加或编辑-->
-    <el-dialog
-      v-if="dialog"
+    <component
+      :is="dialog ? 'el-dialog' : 'div'"
       :title="title"
       :visible.sync="Visible"
       class="detail-form-dialog"
@@ -19,7 +19,11 @@
         :error="error"
         :rules="formRules"
         :mode="nowMode"
-        :columns="formColumns"
+        :tabs="tabs"
+        :lang-status="langStatus"
+        :lang-field="langField"
+        :lang-list="langList"
+        :visible.sync="Visible"
         v-bind="$attrs"
         ref="customForm"
         @submit="onSubmit"
@@ -33,55 +37,30 @@
         <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
           <slot :name="name" v-bind="data"></slot>
         </template>
+        <template v-slot v-if="!dialog && showButton">
+          <el-form-item>
+            <el-button type="primary" native-type="submit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
+            <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
+          </el-form-item>
+        </template>
       </custom-form-render>
       <div
         slot="footer"
         class="dialog-footer"
-        v-if="showButton"
+        v-if="dialog && showButton"
       >
         <el-button size="small" type="primary" @click="onClickSubmit" v-if="!hideSubmitButton">
           {{ submitBtnText }}
         </el-button>
         <el-button size="small" @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
       </div>
-    </el-dialog>
-    <template v-else>
-      <!--  添加或编辑-->
-      <custom-form-render
-        v-model="formData"
-        :id="id"
-        :detail="detail"
-        :error="error"
-        :rules="formRules"
-        :mode="nowMode"
-        :columns="formColumns"
-        v-bind="$attrs"
-        ref="customForm"
-        @submit="onSubmit"
-        @event="onEvent"
-      >
-        <template v-slot>
-          <el-form-item v-if="showButton">
-            <el-button type="primary" native-type="submit" v-if="!hideSubmitButton">{{ submitBtnText }}</el-button>
-            <el-button @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
-          </el-form-item>
-        </template>
-        <!-- 遍历子组件非作用域插槽，并对父组件暴露 -->
-        <template v-for="(index, name) in $slots" v-slot:[name]>
-          <slot :name="name"/>
-        </template>
-        <!-- 遍历子组件作用域插槽，并对父组件暴露 -->
-        <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-          <slot :name="name" v-bind="data"></slot>
-        </template>
-      </custom-form-render>
-    </template>
+    </component>
   </div>
 </template>
 
 <script>
 import visible from '@/utils/mixin/visible'
-import { deepVal } from '@/utils'
+import { deepClone, deepVal, isDefaultLang } from '@/utils'
 import itemsCom from '@/utils/form-item'
 import customFormMixin from '@/views/custom/mixin/custom-form'
 import CustomFormRender from './customFormRender'
@@ -97,7 +76,7 @@ export default {
       // 初始化后表单数据的默认值
       initFormData: {},
       formRules: {},
-      formColumns: [],
+      tabs: [],
       items: itemsCom,
       lock: false,
       isInit: false
@@ -173,7 +152,13 @@ export default {
     },
     editTitle: {
       type: String
-    }
+    },
+    // 多语言状态
+    langStatus: { type: Boolean, default: false },
+    // 多语言列表
+    langList: { type: Object, default: () => ({}) },
+    // 多语言字段
+    langField: { type: Array, default: () => [] }
   },
   watch: {
     // 是否展示
@@ -239,6 +224,9 @@ export default {
           this.init()
         }
       }
+    },
+    langStatus() {
+      this.init()
     }
   },
   computed: {
@@ -257,17 +245,6 @@ export default {
     // 获取所有的字段
     columnFields() {
       return this.columns.map(it => it && it.field)
-    },
-    // 计算每个字段出现的次数
-    columnsFieldsCount() {
-      return this.columnFields.reduce((obj, field) => {
-        if (obj[field]) {
-          obj[field]++
-        } else {
-          obj[field] = 1
-        }
-        return obj
-      }, {})
     }
   },
   created() {
@@ -291,9 +268,85 @@ export default {
       var formData = {}
       // this.setFormData({})
       var columns = [...this.columns]
+      var langList = this.langList
+      var langField = this.langField
+      var langStatus = this.langStatus
+      var fieldsCount = {}
+
+      if (!columns.length) {
+        return []
+      }
+
+      // 判断是否为tab形式
+      var isTab = columns[0].columns || false
+
+      if (isTab) {
+        // 多语言则展开字段
+        if (langStatus) {
+          var newColumns = []
+          for (let item of columns) {
+            if (Array.isArray(item.columns)) {
+              newColumns.push(...item.columns)
+            }
+          }
+          columns = newColumns
+          isTab = false
+        }
+      }
+
+      if (!isTab) {
+        if (this.langStatus) {
+          var langColumns = []
+          for (let [lang, name] of Object.entries(langList)) {
+            var key = lang.replace(/-/g, '_')
+            var cols = []
+
+            // 不是默认语言则匹配语言字段的列
+            if (!isDefaultLang(lang)) {
+              for (let col of columns) {
+                col.opts = col.opts || {}
+                col.field = col.field || col.key || ''
+                // 有包含语言字段
+                if (langField.includes(col.field)) {
+                  var it = deepClone(col)
+
+                  if (it.label === true) {
+                    it.label = it.field
+                  }
+                  it.slot = it.slot || it.field
+                  it.detail_field = `${key}.${it.field}`
+                  it.required = it.opts.required = false
+                  it.field = `${key}_${it.field}`
+
+                  cols.push(it)
+                }
+              }
+            } else {
+              cols = columns
+            }
+
+            langColumns.push({
+              name: name,
+              key,
+              columns: cols
+            })
+          }
+          columns = langColumns
+        } else {
+          columns = [{
+            name: '表单',
+            key: 'default',
+            columns
+          }]
+        }
+      }
+
       var addDefaultOpt = {}
       // 默认单个的配置
       var column = {
+        name: 'Name', // 名称
+        field: '', // 表单字段
+        detail_field: '', // 读取详情的字段
         type: 'input',
         list: [], // 列表数据
         value: '',
@@ -321,81 +374,100 @@ export default {
         edit_opts: { ...addDefaultOpt }
       }
 
-      for (let [index, item] of columns.entries()) {
-        // 不是对象则删除
-        if (typeof item !== 'object') {
-          columns.splice(index, 1)
+      for (let i = 0; i < columns.length; i++) {
+        var tab = columns[i]
+        var tabColumns = tab?.columns
+        // 不是数组则删除
+        if (!Array.isArray(tabColumns)) {
+          columns.splice(i, 1)
+          i--
           continue
         }
-        item = Object.assign({}, column, item)
-        if (typeof item.field === 'undefined' && item.key) {
-          item.field = item.key
-        }
-        // 未设置字段名直接删除
-        if (!item.field) {
-          columns.splice(index, 1)
-          continue
-        }
-        // 设置表单数据
-        if (item.field && (typeof formData[item.field] === 'undefined' || formData[item.field] === '')) {
-          const value = typeof item.value === 'undefined' ? '' : item.value
-          let formDataValue = deepVal(item.field, this.detail, value)
+        for (let index = 0; index < tabColumns.length; index++) {
+          var item = tabColumns[index]
 
-          if (typeof itemsCom[item.type]?.format === 'function') {
-            formDataValue = itemsCom[item.type].format(formDataValue)
+          var { field } = item
+
+          item = Object.assign({}, column, item)
+
+          if (typeof field === 'undefined' && item.key) {
+            item.field = item.key
+            field = item.field
           }
 
-          formData[item.field] = formDataValue
-        }
-        // 需要获取详情的标签数据
-        if (item.label) {
-          const detailLabel = this.list[item.label === true ? item.field : item.label] || {}
-          if (detailLabel.option) {
-            item.list = detailLabel.option
-          }
-        }
-        // 添加的参数
-        item.add_opts = Object.assign({}, column.add_opts, item.add_opts || {})
-        // 编辑的参数
-        item.edit_opts = Object.assign({}, column.edit_opts, item.edit_opts || {})
-        // 合并参数
-        item.opts = Object.assign({}, column.opts, item.opts || {}, this.isEdit ? item.edit_opts : item.add_opts)
-
-        // 默认选中第一个
-        if (item.label && formData[item.field] === '' && Object.keys(item.list).length) {
-          let keys = Object.keys(item.list)
-
-          if (Array.isArray(item.list)) {
-            keys = keys.map(v => Number(v))
+          // 未设置字段名直接删除
+          if (!field) {
+            tabColumns.splice(index, 1)
+            index--
+            continue
           }
 
-          const key = keys.length ? keys[0] : null
+          fieldsCount[field] = (fieldsCount[field] || 0) + 1
 
-          if (key !== null) {
-            let value = item.opts.label_value ? item.list[key][item.opts.label_value] : key
-            if (Number.isInteger(Number(value))) {
-              value = Number(value)
+          // 设置表单数据
+          if (typeof formData[field] === 'undefined' || formData[field] === '') {
+            const value = typeof item.value === 'undefined' ? '' : item.value
+            let key = item.detail_field || field
+            let formDataValue = deepVal(key, this.detail, value)
+
+            if (typeof itemsCom[item.type]?.format === 'function') {
+              formDataValue = itemsCom[item.type].format(formDataValue)
             }
-            formData[item.field] = value
-          }
-        }
 
-        columns[index] = item
+            formData[field] = formDataValue
+          }
+
+          // 需要获取详情的标签数据
+          if (item.label) {
+            const detailLabel = this.list[item.label === true ? field : item.label] || {}
+            if (detailLabel.option) {
+              item.list = detailLabel.option
+            }
+          }
+          // 添加的参数
+          item.add_opts = Object.assign({}, column.add_opts, item.add_opts || {})
+          // 编辑的参数
+          item.edit_opts = Object.assign({}, column.edit_opts, item.edit_opts || {})
+          // 合并参数
+          item.opts = Object.assign({}, column.opts, item.opts || {}, this.isEdit ? item.edit_opts : item.add_opts)
+
+          // 默认选中第一个
+          if (item.label && formData[field] === '' && Object.keys(item.list).length) {
+            let keys = Object.keys(item.list)
+
+            if (Array.isArray(item.list)) {
+              keys = keys.map(v => Number(v))
+            }
+
+            const key = keys.length ? keys[0] : null
+
+            if (key !== null) {
+              let value = item.opts.label_value ? item.list[key][item.opts.label_value] : key
+              if (Number.isInteger(Number(value))) {
+                value = Number(value)
+              }
+              formData[field] = value
+            }
+          }
+
+          tabColumns[index] = item
+        }
       }
 
-      var fieldsCount = this.columnsFieldsCount
-
       // 判断字段是否只出现一次并且需要显示出来修改
-      for (let item of columns) {
-        if (fieldsCount[item.field] === 1 && !this.checkColVisible(item, formData)) {
-          delete formData[item.field]
+      for (let tab of columns) {
+        for (let item of tab.columns) {
+          let { field } = item
+          if (fieldsCount[field] === 1 && !this.checkColVisible(item, formData)) {
+            delete formData[field]
+          }
         }
       }
 
       this.setFormData(formData)
       this.initFormData = { ...formData }
       console.log('form columns', columns, formData)
-      this.formColumns = columns
+      this.tabs = columns
 
       return columns
     },
@@ -403,25 +475,27 @@ export default {
     initFormRules() {
       const rules = { ...this.rules }
 
-      this.formColumns.forEach(it => {
-        if (it.required || it.opts?.required) {
-          if (typeof rules[it.field] === 'undefined') {
-            rules[it.field] = []
-          }
+      this.tabs.forEach(tab => {
+        tab.columns.forEach(it => {
+          if (it.required || it.opts?.required) {
+            if (typeof rules[it.field] === 'undefined') {
+              rules[it.field] = []
+            }
 
-          let hasRequiredRule = false
+            let hasRequiredRule = false
 
-          for (const [, rule] of rules[it.field].entries()) {
-            if (rule.required) {
-              hasRequiredRule = true
-              break
+            for (const [, rule] of rules[it.field].entries()) {
+              if (rule.required) {
+                hasRequiredRule = true
+                break
+              }
+            }
+
+            if (!hasRequiredRule) {
+              rules[it.field].unshift({ required: true, message: `请设置${it.name}`, trigger: ['blur', 'change'] })
             }
           }
-
-          if (!hasRequiredRule) {
-            rules[it.field].unshift({ required: true, message: `请设置${it.name}`, trigger: ['blur', 'change'] })
-          }
-        }
+        })
       })
 
       console.log('rules', rules)
@@ -462,16 +536,26 @@ export default {
     },
     clearValidate() {
       this.$refs.customForm?.clearValidate()
+    },
+    /**
+     * 获取语言对应的字段
+     * @param field
+     * @param lang
+     * @param join
+     * @returns {*|string}
+     */
+    getField(field, lang, join = '_') {
+      return isDefaultLang(lang) ? field : `${lang}${join}${field}`
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.detail-form-dialog {
-  //height: 85%;
+  .detail-form-dialog {
+    //height: 85%;
 
-  .detail-form {
+    .detail-form {
+    }
   }
-}
 </style>

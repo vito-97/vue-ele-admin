@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 /* Layout */
 import Layout from '@/layout'
+import * as VueConfig from '@/../vue.config'
 
 Vue.use(Router)
 
@@ -148,6 +149,38 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/posts',
+    component: Layout,
+    redirect: '/posts/index',
+    alwaysShow: true, // will always show the root menu
+    name: 'Posts',
+    meta: {
+      title: '文章',
+      icon: 'el-icon-document',
+      auth: ['posts', 'posts_category']
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/posts/index'),
+        name: 'PostsIndex',
+        meta: {
+          title: '文章管理',
+          auth: ['posts/index']
+        }
+      },
+      {
+        path: '/posts/category',
+        component: () => import('@/views/posts_category/index'),
+        name: 'PostsCategoryIndex',
+        meta: {
+          title: '分类管理',
+          auth: ['posts_category/index']
+        }
+      }
+    ]
+  },
+  {
     path: '/attachment',
     component: Layout,
     redirect: '/attachment/index',
@@ -263,6 +296,7 @@ export const asyncRoutes = [
 ]
 
 const createRouter = () => new Router({
+  base: VueConfig.publicPath,
   mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes

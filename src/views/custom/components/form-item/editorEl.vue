@@ -4,7 +4,7 @@
       class="inner-box"
       :height="opt.height"
       v-model="formData[field]"
-      :id="field"
+      :id="'editor-'+field"
       :toolbar="opt.toolbar"
       :menubar="opt.menubar"
       :readonly="opt.readonly"

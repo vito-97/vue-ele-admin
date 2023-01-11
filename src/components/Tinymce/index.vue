@@ -39,6 +39,7 @@
  * docs:
  * https://panjiachen.github.io/vue-element-admin-site/feature/component/rich-editor.html#tinymce
  */
+import * as VueConfig from '@/../vue.config'
 import editorImage from './components/EditorImage'
 import plugins from './plugins'
 import toolbar from './toolbar'
@@ -50,8 +51,8 @@ import { hideLoading, showLoading } from '@/utils'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
 // const tinymceCDN = 'https://cdn.staticfile.org/tinymce/4.9.3/tinymce.min.js'
-const tinymceCDN = '/static/tinymce/tinymce.min.js'
-const codeHighLight = '/static/tinymce/plugins/becodesample/highlight/highlight.min.js'
+const tinymceCDN = VueConfig.publicPath + 'static/tinymce/tinymce.min.js'
+const codeHighLight = VueConfig.publicPath + 'static/tinymce/plugins/becodesample/highlight/highlight.min.js'
 
 export default {
   name: 'Tinymce',
@@ -182,7 +183,7 @@ export default {
     this.init()
   },
   activated() {
-    if (window.tinymce) {
+    if (window.tinymce && !this.hasInit) {
       this.initTinymce()
     }
   },
@@ -238,7 +239,7 @@ export default {
         // 媒体实时预览开关
         media_live_embeds: true,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
-        content_css: '/static/tinymce/plugins/becodesample/highlight/styles/atom-one-light.css',
+        content_css: VueConfig.publicPath + 'static/tinymce/plugins/becodesample/highlight/styles/atom-one-light.css',
         // 右下角技术支持
         branding: false,
         placeholder: this.placeholder,

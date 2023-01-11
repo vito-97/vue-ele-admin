@@ -76,6 +76,7 @@ export default {
           type: 'select_table',
           edit_opts: { disabled: false }
         },
+        // { name: '多语言', field: 'lang', type: 'switch', opts: { required: true }, value: 0 },
         { name: '状态', field: 'status', type: 'switch', opts: { required: true }, value: 1 },
         { name: '提示信息', field: 'placeholder', type: 'textarea', opts: { maxlength: 120 } }
       ]

@@ -84,6 +84,12 @@ const tableMixin = {
     // 点击头部按钮
     onTapHeadBtn(args) {
       const key = args.key
+
+      if (!key) {
+        console.warn(`未定义key`)
+        return
+      }
+
       const method = 'onTapHeadBtn' + word2studly(key)
 
       if (this[method] && typeof this[method] === 'function') {

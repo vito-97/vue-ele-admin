@@ -61,6 +61,23 @@
                 <el-button type="primary" icon="el-icon-s-operation" size="mini" plain slot="reference"></el-button>
               </el-popover>
             </div>
+            <!--            切换语言-->
+            <div v-if="langStatus" class="lang-switch-box">
+              <el-select
+class="lang-select"
+v-model="langValue"
+placeholder="请选择语言"
+size="mini"
+                         popper-class="lang-select-popper"
+                         @change="onLangChange">
+                <el-option
+                  v-for="(name,lang) in langList"
+                  :key="lang"
+                  :label="name"
+                  :value="lang">
+                </el-option>
+              </el-select>
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -276,6 +293,7 @@ import itemsCom from '@/utils/table-column'
 import md5 from 'js-md5'
 import { mapState } from 'vuex'
 import Sticky from '@/components/Sticky'
+import settings from '@/settings'
 
 export default {
   name: 'CustomTable',
@@ -310,7 +328,9 @@ export default {
       // 全选列
       checkAllColumns: false,
       // 排除的参数名
-      excludeParams: []
+      excludeParams: [],
+      defaultLang: settings.defaultLang,
+      langValue: settings.defaultLang
     }
   },
   components: { Pagination, customForm, Sticky },
@@ -421,7 +441,13 @@ export default {
     // 每行高度
     rowHeight: { type: Number, default: 60 },
     // 使用虚拟模式
-    useVirtual: { type: Boolean, default: false }
+    useVirtual: { type: Boolean, default: false },
+    // 多语言状态
+    langStatus: { type: Boolean, default: false },
+    // 多语言列表
+    langList: { type: Object, default: () => ({}) },
+    // 多语言字段
+    langField: { type: Array, default: () => [] }
   },
   filters: {},
   watch: {
@@ -439,6 +465,14 @@ export default {
     selectedValue(value) {
       if (value) {
         this.setSelectedRows()
+      }
+    },
+    langStatus: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.setLang()
+        }
       }
     }
   },
@@ -649,6 +683,8 @@ export default {
       }
 
       const def = {
+        name: '按钮',
+        key: '',
         // 类型
         type: 'primary',
         // 图标
@@ -801,11 +837,18 @@ export default {
       ]
     },
     /**
+     * 当前表格的名称
+     * @returns {string|string}
+     */
+    name() {
+      return this.control ? this.control + '-' : this.$route.path
+    },
+    /**
      * 将传入的列生成hash值
      */
     hash() {
       let string = this.columnFields.join(',')
-      return (this.control ? this.control + '-' : this.$route.path) + md5(string).substr(0, 10)
+      return this.name + md5(string).substr(0, 10)
     },
     /**
      * 获取列的label
@@ -839,6 +882,14 @@ export default {
      */
     columnFields() {
       return Object.keys(this.columnLabels)
+    },
+    /**
+     * 当前是否为显示默认语言
+     * @returns {boolean}
+     */
+    isDefaultLang() {
+      const { defaultLang, langValue } = this
+      return defaultLang === langValue
     }
   },
   created() {
@@ -1110,7 +1161,28 @@ export default {
      * 获取列的原始值
      */
     getColValue(col, row) {
-      const val = deepVal(col.field, row)
+      var field = col.field
+
+      const { langStatus, langField, langValue, isDefaultLang } = this
+
+      // 开启多语言和当前选择的不是默认语言
+      if (langStatus && !isDefaultLang) {
+        var langKey = langValue.replace('-', '_')
+        // 多语言字段包含当前字段
+        if (langField.includes(field)) {
+          field = langKey + '.' + field
+        } else if (field.includes('.')) {
+          var array = field.split('.')
+          var relationKey = `${array[0]}.${langKey}`
+          // 获取关联对象里是否有该语言的键
+          var obj = deepVal(relationKey, row)
+          if (obj !== '') {
+            field = relationKey + '.' + array[1]
+          }
+        }
+      }
+
+      const val = deepVal(field, row)
 
       return val
     },
@@ -1128,15 +1200,21 @@ export default {
       }
 
       if (Object.keys(col.list).length) {
+        var vals = Array.isArray(val) ? val : val.toString().split(',')
+        val = []
         if (col.list_field && col.list_value) {
           for (const it of col.list) {
-            if (it[col.list_value] == val) {
-              val = it[col.list_field]
+            if (vals.includes(it[col.list_value])) {
+              val.push(it[col.list_field])
             }
           }
         } else {
-          val = col.list[val]
+          for (const idx of vals) {
+            val.push(col.list[idx])
+          }
         }
+
+        val = val.join(',')
       }
 
       if (col.format && typeof col.format === 'function') {
@@ -1236,6 +1314,32 @@ export default {
       }
     },
     /**
+     * 设置显示的语言
+     * @param value
+     * @param set
+     */
+    setLang(value = null, set = false) {
+      const cacheKey = this.name + '-lang'
+
+      // 有传入值则是设置到缓存里
+      if (value) {
+        if (set) {
+          this.langValue = value
+        }
+        debounce(function () {
+          localStorage.setItem(cacheKey, value)
+        }, 500)()
+      } else {
+        value = localStorage.getItem(cacheKey)
+
+        if (!value) {
+          value = this.defaultLang
+        }
+
+        this.langValue = value
+      }
+    },
+    /**
      * 是否显示列
      */
     isShowColumn(name) {
@@ -1277,6 +1381,9 @@ export default {
       }
 
       return status
+    },
+    onLangChange(value) {
+      this.setLang(value)
     }
 
   }
@@ -1312,6 +1419,15 @@ export default {
       display: flex;
       justify-content: flex-end;
       align-items: center;
+    }
+
+    .lang-switch-box {
+      margin-left: 10px;
+      width: 100px;
+
+      .lang-select {
+        width: 100%;
+      }
     }
   }
 
