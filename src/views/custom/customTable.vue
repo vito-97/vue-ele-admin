@@ -64,12 +64,12 @@
             <!--            切换语言-->
             <div v-if="langStatus" class="lang-switch-box">
               <el-select
-class="lang-select"
-v-model="langValue"
-placeholder="请选择语言"
-size="mini"
-                         popper-class="lang-select-popper"
-                         @change="onLangChange">
+                class="lang-select"
+                v-model="langValue"
+                placeholder="请选择语言"
+                size="mini"
+                popper-class="lang-select-popper"
+                @change="onLangChange">
                 <el-option
                   v-for="(name,lang) in langList"
                   :key="lang"
@@ -156,7 +156,7 @@ size="mini"
                   :row="row"
                   :$index="$index"
                   :value="getColValue(it, row)"
-                  >
+                >
 
                   <template v-if="!isEmpty(it,row)">
 
@@ -254,6 +254,7 @@ size="mini"
       <div v-if="confirm.input">
         <template v-if="confirmIsCustomForm">
           <custom-form
+            ref="confirmForm"
             :columns="confirm.input"
             :dialog="false"
             :hide-button="true"
@@ -1145,8 +1146,16 @@ export default {
     },
     // 确认按钮
     onConfirmSuccess() {
+      var { confirmIsCustomForm } = this
+
+      // 自定义表单模式
+      if (confirmIsCustomForm) {
+        this.$refs.confirmForm.submit()
+        return
+      }
+
       this.dialogVisible = false
-      var data = this.confirmIsCustomForm ? this.confirmFormData : { content: this.confirmContent }
+      var data = confirmIsCustomForm ? this.confirmFormData : { content: this.confirmContent }
       this.confirm.callback && this.confirm.callback(data)
     },
     // 取消按钮
@@ -1155,6 +1164,7 @@ export default {
     },
     // 提交表单
     onSubmitConfirm(formData) {
+      this.dialogVisible = false
       this.confirm.callback && this.confirm.callback(formData)
     },
     /**
@@ -1391,92 +1401,121 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/variables.scss";
+  @import "~@/styles/variables.scss";
 
-.mb0 {
-  margin-bottom: 0;
-}
-
-.mb10 {
-  margin-bottom: 10px;
-}
-
-.custom-table-box {
-  width: 100%;
-
-  .container {
-    width: 100%;
+  .mb0 {
+    margin-bottom: 0;
   }
 
-  .tool-box {
-    background: #fff;
-    //margin-bottom: 30px;
-    width: 100%;
-    height: 60px;
-    box-sizing: border-box;
-
-    .search-group-box {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .lang-switch-box {
-      margin-left: 10px;
-      width: 100px;
-
-      .lang-select {
-        width: 100%;
-      }
-    }
+  .mb10 {
+    margin-bottom: 10px;
   }
 
-  &.fixed {
-    .tool-box {
-      // 不设置任何偏移量将直接置顶在父容器里
-      position: fixed;
-      padding: 15px;
-      z-index: 8;
-      width: calc(100% - #{$sideBarWidth});
-      transition: width 0.28s;
-      margin: -15px -15px 0;
-      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
-    }
+  .custom-table-box {
+    width: 100%;
 
     .container {
-      padding-top: 48px;
+      width: 100%;
     }
 
-    // 隐藏了侧边栏
-    &.hide-sidebar {
-      .tool-box {
-        width: calc(100% - 54px);
-      }
-    }
-  }
-}
-
-// 手机端
-@media screen and (max-width: 768px) {
-  .custom-table-box {
     .tool-box {
-      height: 100px;
-
-      .btn-group-box {
-        margin-bottom: 10px;
-      }
+      background: #fff;
+      //margin-bottom: 30px;
+      width: 100%;
+      height: 60px;
+      box-sizing: border-box;
 
       .search-group-box {
-        justify-content: flex-start;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+
+      .lang-switch-box {
+        margin-left: 10px;
+        width: 100px;
+
+        .lang-select {
+          width: 100%;
+        }
       }
     }
 
     &.fixed {
-      .container {
-        padding-top: 85px;
+      .tool-box {
+        // 不设置任何偏移量将直接置顶在父容器里
+        position: fixed;
+        padding: 15px;
+        z-index: 8;
+        width: calc(100% - #{$sideBarWidth});
+        transition: width 0.28s;
+        margin: -15px -15px 0;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
       }
 
+      .container {
+        padding-top: 48px;
+      }
+
+      // 隐藏了侧边栏
       &.hide-sidebar {
+        .tool-box {
+          width: calc(100% - 54px);
+        }
+      }
+    }
+  }
+
+  // 手机端
+  @media screen and (max-width: 768px) {
+    .custom-table-box {
+      .tool-box {
+        height: 100px;
+
+        .btn-group-box {
+          margin-bottom: 10px;
+        }
+
+        .search-group-box {
+          justify-content: flex-start;
+        }
+      }
+
+      &.fixed {
+        .container {
+          padding-top: 85px;
+        }
+
+        &.hide-sidebar {
+          .tool-box {
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    .page-box ::v-deep .pagination-container {
+      padding: 20px 10px;
+      margin-top: 20px;
+    }
+  }
+
+  .table-box {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .page-box {
+    display: flex;
+    justify-content: center;
+  }
+</style>
+<style lang="scss">
+  // 动画状态会影响fixed
+  .fade-transform-leave-active,
+  .fade-transform-enter-active {
+    .custom-table-box {
+      &.fixed {
         .tool-box {
           width: 100%;
         }
@@ -1484,50 +1523,21 @@ export default {
     }
   }
 
-  .page-box ::v-deep .pagination-container {
-    padding: 20px 10px;
-    margin-top: 20px;
-  }
-}
+  @media screen and (min-width: 768px) {
+    .el-popup-parent--hidden {
+      .custom-table-box {
+        &.fixed {
+          .tool-box {
+            padding-right: 15px;
+          }
 
-.table-box {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.page-box {
-  display: flex;
-  justify-content: center;
-}
-</style>
-<style lang="scss">
-// 动画状态会影响fixed
-.fade-transform-leave-active,
-.fade-transform-enter-active {
-  .custom-table-box {
-    &.fixed {
-      .tool-box {
-        width: 100%;
-      }
-    }
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .el-popup-parent--hidden {
-    .custom-table-box {
-      &.fixed {
-        .tool-box {
-          padding-right: 15px;
-        }
-
-        // 有滚动条
-        .tool-box.scroll-bar {
-          padding-right: 32px;
+          // 有滚动条
+          .tool-box.scroll-bar {
+            padding-right: 32px;
+          }
         }
       }
     }
   }
-}
 
 </style>

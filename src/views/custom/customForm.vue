@@ -49,7 +49,7 @@
         class="dialog-footer"
         v-if="dialog && showButton"
       >
-        <el-button size="small" type="primary" @click="onClickSubmit" v-if="!hideSubmitButton">
+        <el-button size="small" type="primary" @click="submit" v-if="!hideSubmitButton">
           {{ submitBtnText }}
         </el-button>
         <el-button size="small" @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
@@ -167,6 +167,8 @@ export default {
       handler(val) {
         if (val) {
           this.init()
+        } else {
+          this.clearValidate()
         }
       }
     },
@@ -502,27 +504,32 @@ export default {
       this.formRules = rules
       return rules
     },
-    onClickSubmit() {
-      this.$refs.customForm.submit(false).then(formData => {
+    submit() {
+      return this.$refs.customForm.submit(false).then(formData => {
         this.onSubmit(formData)
+        return formData
       }, err => {
         console.log('err', err)
+        return Promise.reject(err)
       })
     },
     // 提交
     onSubmit(formData) {
       this.$emit('submit', formData)
     },
-    // 重置表单
     onReset() {
       this.reset()
+    },
+    // 重置表单
+    reset() {
+      this.resetFormData()
     },
     onClose() {
       this.formRules = {}
     },
     onOpen() {
       this.clearValidate()
-      // this.reset()
+      // this.resetFormData()
     },
     // 监听表单元素触发的事件
     onEvent(e) {
@@ -530,7 +537,7 @@ export default {
       // this.$emit(e.field + '-event', { type: e.type, payload: e.payload })
       this.$emit('event', e)
     },
-    reset() {
+    resetFormData() {
       // 赋值初始化的数据
       this.setFormData({ ...this.initFormData })
     },
