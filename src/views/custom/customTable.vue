@@ -10,7 +10,7 @@
               <el-button
                 :type="btn.type"
                 :icon="btn.icon"
-                :disabled="btn.selected && !selection.length"
+                :disabled="headBtnSelectDisabled(btn)"
                 size="mini"
                 v-if="!headBtnDisabled(btn) && (!btn.auth || checkPermission(btn.auth))"
                 @click="onTapHeadBtn(btn)"
@@ -24,23 +24,26 @@
           </el-button-group>
         </el-col>
         <el-col :span="12" :xs="24">
-          <div class="search-group-box" v-if="searchable">
-            <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
-              <el-form-item class="mb0">
-                <el-input
-                  v-model="keyword"
-                  :placeholder="searchPlaceholder"
-                  name="keyword"
-                  :clearable="true"
-                  @input="onKwInput">
-                </el-input>
-              </el-form-item>
-              <el-form-item class="mb0">
-                <el-button type="primary" icon="el-icon-search" @click="onSearch">
-                  {{ searchBtnText }}
-                </el-button>
-              </el-form-item>
-            </el-form>
+          <div class="search-group-box">
+            <slot name="before-search"></slot>
+            <template v-if="searchable">
+              <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
+                <el-form-item class="mb0">
+                  <el-input
+                    v-model="keyword"
+                    :placeholder="searchPlaceholder"
+                    name="keyword"
+                    :clearable="true"
+                    @input="onKwInput">
+                  </el-input>
+                </el-form-item>
+                <el-form-item class="mb0">
+                  <el-button type="primary" icon="el-icon-search" @click="onSearch">
+                    {{ searchBtnText }}
+                  </el-button>
+                </el-form-item>
+              </el-form>
+            </template>
             <!--        控制列的显示与隐藏-->
             <div v-if="!hideColumnsControl">
               <el-popover
@@ -78,6 +81,7 @@
                 </el-option>
               </el-select>
             </div>
+            <slot name="after-search"></slot>
           </div>
         </el-col>
       </el-row>
@@ -351,6 +355,8 @@ export default {
     list: { type: Array, required: true },
     // 数据列表的label
     listLabel: { type: [Object, Array] },
+    // 选择模式下调用选择器的源数据
+    targetDetail: { type: [Object] },
     // 树形的配置
     treeProps: {
       type: Object,
@@ -1010,6 +1016,14 @@ export default {
       setLimit(limit)
       this.loadTrigger(init)
     },
+    // 加载下一页的数据
+    nextPage() {
+      var totalPage = Math.ceil(this.total / this.limit)
+      if (this.page < totalPage) {
+        this.page++
+        this.loadTrigger()
+      }
+    },
     // 删除
     onDelete() {
       this.$emit('delete', { id: this.deleteRow.id, row: this.deleteRow, index: this.deleteIndex })
@@ -1245,7 +1259,7 @@ export default {
     // 行按钮是否禁用检测
     rowBtnDisabled(btn, row, index) {
       if (typeof btn.show === 'function') {
-        return !btn.show(row, index)
+        return !btn.show(row, index, this.targetDetail)
       }
       return !btn.show
     },
@@ -1255,6 +1269,28 @@ export default {
         return !btn.show()
       }
       return !btn.show
+    },
+    /**
+     * 头部按钮选中检测
+     * @param btn
+     * @returns {boolean}
+     */
+    headBtnSelectDisabled(btn) {
+      var { selection } = this
+      var { selected } = btn
+
+      if (selected) {
+        if (selected === true) {
+          return !selection.length
+        } else if (typeof selected === 'function') {
+          var status = selected(selection)
+          if (typeof status === 'boolean') {
+            return !status
+          }
+        }
+      }
+
+      return false
     },
     /**
      * 检测元素是否显示

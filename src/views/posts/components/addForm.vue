@@ -48,7 +48,10 @@ export default {
             name: 'name',
             key: 'category'
           },
-          type: 'select_table'
+          type: 'select_table',
+          optional(row, index, target) {
+            return !row.children.length || row.pid
+          }
         },
         { name: '导读', field: 'intro', opts: { maxlength: 255 }, placeholder: '不填写将从内容提取一部分', type: 'textarea' },
         { name: '置顶', field: 'is_top', type: 'switch', opts: { required: true }, value: 0 },
