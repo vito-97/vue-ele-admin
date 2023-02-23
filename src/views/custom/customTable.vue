@@ -615,7 +615,9 @@ export default {
         type: '',
         // 组件配置
         opts: {},
-        visible: true
+        visible: true,
+        // 获取值回调函数，传入列数据
+        value: null
       }
 
       for (let [i, it] of cols.entries()) {
@@ -1171,6 +1173,7 @@ export default {
      * 获取列的原始值
      */
     getColValue(col, row) {
+      var val
       var field = col.field
 
       const { langStatus, langField, langValue, isDefaultLang } = this
@@ -1192,7 +1195,11 @@ export default {
         }
       }
 
-      const val = deepVal(field, row)
+      if (typeof col.value === 'function') {
+        val = col.value(row, field)
+      } else {
+        val = deepVal(field, row)
+      }
 
       return val
     },
@@ -1401,121 +1408,92 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/variables.scss";
+@import "~@/styles/variables.scss";
 
-  .mb0 {
-    margin-bottom: 0;
-  }
+.mb0 {
+  margin-bottom: 0;
+}
 
-  .mb10 {
-    margin-bottom: 10px;
-  }
+.mb10 {
+  margin-bottom: 10px;
+}
 
-  .custom-table-box {
+.custom-table-box {
+  width: 100%;
+
+  .container {
     width: 100%;
+  }
 
-    .container {
-      width: 100%;
+  .tool-box {
+    background: #fff;
+    //margin-bottom: 30px;
+    width: 100%;
+    height: 60px;
+    box-sizing: border-box;
+
+    .search-group-box {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
     }
 
-    .tool-box {
-      background: #fff;
-      //margin-bottom: 30px;
-      width: 100%;
-      height: 60px;
-      box-sizing: border-box;
+    .lang-switch-box {
+      margin-left: 10px;
+      width: 100px;
 
-      .search-group-box {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
+      .lang-select {
+        width: 100%;
+      }
+    }
+  }
+
+  &.fixed {
+    .tool-box {
+      // 不设置任何偏移量将直接置顶在父容器里
+      position: fixed;
+      padding: 15px;
+      z-index: 8;
+      width: calc(100% - #{$sideBarWidth});
+      transition: width 0.28s;
+      margin: -15px -15px 0;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+    }
+
+    .container {
+      padding-top: 48px;
+    }
+
+    // 隐藏了侧边栏
+    &.hide-sidebar {
+      .tool-box {
+        width: calc(100% - 54px);
+      }
+    }
+  }
+}
+
+// 手机端
+@media screen and (max-width: 768px) {
+  .custom-table-box {
+    .tool-box {
+      height: 100px;
+
+      .btn-group-box {
+        margin-bottom: 10px;
       }
 
-      .lang-switch-box {
-        margin-left: 10px;
-        width: 100px;
-
-        .lang-select {
-          width: 100%;
-        }
+      .search-group-box {
+        justify-content: flex-start;
       }
     }
 
     &.fixed {
-      .tool-box {
-        // 不设置任何偏移量将直接置顶在父容器里
-        position: fixed;
-        padding: 15px;
-        z-index: 8;
-        width: calc(100% - #{$sideBarWidth});
-        transition: width 0.28s;
-        margin: -15px -15px 0;
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
-      }
-
       .container {
-        padding-top: 48px;
+        padding-top: 85px;
       }
 
-      // 隐藏了侧边栏
       &.hide-sidebar {
-        .tool-box {
-          width: calc(100% - 54px);
-        }
-      }
-    }
-  }
-
-  // 手机端
-  @media screen and (max-width: 768px) {
-    .custom-table-box {
-      .tool-box {
-        height: 100px;
-
-        .btn-group-box {
-          margin-bottom: 10px;
-        }
-
-        .search-group-box {
-          justify-content: flex-start;
-        }
-      }
-
-      &.fixed {
-        .container {
-          padding-top: 85px;
-        }
-
-        &.hide-sidebar {
-          .tool-box {
-            width: 100%;
-          }
-        }
-      }
-    }
-
-    .page-box ::v-deep .pagination-container {
-      padding: 20px 10px;
-      margin-top: 20px;
-    }
-  }
-
-  .table-box {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  .page-box {
-    display: flex;
-    justify-content: center;
-  }
-</style>
-<style lang="scss">
-  // 动画状态会影响fixed
-  .fade-transform-leave-active,
-  .fade-transform-enter-active {
-    .custom-table-box {
-      &.fixed {
         .tool-box {
           width: 100%;
         }
@@ -1523,21 +1501,50 @@ export default {
     }
   }
 
-  @media screen and (min-width: 768px) {
-    .el-popup-parent--hidden {
-      .custom-table-box {
-        &.fixed {
-          .tool-box {
-            padding-right: 15px;
-          }
+  .page-box ::v-deep .pagination-container {
+    padding: 20px 10px;
+    margin-top: 20px;
+  }
+}
 
-          // 有滚动条
-          .tool-box.scroll-bar {
-            padding-right: 32px;
-          }
+.table-box {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.page-box {
+  display: flex;
+  justify-content: center;
+}
+</style>
+<style lang="scss">
+// 动画状态会影响fixed
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  .custom-table-box {
+    &.fixed {
+      .tool-box {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .el-popup-parent--hidden {
+    .custom-table-box {
+      &.fixed {
+        .tool-box {
+          padding-right: 15px;
+        }
+
+        // 有滚动条
+        .tool-box.scroll-bar {
+          padding-right: 32px;
         }
       }
     }
   }
+}
 
 </style>
