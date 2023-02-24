@@ -334,13 +334,18 @@ export default {
     },
     // 选择
     onSelect({ row, index }) {
-      this.$set(this.formData, this.field, row[this.opt.pk])
-      this.$set(this.detail, this.key, row)
+      if (!this.opt.multiple) {
+        this.$set(this.formData, this.field, row[this.opt.pk])
+        this.$set(this.detail, this.key, row)
+        this.visible = false
+      } else {
+        this.onSelectMultiple({ selection: [row], ids: [row[this.opt.pk]] }, false)
+      }
+
       this.triggerEvent('select', { value: row[this.opt.pk], row })
-      this.visible = false
     },
     // 多选
-    onSelectMultiple({ selection, ids }) {
+    onSelectMultiple({ selection, ids }, trigger = true) {
       // console.log('select multiple', ids, selection)
       let value = []
       let label = []
@@ -373,9 +378,10 @@ export default {
         this.$set(this.detail, this.key, [...this.toArray(this.detail[this.key]), ...selection])
       }
 
-      this.triggerEvent('select-multiple', { value, ids, items: selection })
-
-      this.visible = false
+      if (trigger) {
+        this.triggerEvent('select-multiple', { value, ids, items: selection })
+        this.visible = false
+      }
     },
     onInputChange(value, index) {
       if (!value) {

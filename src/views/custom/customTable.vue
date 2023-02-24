@@ -504,7 +504,7 @@ export default {
     },
     // 选中数据转数组
     selectedValueArray() {
-      var value = toArray(this.selectedValue)
+      var value = toArray(this.selectedValue).map(v => v.toString())
 
       return value
     },
