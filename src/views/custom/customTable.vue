@@ -915,8 +915,8 @@ export default {
      * 设置已选中的行
      */
     setSelectedRows() {
-      if (!this.selectedValueArray.length) {
-        this.$refs.table.clearSelection()
+      if (!this.selectedValueArray.length && this.selection.length) {
+        this.$refs.table?.clearSelection()
         return
       }
 
