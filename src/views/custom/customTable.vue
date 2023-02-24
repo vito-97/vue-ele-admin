@@ -820,7 +820,9 @@ export default {
           name: this.rowBtnText.select || '选择',
           key: 'select',
           mode: ['select'],
-          show: this.rowBtnShow('select') && this.optional
+          show: this.rowBtnShow('select') && ((row, index) => {
+            return !this.selectedValueArray.includes(row[this.selectedPk].toString()) && this.checkVarStatus(this.optional, row, index)
+          })
         },
         {
           name: this.rowBtnText.select || '取消',
@@ -1275,17 +1277,23 @@ export default {
     },
     // 行按钮是否禁用检测
     rowBtnDisabled(btn, row, index) {
-      if (typeof btn.show === 'function') {
-        return !btn.show(row, index)
-      }
-      return !btn.show
+      return !this.checkVarStatus(btn.show, row, index)
     },
     // 头部按钮是否禁用检测
     headBtnDisabled(btn) {
-      if (typeof btn.show === 'function') {
-        return !btn.show()
+      return !this.checkVarStatus(btn.show)
+    },
+    /**
+     * 检测状态
+     * @param v
+     * @param args
+     * @returns {*|boolean}
+     */
+    checkVarStatus(v, ...args) {
+      if (typeof v === 'function') {
+        return v(...args)
       }
-      return !btn.show
+      return !!v
     },
     /**
      * 检测元素是否显示
