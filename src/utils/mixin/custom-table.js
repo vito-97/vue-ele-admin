@@ -113,6 +113,9 @@ const tableMixin = {
     onTapHeadBtnSelect(args) {
       this.$emit('select-multiple', args)
     },
+    onTapHeadBtnUnselect(args) {
+      this.$emit('unselect-multiple', args)
+    },
     // 点击刷新
     onTapHeadBtnFlush(args = {}) {
       this.$emit('flush')
@@ -136,6 +139,9 @@ const tableMixin = {
     // 选中按钮
     onTapRowBtnSelect(row, index) {
       this.$emit('select', { row, index, id: row.id })
+    },
+    onTapRowBtnUnselect(row, index) {
+      this.$emit('unselect', { row, index, id: row.id })
     },
     onRowDbClick(row, column, event) {
       // 展示的模式才编辑

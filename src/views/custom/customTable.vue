@@ -823,6 +823,14 @@ export default {
           show: this.rowBtnShow('select') && this.optional
         },
         {
+          name: this.rowBtnText.select || '取消',
+          key: 'unselect',
+          mode: ['select'],
+          show: this.rowBtnShow('unselect') && ((row, index) => {
+            return this.selectedValueArray.includes(row[this.selectedPk].toString())
+          })
+        },
+        {
           name: this.rowBtnText.update || '编辑',
           auth: this.getFullAuth('update'),
           key: 'update',
@@ -907,7 +915,23 @@ export default {
      * 设置已选中的行
      */
     setSelectedRows() {
+      if (!this.selectedValueArray.length) {
+        this.$refs.table.clearSelection()
+        return
+      }
+
       if (this.selectedValue) {
+        // 判断选中的是否被取消选中
+        for (let item of this.selection) {
+          let v = (item[this.selectedPk] || '').toString()
+
+          if (v && !this.selectedValueArray.includes(v)) {
+            this.$nextTick(() => {
+              this.$refs.table.toggleRowSelection(item, false)
+            })
+          }
+        }
+        // 判断是否被选中
         for (let item of this.list) {
           let v = (item[this.selectedPk] || '').toString()
           // 选中行

@@ -317,13 +317,16 @@ export default {
     },
     onTagClose(index = null) {
       if (!this.disabled) {
-        if (this.opt.multiple) {
-          this.$delete(this.formData[this.field], index)
-          this.$delete(this.detail[this.key], index)
-        } else {
-          this.$set(this.formData, this.field, '')
-          this.$set(this.detail, this.key, {})
-        }
+        this.remove(index)
+      }
+    },
+    remove(index) {
+      if (this.opt.multiple) {
+        this.$delete(this.formData[this.field], index)
+        this.$delete(this.detail[this.key], index)
+      } else {
+        this.$set(this.formData, this.field, '')
+        this.$set(this.detail, this.key, {})
       }
     },
     isFormat(s) {
@@ -343,6 +346,15 @@ export default {
       }
 
       this.triggerEvent('select', { value: row[this.opt.pk], row })
+    },
+    onUnselect({ row, index }) {
+      var opt = this.opt
+      var pk = opt.pk
+
+      var i = this.toArray(this.val).findIndex(v => v == row[pk])
+      this.remove(i)
+
+      this.triggerEvent('unselect', { value: row[pk], row })
     },
     // 多选
     onSelectMultiple({ selection, ids }, trigger = true) {
