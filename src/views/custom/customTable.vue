@@ -821,7 +821,7 @@ export default {
           key: 'select',
           mode: ['select'],
           show: this.rowBtnShow('select') && ((row, index) => {
-            return !this.selectedValueArray.includes(row[this.selectedPk].toString()) && this.checkVarStatus(this.optional, row, index)
+            return !this.selectedValueArray.includes(row[this.selectedPk].toString()) && this.rowBtnDisabled(this.optional, row, index)
           })
         },
         {
@@ -1277,11 +1277,11 @@ export default {
     },
     // 行按钮是否禁用检测
     rowBtnDisabled(btn, row, index) {
-      return !this.checkVarStatus(btn.show, row, index)
+      return !this.checkVarStatus(typeof btn === 'function' ? btn : btn.show, row, index)
     },
     // 头部按钮是否禁用检测
     headBtnDisabled(btn) {
-      return !this.checkVarStatus(btn.show)
+      return !this.checkVarStatus(typeof btn === 'function' ? btn : btn.show)
     },
     /**
      * 检测状态
