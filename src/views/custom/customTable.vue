@@ -1277,11 +1277,13 @@ export default {
     },
     // 行按钮是否禁用检测
     rowBtnDisabled(btn, row, index) {
-      return !this.checkVarStatus(typeof btn === 'function' ? btn : btn.show, row, index)
+      var fn = typeof btn === 'object' ? btn.show : btn
+      return !this.checkVarStatus(fn, row, index, this.targetDetail)
     },
     // 头部按钮是否禁用检测
     headBtnDisabled(btn) {
-      return !this.checkVarStatus(typeof btn === 'function' ? btn : btn.show)
+      var fn = typeof btn === 'object' ? btn.show : btn
+      return !this.checkVarStatus(fn)
     },
     /**
      * 检测状态
