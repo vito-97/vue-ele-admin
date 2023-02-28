@@ -71,8 +71,10 @@
           @keyup.enter.native="onSaveNew"
         >
         </el-input>
-        <el-button type="primary" size="small" @click="onSaveNew">保存</el-button>
-        <el-button size="small" plain @click="onCancelNew">取消</el-button>
+        <el-button-group>
+          <el-button type="primary" size="small" @click="onSaveNew">保存</el-button>
+          <el-button size="small" plain @click="onCancelNew">取消</el-button>
+        </el-button-group>
         <span v-show="errorAppend" class="error">{{ errorAppend }}</span>
       </div>
     </template>
@@ -162,13 +164,11 @@ export default {
         if (this.opts.repeat || !this.tags[index]?.list.includes(value)) {
           var tags = [...this.tags]
           tags[index]?.list.push(value)
-          console.log('list', tags[index]?.list)
           this.tags = tags
         } else {
           this.error = '不可添加重复内容'
         }
       }
-      console.log(value, tags)
       this.visible = -1
       this.value = ''
     },
