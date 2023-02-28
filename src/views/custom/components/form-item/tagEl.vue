@@ -3,28 +3,32 @@
     <el-tag
       :key="tag"
       v-for="(tag,index) in tags"
-      :closable="opt.closable"
+      :closable="opt.closable && !opt.disabled"
       :type="opt.type"
       :hit="opt.hit"
       :color="opt.color"
       :size="opt.size"
       :effect="opt.effect"
+      :disabled="opt.disabled"
+      :disable-transitions="opt.disable_transitions"
       @close="onClose(index)"
     >
       {{ tag }}
     </el-tag>
-    <el-input
-      class="input-new-tag"
-      v-if="visible"
-      v-model.trim="value"
-      ref="input"
-      size="small"
-      @keyup.enter.native="onInputConfirm"
-      @blur="onInputConfirm"
-    >
-    </el-input>
-    <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 新标签</el-button>
-    <span v-show="error" class="error">{{ error }}</span>
+    <template v-if="!opt.disabled">
+      <el-input
+        class="input-new-tag"
+        v-if="visible"
+        v-model.trim="value"
+        ref="input"
+        size="small"
+        @keyup.enter.native="onInputKeyup"
+        @blur="onInputConfirm"
+      >
+      </el-input>
+      <el-button v-else class="button-new-tag" size="small" @click="showInput">{{ opt.text }}</el-button>
+      <span v-show="error" class="error">{{ error }}</span>
+    </template>
   </div>
 </template>
 
@@ -49,7 +53,11 @@ export default {
         size: null,
         effect: 'light',
         // 是否可重复
-        repeat: false
+        repeat: false,
+        array: true,
+        text: '+ 新标签',
+        // 是否禁用渐变动画
+        disable_transitions: false
       }
     }
   },
@@ -60,7 +68,7 @@ export default {
       },
       set(val) {
         console.log('tag', val)
-        this.updateValue(val)
+        this.updateValue(this.opt.array ? this.toArray(val) : val, !this.opt.array)
       }
     }
   },
@@ -77,7 +85,10 @@ export default {
         this.$refs.input.$refs.input.focus()
       })
     },
-
+    onInputKeyup() {
+      this.onInputConfirm()
+      this.visible = true
+    },
     onInputConfirm() {
       let value = this.value
       if (value) {
@@ -120,7 +131,7 @@ export default {
   padding: 0;
 }
 
-.error{
+.error {
   color: $color-danger;
   font-size: 12px;
   margin-left: 10px;
