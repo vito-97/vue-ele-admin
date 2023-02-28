@@ -99,12 +99,13 @@ const formItemMixin = {
     /**
      * 更新数据
      * @param val
+     * @param convert 是否自动转换类型
      */
-    updateValue(val) {
+    updateValue(val, convert = true) {
       var type = typeof this.val
       var newType = typeof val
 
-      if (val) {
+      if (val && convert) {
         if (type === 'string' && newType !== 'string') {
           val = this.toString(val)
         } else if (type === 'array' && newType !== 'array') {

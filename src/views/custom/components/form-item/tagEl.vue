@@ -82,7 +82,7 @@ export default {
     showInput() {
       this.visible = true
       this.$nextTick(_ => {
-        this.$refs.input.$refs.input.focus()
+        this.$refs.input.focus()
       })
     },
     onInputKeyup() {
