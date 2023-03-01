@@ -357,6 +357,7 @@ export default {
         editable: true, // 编辑显示
         required: false, // 是否必选
         visible: true, // 是否显示
+        hide_append: true, // 不显示后是否加入数据
         width: '',
         slot: '',
         // 配置项
@@ -408,7 +409,12 @@ export default {
 
           // 设置表单数据
           if (typeof formData[field] === 'undefined' || formData[field] === '') {
-            const value = typeof item.value === 'undefined' ? '' : item.value
+            var value = typeof item.value === 'undefined' ? '' : item.value
+
+            if (typeof value === 'function') {
+              value = value()
+            }
+
             let key = item.detail_field || field
             let formDataValue = deepVal(key, this.detail, value)
 
@@ -460,7 +466,7 @@ export default {
       for (let tab of columns) {
         for (let item of tab.columns) {
           let { field } = item
-          if (fieldsCount[field] === 1 && !this.checkColVisible(item, formData)) {
+          if (fieldsCount[field] === 1 && !item.hide_append && !this.checkColVisible(item, formData)) {
             delete formData[field]
           }
         }
@@ -559,10 +565,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .detail-form-dialog {
-    //height: 85%;
+.detail-form-dialog {
+  //height: 85%;
 
-    .detail-form {
-    }
+  .detail-form {
   }
+}
 </style>
