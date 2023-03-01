@@ -1309,7 +1309,7 @@ export default {
         status = status && col.visible
       }
       if (typeof col.visible === 'function') {
-        status = status && col.visible.call(this, this.formData, this.detail, col)
+        status = status && col.visible.call(this, this.list, this.listLabel, col)
       }
 
       return status
