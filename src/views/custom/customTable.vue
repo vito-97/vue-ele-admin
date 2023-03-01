@@ -881,7 +881,9 @@ export default {
       }
 
       this.cols.forEach(it => {
-        obj[it.field] = it.name
+        if (this.checkColVisible(it, false)) {
+          obj[it.field] = it.name
+        }
       })
 
       if (!this.hideRowBtn) {
@@ -1300,10 +1302,16 @@ export default {
     /**
      * 检测元素是否显示
      * @param col
+     * @param checkShowColumn
      * @returns {boolean|*}
      */
-    checkColVisible(col) {
-      let status = this.isShowColumn(col.field)
+    checkColVisible(col, checkShowColumn = true) {
+      var status
+      if (checkShowColumn) {
+        status = this.isShowColumn(col.field)
+      } else {
+        status = true
+      }
 
       if (typeof col.visible === 'boolean') {
         status = status && col.visible
