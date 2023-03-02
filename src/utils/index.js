@@ -540,3 +540,76 @@ export function word2snake(value) {
 export function isDefaultLang(lang) {
   return lang === setting.defaultLang || !lang
 }
+
+/**
+ * 树形结构扁平化
+ * @param array 数组
+ * @param dataKey 获取的数据下标
+ * @param subKey 子集下标
+ * @returns {*[]}
+ */
+export function deepTree(array, dataKey = null, subKey = 'children') {
+  var data = []
+
+  var getData = function (item) {
+    return dataKey === null ? item : item[dataKey]
+  }
+
+  for (let item of array) {
+    let d = getData(item)
+    data.push(d)
+    if (item[subKey]?.length) {
+      data = data.concat(deepTree(item[subKey], dataKey, subKey))
+    }
+  }
+
+  return data
+}
+
+/**
+ * 获取树形结构每个数据对应的位置
+ * @param array
+ * @param subKey
+ * @param key
+ * @returns {*[]}
+ */
+export function deepTreeIndex(array, subKey = 'children', key = '') {
+  var index = []
+
+  var getKey = function (i) {
+    return key ? `${key}.${i}` : `${i}`
+  }
+
+  for (let [i, item] of array.entries()) {
+    var k = getKey(i)
+    index.push(k)
+
+    if (item[subKey]?.length) {
+      index = index.concat(deepTreeIndex(item[subKey], subKey, k))
+    }
+  }
+
+  return index
+}
+
+/**
+ * 获取树形结构展开后指定列元素
+ * @param array 数据
+ * @param index 索引 可以是1 或者 1.0 或更深层 使用deepTreeIndex获取到的索引
+ * @param subKey
+ * @returns {*|null}
+ */
+export function getTreeItem(array, index, subKey = 'children') {
+  var keys = index.split('.')
+  var first = keys.shift()
+
+  if (!keys.length) {
+    return array[first]
+  }
+
+  if (array[first][subKey]?.length) {
+    return getTreeItem(array[first][subKey], keys.join('.'), subKey)
+  }
+
+  return null
+}
