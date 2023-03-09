@@ -154,8 +154,7 @@ export default {
           btn_size: opt.btn_size,
           show_file_list: false,
           multiple: opt.multiple,
-          disabled,
-          custom_name: null
+          disabled
         }
       }
     },
@@ -260,7 +259,9 @@ export default {
         // 是否需要重载
         reload: false,
         // 是否为非对象数据
-        simple: false
+        simple: false,
+        // 自定义展示名称
+        custom_name: null
       }
     }
   },
