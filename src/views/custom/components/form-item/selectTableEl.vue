@@ -64,6 +64,7 @@
           ref="table"
           @select="onSelect"
           @select-multiple="onSelectMultiple"
+          @unselect="onUnselect"
         >
         </component>
       </el-dialog>

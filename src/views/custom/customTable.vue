@@ -216,7 +216,7 @@
                   <el-button
                     type="text"
                     size="small"
-                    @click="onTapRowBtn(btn,row,$index,column)"
+                    @click.native.stop="onTapRowBtn(btn,row,$index,column)"
                     v-if="btn.show && (!btn.auth || checkPermission(btn.auth))"
                     :disabled="rowBtnDisabled(btn,row,$index)"
                     :key="btn.key"
@@ -448,7 +448,9 @@ export default {
     // 多语言列表
     langList: { type: Object, default: () => ({}) },
     // 多语言字段
-    langField: { type: Array, default: () => [] }
+    langField: { type: Array, default: () => [] },
+    // 选择模式下调用该选择器的源数据
+    targetDetail: { type: Object, default: () => ({}) }
   },
   filters: {},
   watch: {
@@ -464,9 +466,7 @@ export default {
     },
     // 监听已选中的值改变则从新更改选中
     selectedValue(value) {
-      if (value) {
-        this.setSelectedRows()
-      }
+      this.setSelectedRows()
     },
     langStatus: {
       immediate: true,
@@ -821,7 +821,7 @@ export default {
           key: 'select',
           mode: ['select'],
           show: this.rowBtnShow('select') && ((row, index) => {
-            return !this.selectedValueArray.includes(row[this.selectedPk].toString()) && this.rowBtnDisabled(this.optional, row, index)
+            return !this.selectedValueArray.includes(row[this.selectedPk].toString()) && !this.rowBtnDisabled(this.optional, row, index)
           })
         },
         {

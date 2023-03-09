@@ -23,7 +23,7 @@ const tableMixin = {
      * @returns {{}}
      */
     listeners() {
-      var exclude = ['tap-head-btn', 'tap-row-btn', 'select-multiple', 'flush', 'delete-multiple', 'save', 'update', 'delete', 'select']
+      var exclude = ['tap-head-btn', 'tap-row-btn', 'select-multiple', 'flush', 'delete-multiple', 'save', 'update', 'delete', 'select', 'unselect']
 
       var listeners = {}
 
