@@ -154,7 +154,8 @@ export default {
           btn_size: opt.btn_size,
           show_file_list: false,
           multiple: opt.multiple,
-          disabled
+          disabled,
+          custom_name: null
         }
       }
     },
@@ -184,7 +185,9 @@ export default {
         console.warn(this.field, '选择数据列表未设置label名称')
       }
       var value
-      if (this.opt.simple) {
+      if (typeof this.opt.custom_name === 'function') {
+        value = this.opt.custom_name(this.formData, this.detail)
+      } else if (this.opt.simple) {
         value = deepVal(this.field, this.formData) || deepVal(this.key, this.detail)
       } else {
         const key = `${this.key}`
