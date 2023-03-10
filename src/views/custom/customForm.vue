@@ -293,6 +293,14 @@ export default {
           }
           columns = newColumns
           isTab = false
+        } else {
+          var k = 0
+          for (let item of columns) {
+            if (!item.key) {
+              item.key = k.toString()
+              k++
+            }
+          }
         }
       }
 
