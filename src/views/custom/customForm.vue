@@ -26,7 +26,7 @@
         :visible.sync="Visible"
         v-bind="$attrs"
         ref="customForm"
-        @submit="onSubmit"
+        @submit="onSubmitEmit"
         @event="onEvent"
       >
         <!-- 遍历子组件非作用域插槽，并对父组件暴露 -->
@@ -49,7 +49,7 @@
         class="dialog-footer"
         v-if="dialog && showButton"
       >
-        <el-button size="small" type="primary" @click="submit" v-if="!hideSubmitButton">
+        <el-button size="small" type="primary" @click="onSubmit" v-if="!hideSubmitButton">
           {{ submitBtnText }}
         </el-button>
         <el-button size="small" @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
@@ -518,9 +518,12 @@ export default {
       this.formRules = rules
       return rules
     },
+    onSubmit() {
+      this.submit().catch(() => {})
+    },
     submit() {
       return this.$refs.customForm.submit(false).then(formData => {
-        this.onSubmit(formData)
+        this.onSubmitEmit(formData)
         return formData
       }, err => {
         console.log('err', err)
@@ -528,7 +531,7 @@ export default {
       })
     },
     // 提交
-    onSubmit(formData) {
+    onSubmitEmit(formData) {
       this.$emit('submit', formData)
     },
     onReset() {

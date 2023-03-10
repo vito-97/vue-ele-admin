@@ -1178,7 +1178,7 @@ export default {
 
       // 自定义表单模式
       if (confirmIsCustomForm) {
-        this.$refs.confirmForm.submit()
+        this.$refs.confirmForm.submit().catch(() => {})
         return
       }
 
