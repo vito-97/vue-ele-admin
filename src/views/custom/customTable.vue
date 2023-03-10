@@ -24,8 +24,8 @@
           </el-button-group>
         </el-col>
         <el-col :span="12" :xs="24">
-          <div class="search-group-box" v-if="searchable">
-            <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini">
+          <div class="search-group-box">
+            <el-form ref="form" :inline="true" @submit.native.prevent="onSearch" size="mini" v-if="searchable">
               <el-form-item class="mb0">
                 <el-input
                   v-model="keyword"
@@ -910,9 +910,7 @@ export default {
   created() {
     this.loadTrigger()
     // 显示列控制
-    if (!this.hideColumnsControl) {
-      this.setShowColumns()
-    }
+    this.setShowColumns()
   },
   methods: {
     /**
