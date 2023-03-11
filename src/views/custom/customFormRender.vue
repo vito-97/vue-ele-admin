@@ -95,6 +95,14 @@ export default {
       if (!val) {
         this.currentTabs = '0'
       }
+    },
+    error(obj) {
+      // 自动切换后端返回错误的选项卡
+      if (this.tabCom) {
+        var fields = Object.keys(obj)
+        var field = fields[0]
+        this.switchTabByField(field)
+      }
     }
   },
   computed: {
