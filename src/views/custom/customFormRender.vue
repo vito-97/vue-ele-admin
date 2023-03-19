@@ -2,10 +2,11 @@
   <div class="custom-form-render-box">
     <componment :is="tabCom ? 'el-tabs' : 'div'" v-model="currentTabs">
       <componment
-:label="item.name"
-v-for="(item,index) in tabs"
-:key="index"
-                  :is="tabCom ? 'el-tab-pane' : 'div'">
+        :label="item.name"
+        v-for="(item,index) in tabs"
+        :key="index"
+        :is="tabCom ? 'el-tab-pane' : 'div'"
+      >
         <el-form
           :validate-on-rule-change="validateOnRuleChange"
           :model="value"
@@ -94,6 +95,16 @@ export default {
       if (!val) {
         this.currentTabs = '0'
       }
+    },
+    error(obj) {
+      // 自动切换后端返回错误的选项卡
+      if (this.tabCom) {
+        var fields = Object.keys(obj)
+        if (fields.length) {
+          var field = fields[0]
+          this.switchTabByField(field)
+        }
+      }
     }
   },
   computed: {
@@ -108,6 +119,22 @@ export default {
     },
     currentFormRef() {
       return this.formRef[this.currentTabs] || null
+    },
+    /**
+     * 获取每个选项卡里有什么字段名称
+     * @returns {{}}
+     */
+    tabsField() {
+      var { tabs } = this
+      var data = {}
+
+      for (let tab of tabs) {
+        var { key } = tab
+
+        data[key] = tab.columns.map(v => v.field)
+      }
+
+      return data
     }
   },
   props: {
@@ -159,6 +186,22 @@ export default {
     }
   },
   methods: {
+    /**
+     * 获取字段输入哪个选项卡
+     * @param field
+     * @returns {string}
+     */
+    getFieldTabKey(field) {
+      let tabsField = this.tabsField
+
+      for (let [key, items] of Object.entries(tabsField)) {
+        if (items.includes(field)) {
+          return key
+        }
+      }
+
+      return ''
+    },
     onValidate(field, state, msg) {
       // console.log('validate', field,state,msg)
     },
@@ -177,20 +220,49 @@ export default {
     // 提交表单
     submit(emit = true) {
       return new Promise((resolve, reject) => {
-        this.currentFormRef.validate((valid, obj) => {
-          const value = this.value
-          console.log('value', value, obj)
-          if (valid) {
-            resolve(value)
-            if (emit) {
-              this.$emit('submit', value)
-            }
-          } else {
-            reject(obj)
-            this.$message({
-              type: 'error',
-              message: '请检查输入的内容'
+        var formRef = this.formRef
+        var promises = []
+
+        // 每个表单都验证
+        for (let ref of formRef) {
+          var p = new Promise((success, fail) => {
+            ref.validate((valid, obj) => {
+              if (valid) {
+                success()
+              } else {
+                fail(obj)
+              }
             })
+          })
+
+          promises.push(p)
+        }
+
+        Promise.allSettled(promises).then(results => {
+          for (let result of results) {
+            // 校验失败
+            if (result.status === 'rejected') {
+              var obj = result.reason
+              if (this.tabCom) {
+                var keys = Object.keys(obj)
+                var firstField = keys[0]
+                this.switchTabByField(firstField)
+              }
+              this.$message({
+                type: 'error',
+                message: '请检查输入的内容'
+              })
+
+              reject(obj)
+
+              return false
+            }
+          }
+
+          var { value } = this
+          resolve(value)
+          if (emit) {
+            this.$emit('submit', value)
           }
         })
       })
@@ -208,6 +280,13 @@ export default {
           ref.clearValidate()
         }
       }, 10)
+    },
+    // 通过字段切换选项卡
+    switchTabByField(field) {
+      var tabKey = this.getFieldTabKey(field)
+      if (this.currentTabs !== tabKey) {
+        this.currentTabs = tabKey
+      }
     }
   }
 }

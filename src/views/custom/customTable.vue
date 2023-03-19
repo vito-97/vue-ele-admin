@@ -220,7 +220,7 @@
                   <el-button
                     type="text"
                     size="small"
-                    @click="onTapRowBtn(btn,row,$index,column)"
+                    @click.native.stop="onTapRowBtn(btn,row,$index,column)"
                     v-if="btn.show && (!btn.auth || checkPermission(btn.auth))"
                     :disabled="rowBtnDisabled(btn,row,$index)"
                     :key="btn.key"
@@ -470,9 +470,7 @@ export default {
     },
     // 监听已选中的值改变则从新更改选中
     selectedValue(value) {
-      if (value) {
-        this.setSelectedRows()
-      }
+      this.setSelectedRows()
     },
     langStatus: {
       immediate: true,
@@ -510,7 +508,7 @@ export default {
     },
     // 选中数据转数组
     selectedValueArray() {
-      var value = toArray(this.selectedValue)
+      var value = toArray(this.selectedValue).map(v => v.toString())
 
       return value
     },
@@ -621,7 +619,9 @@ export default {
         type: '',
         // 组件配置
         opts: {},
-        visible: true
+        visible: true,
+        // 获取值回调函数，传入列数据
+        value: null
       }
 
       for (let [i, it] of cols.entries()) {
@@ -824,7 +824,17 @@ export default {
           name: this.rowBtnText.select || '选择',
           key: 'select',
           mode: ['select'],
-          show: this.rowBtnShow('select') && this.optional
+          show: this.rowBtnShow('select') && ((row, index) => {
+            return !this.selectedValueArray.includes(row[this.selectedPk].toString()) && !this.rowBtnDisabled(this.optional, row, index)
+          })
+        },
+        {
+          name: this.rowBtnText.select || '取消',
+          key: 'unselect',
+          mode: ['select'],
+          show: this.rowBtnShow('unselect') && ((row, index) => {
+            return this.selectedValueArray.includes(row[this.selectedPk].toString())
+          })
         },
         {
           name: this.rowBtnText.update || '编辑',
@@ -875,7 +885,9 @@ export default {
       }
 
       this.cols.forEach(it => {
-        obj[it.field] = it.name
+        if (this.checkColVisible(it, false)) {
+          obj[it.field] = it.name
+        }
       })
 
       if (!this.hideRowBtn) {
@@ -902,16 +914,30 @@ export default {
   created() {
     this.loadTrigger()
     // 显示列控制
-    if (!this.hideColumnsControl) {
-      this.setShowColumns()
-    }
+    this.setShowColumns()
   },
   methods: {
     /**
      * 设置已选中的行
      */
     setSelectedRows() {
+      if (!this.selectedValueArray.length && this.selection.length) {
+        this.$refs.table?.clearSelection()
+        return
+      }
+
       if (this.selectedValue) {
+        // 判断选中的是否被取消选中
+        for (let item of this.selection) {
+          let v = (item[this.selectedPk] || '').toString()
+
+          if (v && !this.selectedValueArray.includes(v)) {
+            this.$nextTick(() => {
+              this.$refs.table.toggleRowSelection(item, false)
+            })
+          }
+        }
+        // 判断是否被选中
         for (let item of this.list) {
           let v = (item[this.selectedPk] || '').toString()
           // 选中行
@@ -1164,7 +1190,7 @@ export default {
 
       // 自定义表单模式
       if (confirmIsCustomForm) {
-        this.$refs.confirmForm.submit()
+        this.$refs.confirmForm.submit().catch(() => {})
         return
       }
 
@@ -1185,6 +1211,7 @@ export default {
      * 获取列的原始值
      */
     getColValue(col, row) {
+      var val
       var field = col.field
 
       const { langStatus, langField, langValue, isDefaultLang } = this
@@ -1206,7 +1233,11 @@ export default {
         }
       }
 
-      const val = deepVal(field, row)
+      if (typeof col.value === 'function') {
+        val = col.value(row, field)
+      } else {
+        val = deepVal(field, row)
+      }
 
       return val
     },
@@ -1258,17 +1289,25 @@ export default {
     },
     // 行按钮是否禁用检测
     rowBtnDisabled(btn, row, index) {
-      if (typeof btn.show === 'function') {
-        return !btn.show(row, index, this.targetDetail)
-      }
-      return !btn.show
+      var fn = typeof btn === 'object' ? btn.show : btn
+      return !this.checkVarStatus(fn, row, index, this.targetDetail)
     },
     // 头部按钮是否禁用检测
     headBtnDisabled(btn) {
-      if (typeof btn.show === 'function') {
-        return !btn.show()
+      var fn = typeof btn === 'object' ? btn.show : btn
+      return !this.checkVarStatus(fn)
+    },
+    /**
+     * 检测状态
+     * @param v
+     * @param args
+     * @returns {*|boolean}
+     */
+    checkVarStatus(v, ...args) {
+      if (typeof v === 'function') {
+        return v(...args)
       }
-      return !btn.show
+      return !!v
     },
     /**
      * 头部按钮选中检测
@@ -1295,16 +1334,22 @@ export default {
     /**
      * 检测元素是否显示
      * @param col
+     * @param checkShowColumn
      * @returns {boolean|*}
      */
-    checkColVisible(col) {
-      let status = this.isShowColumn(col.field)
+    checkColVisible(col, checkShowColumn = true) {
+      var status
+      if (checkShowColumn) {
+        status = this.isShowColumn(col.field)
+      } else {
+        status = true
+      }
 
       if (typeof col.visible === 'boolean') {
         status = status && col.visible
       }
       if (typeof col.visible === 'function') {
-        status = status && col.visible.call(this, this.formData, this.detail, col)
+        status = status && col.visible.call(this, this.list, this.listLabel, col)
       }
 
       return status
@@ -1437,121 +1482,92 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/variables.scss";
+@import "~@/styles/variables.scss";
 
-  .mb0 {
-    margin-bottom: 0;
-  }
+.mb0 {
+  margin-bottom: 0;
+}
 
-  .mb10 {
-    margin-bottom: 10px;
-  }
+.mb10 {
+  margin-bottom: 10px;
+}
 
-  .custom-table-box {
+.custom-table-box {
+  width: 100%;
+
+  .container {
     width: 100%;
+  }
 
-    .container {
-      width: 100%;
+  .tool-box {
+    background: #fff;
+    //margin-bottom: 30px;
+    width: 100%;
+    height: 60px;
+    box-sizing: border-box;
+
+    .search-group-box {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
     }
 
-    .tool-box {
-      background: #fff;
-      //margin-bottom: 30px;
-      width: 100%;
-      height: 60px;
-      box-sizing: border-box;
+    .lang-switch-box {
+      margin-left: 10px;
+      width: 100px;
 
-      .search-group-box {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
+      .lang-select {
+        width: 100%;
+      }
+    }
+  }
+
+  &.fixed {
+    .tool-box {
+      // 不设置任何偏移量将直接置顶在父容器里
+      position: fixed;
+      padding: 15px;
+      z-index: 8;
+      width: calc(100% - #{$sideBarWidth});
+      transition: width 0.28s;
+      margin: -15px -15px 0;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+    }
+
+    .container {
+      padding-top: 48px;
+    }
+
+    // 隐藏了侧边栏
+    &.hide-sidebar {
+      .tool-box {
+        width: calc(100% - 54px);
+      }
+    }
+  }
+}
+
+// 手机端
+@media screen and (max-width: 768px) {
+  .custom-table-box {
+    .tool-box {
+      height: 100px;
+
+      .btn-group-box {
+        margin-bottom: 10px;
       }
 
-      .lang-switch-box {
-        margin-left: 10px;
-        width: 100px;
-
-        .lang-select {
-          width: 100%;
-        }
+      .search-group-box {
+        justify-content: flex-start;
       }
     }
 
     &.fixed {
-      .tool-box {
-        // 不设置任何偏移量将直接置顶在父容器里
-        position: fixed;
-        padding: 15px;
-        z-index: 8;
-        width: calc(100% - #{$sideBarWidth});
-        transition: width 0.28s;
-        margin: -15px -15px 0;
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
-      }
-
       .container {
-        padding-top: 48px;
+        padding-top: 85px;
       }
 
-      // 隐藏了侧边栏
       &.hide-sidebar {
-        .tool-box {
-          width: calc(100% - 54px);
-        }
-      }
-    }
-  }
-
-  // 手机端
-  @media screen and (max-width: 768px) {
-    .custom-table-box {
-      .tool-box {
-        height: 100px;
-
-        .btn-group-box {
-          margin-bottom: 10px;
-        }
-
-        .search-group-box {
-          justify-content: flex-start;
-        }
-      }
-
-      &.fixed {
-        .container {
-          padding-top: 85px;
-        }
-
-        &.hide-sidebar {
-          .tool-box {
-            width: 100%;
-          }
-        }
-      }
-    }
-
-    .page-box ::v-deep .pagination-container {
-      padding: 20px 10px;
-      margin-top: 20px;
-    }
-  }
-
-  .table-box {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  .page-box {
-    display: flex;
-    justify-content: center;
-  }
-</style>
-<style lang="scss">
-  // 动画状态会影响fixed
-  .fade-transform-leave-active,
-  .fade-transform-enter-active {
-    .custom-table-box {
-      &.fixed {
         .tool-box {
           width: 100%;
         }
@@ -1559,21 +1575,50 @@ export default {
     }
   }
 
-  @media screen and (min-width: 768px) {
-    .el-popup-parent--hidden {
-      .custom-table-box {
-        &.fixed {
-          .tool-box {
-            padding-right: 15px;
-          }
+  .page-box ::v-deep .pagination-container {
+    padding: 20px 10px;
+    margin-top: 20px;
+  }
+}
 
-          // 有滚动条
-          .tool-box.scroll-bar {
-            padding-right: 32px;
-          }
+.table-box {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.page-box {
+  display: flex;
+  justify-content: center;
+}
+</style>
+<style lang="scss">
+// 动画状态会影响fixed
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  .custom-table-box {
+    &.fixed {
+      .tool-box {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .el-popup-parent--hidden {
+    .custom-table-box {
+      &.fixed {
+        .tool-box {
+          padding-right: 15px;
+        }
+
+        // 有滚动条
+        .tool-box.scroll-bar {
+          padding-right: 32px;
         }
       }
     }
   }
+}
 
 </style>

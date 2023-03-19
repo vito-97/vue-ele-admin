@@ -66,6 +66,7 @@
           ref="table"
           @select="onSelect"
           @select-multiple="onSelectMultiple"
+          @unselect="onUnselect"
         >
         </component>
       </el-dialog>
@@ -73,16 +74,17 @@
       <div v-if="isFormat('image')" class="label-name">
         <image-el :val="labelName" :col="{opts:{size:opt.imageSize}}" v-if="formData[field]"></image-el>
       </div>
-      <el-tag
-        v-show="labelName"
-        :closable="!disabled"
-        size="medium"
-        class="label-name"
-        @click="onClickChoose"
-        @close="onTagClose"
-        v-else>
-        {{ labelName }}
-      </el-tag>
+      <div v-else-if="labelName" class="tag-box">
+        <el-tag
+          v-for="(item,index) in toArray(labelName)"
+          :closable="!disabled"
+          :key="index"
+          size="medium"
+          class="label-name"
+          @close="onTagClose(index)">
+          {{ item }}
+        </el-tag>
+      </div>
     </template>
     <template v-else>
       <el-alert
@@ -123,9 +125,20 @@ export default {
     val: {
       immediate: true,
       handler(val) {
+        var key = this.key
+        var pk = this.opt.pk
         // 转数组
-        if (this.opt.multiple && !Array.isArray(val)) {
-          this.$set(this.formData, this.field, this.toArray(val))
+        if (this.opt.multiple) {
+          if (!Array.isArray(val)) {
+            val = this.toArray(val)
+            this.$set(this.formData, this.field, val)
+          } else if (val.length < this.detail[key]?.length && this.detail[key]) {
+            val = []
+            for (let item of this.detail[key]) {
+              val.push(item[pk])
+            }
+            this.$set(this.formData, this.field, val)
+          }
         }
       }
     }
@@ -173,11 +186,24 @@ export default {
         console.warn(this.field, '选择数据列表未设置label名称')
       }
       var value
-      if (this.opt.simple) {
+      if (typeof this.opt.custom_name === 'function') {
+        value = this.opt.custom_name(this.formData, this.detail)
+      } else if (this.opt.simple) {
         value = deepVal(this.field, this.formData) || deepVal(this.key, this.detail)
       } else {
-        const key = `${this.key}.${this.opt.name}`
-        value = deepVal(key, this.detail) || deepVal(this.field, this.formData)
+        const key = `${this.key}`
+        const name = this.opt.name
+        var val = deepVal(key, this.detail) || deepVal(this.field, this.formData)
+
+        if (Array.isArray(val)) {
+          var arr = []
+          for (let item of val) {
+            arr.push(item[name])
+          }
+          value = arr.length ? arr : ''
+        } else {
+          value = val && val[name] || ''
+        }
       }
 
       return value
@@ -235,7 +261,9 @@ export default {
         // 是否需要重载
         reload: false,
         // 是否为非对象数据
-        simple: false
+        simple: false,
+        // 自定义展示名称
+        custom_name: null
       }
     }
   },
@@ -294,8 +322,16 @@ export default {
     },
     onClose() {
     },
-    onTagClose() {
+    onTagClose(index = null) {
       if (!this.disabled) {
+        this.remove(index)
+      }
+    },
+    remove(index) {
+      if (this.opt.multiple) {
+        this.$delete(this.formData[this.field], index)
+        this.$delete(this.detail[this.key], index)
+      } else {
         this.$set(this.formData, this.field, '')
         this.$set(this.detail, this.key, {})
       }
@@ -308,21 +344,50 @@ export default {
     },
     // 选择
     onSelect({ row, index }) {
-      this.$set(this.formData, this.field, row[this.opt.pk])
-      this.$set(this.detail, this.key, row)
+      if (!this.opt.multiple) {
+        this.$set(this.formData, this.field, row[this.opt.pk])
+        this.$set(this.detail, this.key, row)
+        this.visible = false
+      } else {
+        this.onSelectMultiple({ selection: [row], ids: [row[this.opt.pk]] }, false)
+      }
+
       this.triggerEvent('select', { value: row[this.opt.pk], row })
-      this.visible = false
+    },
+    onUnselect({ row, index }) {
+      var opt = this.opt
+      var pk = opt.pk
+
+      var i = this.toArray(this.val).findIndex(v => v == row[pk])
+      this.remove(i)
+
+      this.triggerEvent('unselect', { value: row[pk], row })
     },
     // 多选
-    onSelectMultiple({ selection, ids }) {
+    onSelectMultiple({ selection, ids }, trigger = true) {
       // console.log('select multiple', ids, selection)
       let value = []
       let label = []
 
+      var val = this.toArray(this.val)
+      var pk = this.opt.pk
       selection.forEach((it) => {
-        value.push(it[this.opt.pk])
+        var id = it[pk]
+
+        if (this.opt.multiple) {
+          if (val.includes(id)) {
+            id = ''
+          }
+        }
+
+        if (id) {
+          value.push(id)
+        }
+
         label.push(it[this.opt.name])
       })
+
+      selection = selection.filter(it => value.includes(it[pk]))
 
       this.$set(this.formData, this.field, [...this.toArray(this.val), ...value])
 
@@ -332,9 +397,10 @@ export default {
         this.$set(this.detail, this.key, [...this.toArray(this.detail[this.key]), ...selection])
       }
 
-      this.triggerEvent('select-multiple', { value, ids, items: selection })
-
-      this.visible = false
+      if (trigger) {
+        this.triggerEvent('select-multiple', { value, ids, items: selection })
+        this.visible = false
+      }
     },
     onInputChange(value, index) {
       if (!value) {
@@ -351,35 +417,39 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .select-table-box {
-    //display: flex;
-    //align-items: center;
-    .form-item {
-      display: flex;
-      align-items: center;
-      position: relative;
-      width: 100%;
+.select-table-box {
+  //display: flex;
+  //align-items: center;
+  .form-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
 
-      .item {
-        margin-right: 10px;
-      }
-
-      //align-items: flex-start;
+    .item {
+      margin-right: 10px;
     }
 
-    .select-btn + .select-btn {
-      margin-left: 10px;
-    }
-
-    .input-box {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-
-    .label-name {
-      margin-top: 10px;
-      cursor: pointer;
-    }
+    //align-items: flex-start;
   }
+
+  .select-btn + .select-btn {
+    margin-left: 10px;
+  }
+
+  .input-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .label-name {
+    margin-top: 10px;
+    cursor: pointer;
+  }
+
+  .label-name + .label-name {
+    margin-left: 10px;
+  }
+}
 </style>

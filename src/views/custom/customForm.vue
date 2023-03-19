@@ -26,7 +26,7 @@
         :visible.sync="Visible"
         v-bind="$attrs"
         ref="customForm"
-        @submit="onSubmit"
+        @submit="onSubmitEmit"
         @event="onEvent"
       >
         <!-- 遍历子组件非作用域插槽，并对父组件暴露 -->
@@ -49,7 +49,7 @@
         class="dialog-footer"
         v-if="dialog && showButton"
       >
-        <el-button size="small" type="primary" @click="submit" v-if="!hideSubmitButton">
+        <el-button size="small" type="primary" @click="onSubmit" v-if="!hideSubmitButton">
           {{ submitBtnText }}
         </el-button>
         <el-button size="small" @click="onReset" v-if="!hideResetButton">{{ resetBtnText }}</el-button>
@@ -293,6 +293,14 @@ export default {
           }
           columns = newColumns
           isTab = false
+        } else {
+          var k = 0
+          for (let item of columns) {
+            if (!item.key) {
+              item.key = k.toString()
+              k++
+            }
+          }
         }
       }
 
@@ -357,6 +365,7 @@ export default {
         editable: true, // 编辑显示
         required: false, // 是否必选
         visible: true, // 是否显示
+        hide_append: true, // 不显示后是否加入数据
         width: '',
         slot: '',
         // 配置项
@@ -408,7 +417,12 @@ export default {
 
           // 设置表单数据
           if (typeof formData[field] === 'undefined' || formData[field] === '') {
-            const value = typeof item.value === 'undefined' ? '' : item.value
+            var value = typeof item.value === 'undefined' ? '' : item.value
+
+            if (typeof value === 'function') {
+              value = value()
+            }
+
             let key = item.detail_field || field
             let formDataValue = deepVal(key, this.detail, value)
 
@@ -460,7 +474,7 @@ export default {
       for (let tab of columns) {
         for (let item of tab.columns) {
           let { field } = item
-          if (fieldsCount[field] === 1 && !this.checkColVisible(item, formData)) {
+          if (fieldsCount[field] === 1 && !item.hide_append && !this.checkColVisible(item, formData)) {
             delete formData[field]
           }
         }
@@ -504,9 +518,12 @@ export default {
       this.formRules = rules
       return rules
     },
+    onSubmit() {
+      this.submit().catch(() => {})
+    },
     submit() {
       return this.$refs.customForm.submit(false).then(formData => {
-        this.onSubmit(formData)
+        this.onSubmitEmit(formData)
         return formData
       }, err => {
         console.log('err', err)
@@ -514,7 +531,7 @@ export default {
       })
     },
     // 提交
-    onSubmit(formData) {
+    onSubmitEmit(formData) {
       this.$emit('submit', formData)
     },
     onReset() {
@@ -559,10 +576,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .detail-form-dialog {
-    //height: 85%;
+.detail-form-dialog {
+  //height: 85%;
 
-    .detail-form {
-    }
+  .detail-form {
   }
+}
 </style>

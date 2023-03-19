@@ -30,6 +30,7 @@
         @load="onLoad"
         @flush="onFlush"
         @select="onSelect"
+        @unselect="onUnselect"
         @submit="onSubmit"
       />
     </template>
@@ -326,6 +327,10 @@ export default {
     onSelect(args) {
       console.log(args)
       this.$emit('select', args)
+    },
+    // 取消
+    onUnselect(args) {
+      this.$emit('unselect', args)
     },
     // 多选
     onSelectMultiple(args) {
