@@ -10,12 +10,15 @@
         :kw="kw"
         :control="control"
         :mode="mode"
+        :append="append"
         :select-multiple="selectMultiple"
         :selected-value="selectedValue"
         :selected-pk="selectedPk"
         :lang-status="langStatus"
         :lang-list="langList"
         :lang-field="langField"
+        :target-detail="targetDetail"
+        :optional="optional"
         v-loading="listLoading"
         element-loading-text="拼命加载中"
         @save="onSave"
@@ -38,7 +41,7 @@
         :detail.sync="detail"
         :id.sync="detailID"
         :visible.sync="formVisible"
-        :list.sync="detailLabel"
+        :list.sync="formLabel"
         :control="control"
         :append-to-body="appendToBody"
         :error="error"
@@ -130,6 +133,14 @@ export default {
     selectMultiple: {
       type: Boolean
     },
+    // 選擇模式下調用選擇器的源數據
+    targetDetail: {
+      type: Object
+    },
+    // 選擇模式下自定義選擇規則函數
+    optional: {
+      type: [Function, String]
+    },
     // 参数
     query: {
       type: Object
@@ -166,6 +177,15 @@ export default {
     // 删除接口
     deleteApi: {
       type: Function
+    },
+    // 數據分頁後是否追加
+    append: {
+      type: Boolean
+    },
+    // 是否跳轉路由
+    jump: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {
@@ -194,6 +214,9 @@ export default {
     appendToBody() {
       return this.mode === 'select'
     },
+    formLabel() {
+      return Object.keys(this.detailLabel).length ? this.detailLabel : this.listLabel
+    },
     langStatus() {
       return !!this.langField.length
     },
@@ -221,7 +244,7 @@ export default {
     onLoad(args) {
       console.log('query args', args)
 
-      if (!args.first) {
+      if (!args.first && this.jump) {
         var route = this.$route
         this.$router.replace({
           name: route.name,
@@ -263,7 +286,7 @@ export default {
         this.isLoadListLabel = true
         this.isLoadListData = true
 
-        this.list = data.list
+        this.list = this.append && !init && data.page != 1 ? this.list.concat(data.list) : data.list
 
         if (data?.label && Object.keys(data.label).length) {
           this.listLabel = data.label

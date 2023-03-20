@@ -144,6 +144,7 @@ const tableMixin = {
       this.$emit('unselect', { row, index, id: row.id })
     },
     onRowDbClick(row, column, event) {
+      console.log(row, column, event)
       // 展示的模式才编辑
       if (this.mode === 'show') {
         // 判断是否有权限和是否可编辑
@@ -152,7 +153,14 @@ const tableMixin = {
         }
         // 选择模式
       } else if (this.mode === 'select' && this.optional(row, 0)) {
-        this.onTapRowBtnSelect(row, 0)
+        var optional = this.$attrs.optional || ''
+        var targetDetail = this.$attrs.targetDetail || {}
+
+        console.log('dbc', optional, targetDetail)
+
+        if (!optional || optional(row, 0, targetDetail)) {
+          this.onTapRowBtnSelect(row, 0)
+        }
       }
     },
     /**

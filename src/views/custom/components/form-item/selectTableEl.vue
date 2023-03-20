@@ -61,6 +61,8 @@
           :select-multiple="opt.multiple"
           :selected-value="val"
           :selected-pk="opt.pk"
+          :target-detail="detail"
+          :optional="column.optional || ''"
           ref="table"
           @select="onSelect"
           @select-multiple="onSelectMultiple"
