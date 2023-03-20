@@ -272,7 +272,7 @@ export default {
       var columns = [...this.columns]
       var langList = this.langList
       var langField = this.langField
-      var langStatus = this.langStatus
+      var langStatus = this.langStatus && Object.keys(langList).length
       var fieldsCount = {}
 
       if (!columns.length) {
@@ -299,6 +299,13 @@ export default {
             if (!item.key) {
               item.key = k.toString()
               k++
+            }
+
+            // 设置字段键
+            for (let row of item.columns) {
+              if (!row.field && row.key) {
+                row.field = row.key
+              }
             }
           }
         }
