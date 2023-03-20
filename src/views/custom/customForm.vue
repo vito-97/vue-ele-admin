@@ -312,7 +312,7 @@ export default {
       }
 
       if (!isTab) {
-        if (this.langStatus) {
+        if (langStatus) {
           var langColumns = []
           for (let [lang, name] of Object.entries(langList)) {
             var key = lang.replace(/-/g, '_')
