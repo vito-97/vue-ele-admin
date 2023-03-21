@@ -201,6 +201,8 @@ export default {
             arr.push(item[name])
           }
           value = arr.length ? arr : ''
+        } else if (typeof val === 'string') {
+          value = val
         } else {
           value = val && val[name] || ''
         }
