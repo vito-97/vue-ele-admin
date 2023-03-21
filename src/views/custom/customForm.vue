@@ -87,6 +87,11 @@ export default {
     columns: {
       type: Array
     },
+    // 列配置变动后是否更新表单数据
+    columnsChangeData: {
+      type: Boolean,
+      default: false
+    },
     // 数据详情
     detail: {
       type: Object
@@ -223,7 +228,7 @@ export default {
       deep: true,
       handler(val) {
         if (val) {
-          this.init()
+          this.init(this.columnsChangeData)
         }
       }
     },
@@ -256,17 +261,17 @@ export default {
     }
   },
   methods: {
-    init() {
+    init(setFormData = true) {
       // 判断是否正在初始化
       if (!this.isInit) {
         this.isInit = true
-        this.initColumns()
+        this.initColumns(setFormData)
         this.initFormRules()
         this.isInit = false
       }
     },
     // 初始化表内容
-    initColumns() {
+    initColumns(setFormData = true) {
       var formData = {}
       // this.setFormData({})
       var columns = [...this.columns]
@@ -487,8 +492,10 @@ export default {
         }
       }
 
-      this.setFormData(formData)
-      this.initFormData = { ...formData }
+      if (!Object.keys(this.initFormData).length || setFormData) {
+        this.setFormData(formData)
+        this.initFormData = { ...formData }
+      }
       console.log('form columns', columns, formData)
       this.tabs = columns
 
