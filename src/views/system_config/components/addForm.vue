@@ -42,7 +42,7 @@ export default {
       var list = (this.formData?.list || '').replaceAll('\r\n', '\n').split('\n').filter(String)
 
       for (var item of list) {
-        var [key = '', val = ''] = item.split(':')
+        var [key = '', val = ''] = item.split('=')
 
         if (key !== '' && val !== '') {
           obj[key] = val
@@ -82,7 +82,7 @@ export default {
           field: 'list',
           opts: { required: true },
           type: 'textarea',
-          placeholder: '请输入变量选项 例：\r\na:A选项\r\nb:B选项\r\nc:C选项',
+          placeholder: '请输入变量选项 例：\r\na=A选项\r\nb=B选项\r\nc=C选项',
           visible(formData, detail) {
             return MUST_LIST_ITEM.includes(formData.type || '')
           }
