@@ -263,6 +263,7 @@
             :dialog="false"
             :hide-button="true"
             :visible.sync="dialogVisible"
+            :detail.sync="confirmDetail"
             v-model="confirmFormData"
             @submit="onSubmitConfirm"
           ></custom-form>
@@ -324,6 +325,8 @@ export default {
       confirmContent: '',
       // 确认的输入表单内容
       confirmFormData: {},
+      // 确认输入框表单默认的内容
+      confirmDetail: {},
       params: {},
       filterTimer: '',
       items: itemsCom,
@@ -478,6 +481,12 @@ export default {
         if (val) {
           this.setLang()
         }
+      }
+    },
+    dialogVisible(value) {
+      if (this.confirmIsCustomForm && !value) {
+        this.confirmDetail = {}
+        this.confirmFormData = {}
       }
     }
   },
