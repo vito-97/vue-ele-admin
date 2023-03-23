@@ -13,10 +13,11 @@
             </div>
           </template>
           <template v-else>
-            <div v-if="opt.html" v-html="string">
-            </div>
+            <div v-if="opt.html" v-html="string"></div>
             <div v-else>
-              {{ string }}
+              <el-tag class="tag" v-for="(it,i) in toArray(string,opt.char)" :key="i">
+                {{ it }}
+              </el-tag>
             </div>
           </template>
         </div>
@@ -119,23 +120,23 @@ export default {
 </script>
 
 <style lang="scss">
-  .pointer {
-    cursor: pointer;
+.pointer {
+  cursor: pointer;
+}
+
+.table-content-box {
+  max-width: 100%;
+  word-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+
+  .tag {
+    margin-right: 5px;
+    margin-bottom: 5px;
   }
 
-  .table-content-box {
+  * {
     max-width: 100%;
-    word-wrap: break-word;
-    word-break: normal;
-    white-space: normal;
-
-    .tag {
-      margin-right: 5px;
-      margin-bottom: 5px;
-    }
-
-    * {
-      max-width: 100%;
-    }
   }
+}
 </style>
