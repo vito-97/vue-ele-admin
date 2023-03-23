@@ -284,7 +284,7 @@ export default {
     // 通过字段切换选项卡
     switchTabByField(field) {
       var tabKey = this.getFieldTabKey(field)
-      if (this.currentTabs !== tabKey) {
+      if (tabKey && this.currentTabs !== tabKey) {
         this.currentTabs = tabKey
       }
     }
