@@ -48,7 +48,8 @@ export default {
         // 展示为树形结构
         tree: false,
         children: 'children',
-        html: false
+        html: false,
+        empty_text: ''
       },
       visible: false
     }
@@ -98,6 +99,8 @@ export default {
         } else {
           str = val.substr(0, len) + this.opt.join
         }
+      } else if (!str) {
+        return this.opt.empty_text
       }
 
       return str
