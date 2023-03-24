@@ -1264,7 +1264,7 @@ export default {
       }
 
       if (Object.keys(col.list).length) {
-        var vals = Array.isArray(val) ? val : val.toString().split(',')
+        var vals = Array.isArray(val) ? val : val.toString().split(',').map(v => isNaN(Number(v)) ? v : Number(v))
         val = []
         if (col.list_field && col.list_value) {
           for (const it of col.list) {
