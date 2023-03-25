@@ -221,7 +221,7 @@
                     type="text"
                     size="small"
                     @click.native.stop="onTapRowBtn(btn,row,$index,column)"
-                    v-if="btn.show && (!btn.auth || checkPermission(btn.auth))"
+                    v-if="(!btn.auth || checkPermission(btn.auth)) && checkVarStatus(btn.visible,row,$index)"
                     :disabled="rowBtnDisabled(btn,row,$index)"
                     :key="btn.key"
                   >
@@ -756,6 +756,8 @@ export default {
         show: true,
         // 是否显示输入框 字符串类型的话则设置成输入框类型 数组的话则使用自定义表单
         input: false,
+        // 是否显示
+        visible: true,
         // 提示信息
         confirm: null,
         confirmText: '确 定',
