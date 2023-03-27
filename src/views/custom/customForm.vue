@@ -102,15 +102,18 @@ export default {
     },
     // 可选项列表
     list: {
-      type: Object
+      type: Object,
+      default: () => ({})
     },
     // 验证规则
     rules: {
-      type: Object
+      type: Object,
+      default: () => ({})
     },
     // 错误信息
     error: {
-      type: Object
+      type: Object,
+      default: () => ({})
     },
     appendToBody: {
       type: Boolean,
