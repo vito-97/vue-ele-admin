@@ -207,7 +207,7 @@
             v-if="!hideRowBtn && isShowColumn('control')"
             :is="tableColumnCom"
             :fixed="isMobile ? false : 'right'"
-            :label="rowBtnColumn.name"
+            :label="rowBtnColumn.name || '操作'"
             :width="rowBtnColumn.width"
             key="control"
           >
@@ -1201,7 +1201,8 @@ export default {
 
       // 自定义表单模式
       if (confirmIsCustomForm) {
-        this.$refs.confirmForm.submit().catch(() => {})
+        this.$refs.confirmForm.submit().catch(() => {
+        })
         return
       }
 
