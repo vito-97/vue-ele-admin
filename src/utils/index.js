@@ -613,3 +613,12 @@ export function getTreeItem(array, index, subKey = 'children') {
 
   return null
 }
+
+/**
+ * 判断是否为图片链接
+ * @param path
+ * @returns {boolean}
+ */
+export function isImg(path) {
+  return /\w.(png|jpg|jpeg|svg|webp|gif|bmp)$/i.test(path)
+}
