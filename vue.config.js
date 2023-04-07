@@ -35,17 +35,6 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
-    },
-    proxy: {
-      [process.env.VUE_APP_BASE_API]: {
-        target: 'http://water.cn/admin/',
-        changeOrigin: true,
-        ws: true,
-        secure: false,
-        pathRewrite: {
-          [`^${process.env.VUE_APP_BASE_API}`]: ''
-        }
-      }
     }
   },
 
