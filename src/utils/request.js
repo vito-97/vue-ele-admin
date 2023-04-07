@@ -5,7 +5,9 @@ import { getToken } from '@/utils/auth'
 import CONFIG from '@/utils/config'
 
 // 给服务器ajax标识
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+// axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+// 修改接收的响应类型 axios默认的【application/json, text/plain, */*】返回HTML会跨域失败
+axios.defaults.headers.common['Accept'] = '*/*'
 
 // create an axios instance
 const service = axios.create({
