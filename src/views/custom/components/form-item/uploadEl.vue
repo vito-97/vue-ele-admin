@@ -1,42 +1,51 @@
 <template>
-  <el-upload
-    ref="upload"
-    class="upload-item"
-    :name="field"
-    :action="opt.action"
-    :data="fileData"
-    :headers="headers"
-    :show-file-list="opt.show_file_list"
-    :accept="opt.accept"
-    :multiple="opt.multiple"
-    :limit="opt.limit"
-    :auto-upload="opt.auto_upload"
-    :disabled="opt.disabled"
-    :file-list="fileList"
-    :list-type="opt.list_type"
-    :drag="opt.drag"
-    :on-preview="onPreview"
-    :on-remove="onRemove"
-    :before-remove="onBeforeRemove"
-    :on-success="onSuccess"
-    :on-error="onError"
-    :on-progress="onProgress"
-    :on-change="onChange"
-    :before-upload="onBeforeUpload"
-    :on-exceed="onExceed">
-    <div class="upload-box" :class="{drag:opt.drag}">
-      <el-button :size="opt.btn_size" :icon="opt.btn_icon" type="primary" :disabled="opt.disabled">{{ opt.btn_text }}
-      </el-button>
-      <div class="el-upload__tip" v-show="opt.drag">{{ opt.drag_text }}</div>
-    </div>
-    <div slot="tip" class="el-upload__tip" v-if="opt.tip">{{ opt.tip }}</div>
-  </el-upload>
+  <div>
+    <el-upload
+      ref="upload"
+      class="upload-item"
+      :name="field"
+      :action="opt.action"
+      :data="fileData"
+      :headers="headers"
+      :show-file-list="opt.show_file_list"
+      :accept="opt.accept"
+      :multiple="opt.multiple"
+      :limit="opt.limit"
+      :auto-upload="opt.auto_upload"
+      :disabled="opt.disabled"
+      :file-list="fileList"
+      :list-type="opt.list_type"
+      :drag="opt.drag"
+      :on-preview="onPreview"
+      :on-remove="onRemove"
+      :before-remove="onBeforeRemove"
+      :on-success="onSuccess"
+      :on-error="onError"
+      :on-progress="onProgress"
+      :on-change="onChange"
+      :before-upload="onBeforeUpload"
+      :on-exceed="onExceed">
+      <div class="upload-box" :class="{drag:opt.drag}">
+        <el-button :size="opt.btn_size" :icon="opt.btn_icon" type="primary" :disabled="opt.disabled">{{ opt.btn_text }}
+        </el-button>
+        <div class="el-upload__tip" v-show="opt.drag">{{ opt.drag_text }}</div>
+      </div>
+      <div slot="tip" class="el-upload__tip" v-if="opt.tip">{{ opt.tip }}</div>
+    </el-upload>
+    <el-image
+      ref="previewImage"
+      style="display: none;"
+      :src="previewImageSrc"
+      :preview-src-list="[previewImageSrc||null]">
+    </el-image>
+  </div>
 </template>
 
 <script>
 import formItemMixin from './form-item-mixin'
 import { getToken } from '@/utils/auth'
 import CONFIG from '@/utils/config'
+import { isImg } from '@/utils'
 
 export default {
   name: 'UploadEl',
@@ -77,10 +86,16 @@ export default {
         // 是否禁用上传
         disabled: false
       },
-      files: {}
+      files: {},
+      previewFile: {}
     }
   },
   computed: {
+    previewImageSrc() {
+      var src = this.previewFile.url || ''
+
+      return src && isImg(src) ? src : ''
+    },
     fileData() {
       return Object.assign({}, this.appendData, this.opt.data)
     },
@@ -114,7 +129,11 @@ export default {
   methods: {
     // 点击文件列表中已上传的文件时的钩子
     onPreview(file) {
+      this.previewFile = file
       console.log('onPreview', file)
+      if (this.previewImageSrc) {
+        this.$refs.previewImage.clickHandler()
+      }
     },
     // 删除文件之前的钩子，参数为上传的文件和文件列表，若返回 false 或者返回 Promise 且被 reject，则停止删除。
     onBeforeRemove(file, fileList) {
