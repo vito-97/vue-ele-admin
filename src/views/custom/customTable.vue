@@ -221,6 +221,7 @@
                     type="text"
                     size="small"
                     @click.native.stop="onTapRowBtn(btn,row,$index,column)"
+                    @dblclick.native.stop.prevent
                     v-if="(!btn.auth || checkPermission(btn.auth)) && checkVarStatus(btn.visible,row,$index)"
                     :disabled="rowBtnDisabled(btn,row,$index)"
                     :key="btn.key"
