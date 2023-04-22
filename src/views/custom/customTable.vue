@@ -585,7 +585,9 @@ export default {
       return obj
     },
     cols() {
-      const cols = [...this.columns]
+      const cols = [...this.columns].filter((it) => {
+        return !(!it || typeof it !== 'object' || !it.field)
+      })
 
       const def = {
         name: 'LABEL',
@@ -635,11 +637,6 @@ export default {
       }
 
       for (let [i, it] of cols.entries()) {
-        if (typeof it !== 'object' || !it.field) {
-          cols.splice(i, 1)
-          continue
-        }
-
         const col = { ...def, ...it }
 
         // 有默认list值
@@ -667,13 +664,13 @@ export default {
         if (this.filter && Object.keys(col.list).length && (col.filters === null || !col.filters.length)) {
           col.filters = []
 
-          for (const i in col.list) {
-            const it = col.list[i]
+          for (const idx in col.list) {
+            const it = col.list[idx]
 
             if (col.list_field && col.list_value) {
               col.filters.push({ text: it[col.list_field], value: it[col.list_value] })
             } else {
-              col.filters.push({ text: it, value: i })
+              col.filters.push({ text: it, value: idx })
             }
           }
         }
@@ -1267,7 +1264,7 @@ export default {
         return val
       }
 
-      if (Object.keys(col.list).length) {
+      if (col.list && Object.keys(col.list).length) {
         var vals = Array.isArray(val) ? val : val.toString().split(',').map(v => isNaN(Number(v)) ? v : Number(v))
         val = []
         if (col.list_field && col.list_value) {
