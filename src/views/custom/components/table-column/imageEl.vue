@@ -60,7 +60,7 @@ export default {
         var src = typeof item === 'string' ? item : item[this.opt.key]
 
         if (src && src.indexOf('http') !== 0) {
-          images[index] = 'http://' + process.env.VUE_APP_BASE_HOST + src
+          images[index] = '//' + process.env.VUE_APP_BASE_HOST + src
         }
       }
 

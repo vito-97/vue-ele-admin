@@ -114,10 +114,18 @@ export default {
       val.forEach((it, i) => {
         if (it) {
           const detail = this.files[it] || null
-          list.push({
-            name: detail ? detail.name : it,
-            url: detail ? detail.link : it
-          })
+          var url = detail ? detail.link : it
+
+          if (url) {
+            if (url.indexOf('http') !== 0) {
+              url = '//' + process.env.VUE_APP_BASE_HOST + url
+            }
+
+            list.push({
+              name: detail ? detail.name : it,
+              url
+            })
+          }
         }
       })
 
