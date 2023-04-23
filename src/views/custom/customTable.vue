@@ -420,6 +420,8 @@ export default {
     // 判断是否可以勾选
     // 传入row index
     selectable: { type: Function },
+    // 判断是否可以添加
+    addable: { type: [Function, Boolean], default: true },
     // 判断是否可以删除
     deletable: { type: [Function, Boolean], default: true },
     // 判断是否可以编辑
@@ -489,6 +491,9 @@ export default {
         this.confirmDetail = {}
         this.confirmFormData = {}
       }
+    },
+    columns(value) {
+      this.setShowColumns()
     }
   },
   computed: {
