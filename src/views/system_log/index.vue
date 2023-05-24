@@ -1,6 +1,7 @@
 <template>
   <div class="content-box">
     <curd-index
+      ref="curd"
       :table-com="tableList"
       :control="control"
       :curd="curd"

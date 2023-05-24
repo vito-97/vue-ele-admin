@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :class="{pointer:isOutStr}" @click.stop="onClick">{{ subVal }}</div>
+    <div :class="{pointer:isOutStr}" @click.stop="onClick" v-if="string">{{ subVal }}</div>
     <div class="" v-if="isOutStr">
       <el-dialog :title="opt.title" :visible.sync="visible" :append-to-body="true" :width="dialogWidth">
         <div class="table-content-box">
@@ -57,7 +57,7 @@ export default {
   computed: {
     string() {
       let val = this.val
-      let string
+      let string = ''
       if (Array.isArray(val)) {
         if (this.opt.key) {
           let arr = []
@@ -74,7 +74,7 @@ export default {
         string = val
       }
 
-      return string
+      return string.trim()
     },
     // 过滤html标签后的文字
     filterHtmlString() {
@@ -123,23 +123,23 @@ export default {
 </script>
 
 <style lang="scss">
-.pointer {
-  cursor: pointer;
-}
-
-.table-content-box {
-  max-width: 100%;
-  word-wrap: break-word;
-  word-break: normal;
-  white-space: normal;
-
-  .tag {
-    margin-right: 5px;
-    margin-bottom: 5px;
+  .pointer {
+    cursor: pointer;
   }
 
-  * {
+  .table-content-box {
     max-width: 100%;
+    word-wrap: break-word;
+    word-break: normal;
+    white-space: normal;
+
+    .tag {
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    * {
+      max-width: 100%;
+    }
   }
-}
 </style>
