@@ -24,8 +24,8 @@ export default {
     return {
       opts: {
         list_type: 'text',
-        accept: '.mp3,audio/mpeg',
-        tip: '只能上传mp3'
+        accept: '.mp3,.wav,.ogg',
+        tip: '只能上传mp3/wav/ogg'
       }
     }
   }
