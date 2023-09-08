@@ -8,7 +8,9 @@ const setting = require('@/settings')
  * @param route
  */
 function hasPermission(role, route) {
-  if (route.meta && route.meta.auth) {
+  if (route.children && route.children.length > 0) {
+    return route.children.some(r => hasPermission(role, r))
+  } else if (route.meta && route.meta.auth) {
     return route.meta.auth.some(auth => role.auth[setting.authPrefix + auth] || false)
   } else {
     return true
@@ -25,11 +27,14 @@ export function filterAsyncRoutes(routes, role) {
 
   routes.forEach(route => {
     const tmp = { ...route }
-    if (hasPermission(role, tmp)) {
+    var hasChild = tmp.children && tmp.children.length > 0
+    if (hasChild || hasPermission(role, tmp)) {
       if (tmp.children) {
         tmp.children = filterAsyncRoutes(tmp.children, role)
       }
-      res.push(tmp)
+      if (hasChild && tmp.children.length || !hasChild) {
+        res.push(tmp)
+      }
     }
   })
 
@@ -55,7 +60,9 @@ const actions = {
       if (role.key === 'admin') {
         accessedRoutes = asyncRoutes || []
       } else {
+        console.time('route')
         accessedRoutes = filterAsyncRoutes(asyncRoutes, role)
+        console.timeEnd('route')
       }
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
