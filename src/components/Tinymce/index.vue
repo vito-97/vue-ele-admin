@@ -274,14 +274,14 @@ export default {
         convert_urls: false,
         // 上传图片
         images_upload_handler: (blobInfo, success, failure, progress) => {
-          /* var file = new File([blobInfo.blob()], '图片.png')
-           progress(0)
-           this.uploadFile(file, { append: false }).then(detail => {
-             progress(100)
-             success(detail.link)
-           }, err => {
-             failure(err.message)
-           }) */
+          var file = new File([blobInfo.blob()], '图片.png')
+          progress(0)
+          this.uploadFile(file, { append: false }).then(detail => {
+            progress(100)
+            success(detail.link)
+          }, err => {
+            failure(err.message)
+          })
         }
       })
     },
