@@ -8,7 +8,7 @@ module.exports = {
 
   title: '后台管理系统',
 
-  avatar: require('@/assets/image/default-avatar.gif'),
+  avatar: '/static/images/default-avatar.gif',
 
   /**
    * @type {boolean} true | false
