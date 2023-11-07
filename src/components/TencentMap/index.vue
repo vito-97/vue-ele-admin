@@ -2,14 +2,14 @@
   <el-dialog
     title="坐标拾取"
     :visible.sync="visible"
+    :width="dialogWidth"
     append-to-body
     @close="close"
-    width="1024px"
   >
     <div class="map_search">
       <el-row>
-        <el-col :span="12">
-          <el-row type="flex">
+        <el-col :span="12" :xs="24">
+          <el-row type="flex" :justify="isMobile ? 'space-between' : 'start'">
             <el-col>
               <el-select
                 v-model="mapCity"
@@ -37,7 +37,6 @@
             <el-col>
               <el-input
                 size="small"
-                style="width: 300px"
                 type="text"
                 v-model.trim="searchForm.key"
                 @input="handleSearch"
@@ -47,16 +46,16 @@
             </el-col>
           </el-row>
         </el-col>
-        <el-col :span="12">
-          <el-row>
-            <el-col :offset="8">
+        <el-col :span="12" :xs="24">
+          <el-row :justify="isMobile ? 'space-between' : 'end'" type="flex">
+            <el-col :offset="8" :xs="{offset:0}">
               <el-input
                 size="small"
                 type="text"
                 :value="mapLatLng ? mapLatLng[0] : ''"
                 placeholder="纬度"
                 :disabled="true"
-                style="width: 120px"
+                style="width: 110px"
               >
               </el-input>
             </el-col>
@@ -67,7 +66,7 @@
                 :value="mapLatLng ? mapLatLng[1] : ''"
                 placeholder="经度"
                 :disabled="true"
-                style="width: 120px"
+                style="width: 110px"
               >
               </el-input>
             </el-col>
@@ -608,7 +607,6 @@ export default {
 
 .map_search .el-col-24 {
   width: auto;
-  padding-right: 10px;
 }
 
 .map_box .map_panel {
@@ -726,5 +724,24 @@ export default {
   color: #000;
   font-weight: bold;
   font-size: 14px;
+}
+
+@media screen and (max-width: 768px) {
+  .map_box .map_main {
+    flex-direction: column;
+  }
+
+  .map_box .map_main .map_left {
+    width: 100%;
+    height: auto;
+    max-height: 220px;
+    border-right: unset;
+    overflow-y: scroll;
+  }
+
+  .map_box .map_container {
+    width: 100%;
+    flex: unset;
+  }
 }
 </style>
