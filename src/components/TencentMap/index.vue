@@ -509,7 +509,8 @@ export default {
       let origin = new window.qq.maps.Point(left, flag ? 35 : 0)
       let size = new window.qq.maps.Size(27, 33)
       let icon = new window.qq.maps.MarkerImage(
-        '/images/marker10.png',
+        // require('./marker10.png'),
+        'https://lbs.qq.com/doc_v2/img/marker10.png',
         size,
         origin,
         anchor
