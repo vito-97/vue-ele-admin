@@ -42,3 +42,6 @@ const CONFIG = {
 }
 
 export default CONFIG
+
+// 腾讯地图密钥
+export const MAP_KEY = 'FKRBZ-N5PRL-7W5PP-MD7FI-6R6BV-KWBO4'

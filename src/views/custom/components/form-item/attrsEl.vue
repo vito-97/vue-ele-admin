@@ -86,9 +86,9 @@ import formItemMixin from './form-item-mixin'
 import { toArray } from '@/utils'
 
 export default {
-  name: 'TagEl',
+  name: 'AttrsEl',
   mixins: [formItemMixin],
-  alias: '标签',
+  alias: '属性',
   format: (value) => {
     return toArray(value)
   },

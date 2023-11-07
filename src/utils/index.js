@@ -622,3 +622,20 @@ export function getTreeItem(array, index, subKey = 'children') {
 export function isImg(path) {
   return /\w.(png|jpg|jpeg|svg|webp|gif|bmp)$/i.test(path)
 }
+
+/**
+ * 加载js脚本
+ * @param url
+ * @returns {Promise<unknown>}
+ */
+export function loadJs(url) {
+  return new Promise((resolve, reject) => {
+    var head = document.getElementsByTagName('head')[0] // 在head标签中创建创建script
+    var script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = url
+    script.onload = resolve
+    script.onerror = reject
+    head.appendChild(script)
+  })
+}
