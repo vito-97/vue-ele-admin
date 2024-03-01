@@ -35,12 +35,12 @@
 
 <script>
 import customForm from '@/views/custom/customForm'
-import curd from '@/api/curd'
+import crud from '@/api/crud'
 import { showLoading, hideLoading } from '@/utils'
 import systemConfigAddForm from '@/views/system_config/components/addForm'
 import { langList } from '@/settings'
 
-const API = curd('system_config')
+const API = crud('system_config')
 export default {
   name: 'SystemConfigForm',
   components: { customForm, systemConfigAddForm },

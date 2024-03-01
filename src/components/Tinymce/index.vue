@@ -47,7 +47,7 @@ import load from './dynamicLoadScript'
 import selectTable from '@/views/custom/components/form-item/selectTableEl'
 import { base64ToFile, upload, urlToBase64 } from '@/api/upload'
 import CONFIG from '@/utils/config'
-import { hideLoading, showLoading } from '@/utils'
+import { hideLoading, showLoading, getApiHost } from '@/utils'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
 // const tinymceCDN = 'https://cdn.staticfile.org/tinymce/4.9.3/tinymce.min.js'
@@ -103,7 +103,7 @@ export default {
   },
   data() {
     // 允许图片存放的域名
-    const serverHost = process.env.VUE_APP_BASE_HOST
+    const serverHost = getApiHost()
     return {
       hasChange: false,
       hasInit: false,
@@ -233,7 +233,7 @@ export default {
         advlist_bullet_styles: 'square',
         advlist_number_styles: 'default',
         // 图片跨域
-        imagetools_cors_hosts: [process.env.VUE_APP_BASE_HOST],
+        imagetools_cors_hosts: [getApiHost()],
         default_link_target: '_blank',
         link_title: true,
         // 媒体实时预览开关
@@ -463,43 +463,43 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .mr10 {
-    margin-right: 10px;
-  }
+.mr10 {
+  margin-right: 10px;
+}
 
-  .tinymce-container {
-    position: relative;
-    line-height: normal;
-  }
+.tinymce-container {
+  position: relative;
+  line-height: normal;
+}
 
-  /*.tinymce-container {
-    ::v-deep {
-      .mce-fullscreen {
-        z-index: 10000;
-      }
+/*.tinymce-container {
+  ::v-deep {
+    .mce-fullscreen {
+      z-index: 10000;
     }
-  }*/
-
-  .tinymce-textarea {
-    visibility: hidden;
-    z-index: -1;
   }
+}*/
 
-  .editor-custom-btn-container {
-    display: flex;
-    align-items: center;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    z-index: 1;
-  }
+.tinymce-textarea {
+  visibility: hidden;
+  z-index: -1;
+}
 
-  .fullscreen .editor-custom-btn-container {
-    z-index: 10000;
-    position: fixed;
-  }
+.editor-custom-btn-container {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  z-index: 1;
+}
 
-  .editor-upload-btn {
-    display: inline-block;
-  }
+.fullscreen .editor-custom-btn-container {
+  z-index: 10000;
+  position: fixed;
+}
+
+.editor-upload-btn {
+  display: inline-block;
+}
 </style>

@@ -1,4 +1,4 @@
-import curd from '@/api/curd'
+import crud from '@/api/crud'
 
 /**
  * 上传附件
@@ -9,7 +9,7 @@ export function upload(file) {
   let formData = new FormData()
   formData.append('file', file)
   formData.append('category', 'un')
-  return curd('attachment').save(formData).then(res => {
+  return crud('attachment').save(formData).then(res => {
     // console.log('upload', res)
     if ([0, 50905].includes(res.code)) {
       return res

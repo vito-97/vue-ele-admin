@@ -8,8 +8,8 @@
 
 <script>
 import addForm from './components/addForm'
-import indexMixin from '@/utils/mixin/curd-index'
-import curd from '@/api/curd'
+import indexMixin from '@/utils/mixin/crud-index'
+import crud from '@/api/crud'
 import { showLoading, hideLoading } from '@/utils'
 
 export default {
@@ -17,7 +17,7 @@ export default {
     return {
       control: 'profile',
       searchable: true,
-      curd: ['*'],
+      crud: ['*'],
       detail: {},
       error: {}
     }
@@ -26,7 +26,7 @@ export default {
   components: { addForm },
   computed: {
     api() {
-      return curd(this.control)
+      return crud(this.control)
     }
   },
   created() {
@@ -59,7 +59,7 @@ export default {
         if (data.password) {
           // 登出
           this.$set(this.detail, 'password', '')
-          this.$store.dispatch('user/logout',{ all: 1 })
+          this.$store.dispatch('user/logout', { all: 1 })
           this.$alert('你已修改密码，需要重新登录！', '提示', {
             confirmButtonText: '确定',
             callback: (action) => {

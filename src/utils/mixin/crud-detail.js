@@ -1,8 +1,8 @@
-import curdDetail from '@/views/curd/detail'
+import crudDetail from '@/views/crud/detail'
 
 const indexMixin = {
   components: {
-    curdDetail
+    crudDetail
   },
   computed: {
     id() {

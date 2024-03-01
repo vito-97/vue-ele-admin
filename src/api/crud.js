@@ -22,7 +22,7 @@ function getUri(uri) {
   return uri ? '/' + uri : ''
 }
 
-function curd(control, version = 'v1') {
+function crud(control, version = 'v1') {
   const req = {
     /**
      * GET请求
@@ -230,4 +230,4 @@ function curd(control, version = 'v1') {
   return req
 }
 
-export default curd
+export default crud

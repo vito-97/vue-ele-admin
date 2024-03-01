@@ -29,6 +29,7 @@
 
 <script>
 import tableColumnMixin from './table-column-mixin'
+import { getApiHost } from '@/utils'
 
 export default {
   name: 'ImageEl',
@@ -60,7 +61,7 @@ export default {
         var src = typeof item === 'string' ? item : item[this.opt.key]
 
         if (src && src.indexOf('http') !== 0) {
-          images[index] = '//' + process.env.VUE_APP_BASE_HOST + src
+          images[index] = '//' + getApiHost() + src
         }
       }
 

@@ -639,3 +639,14 @@ export function loadJs(url) {
     head.appendChild(script)
   })
 }
+
+var apiHost = null
+
+export function getApiHost() {
+  if (apiHost === null) {
+    var u = new URL(process.env.VUE_APP_BASE_API)
+    apiHost = u.host
+  }
+
+  return apiHost
+}

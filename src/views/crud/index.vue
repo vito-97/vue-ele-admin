@@ -1,5 +1,5 @@
 <template>
-  <div class="curd-box">
+  <div class="crud-box">
     <!--    数据列表-->
     <template v-if="checkAuth('index') && tableCom">
       <component
@@ -59,14 +59,14 @@
 </template>
 
 <script>
-import curd from '@/api/curd'
+import crud from '@/api/crud'
 import checkPermission from '@/utils/permission'
 import { showLoading, hideLoading } from '@/utils'
 
 const setting = require('@/settings')
 
 export default {
-  name: 'CurdIndex',
+  name: 'CrudIndex',
   data() {
     return {
       kw: '',
@@ -99,8 +99,8 @@ export default {
       type: String,
       required: true
     },
-    // 需要的CURD
-    curd: {
+    // 需要的Crud
+    crud: {
       type: Array,
       default: () => ['*']
     },
@@ -190,22 +190,22 @@ export default {
   },
   computed: {
     api() {
-      return curd(this.control)
+      return crud(this.control)
     },
     /**
      * 获取权限
      * @returns {{}}
      */
     auth() {
-      let curd = this.curd
+      let crud = this.crud
 
-      if (curd.includes('*')) {
-        curd = setting.curds
+      if (crud.includes('*')) {
+        crud = setting.cruds
       }
 
       const auth = {}
 
-      setting.curds.forEach(it => {
+      setting.cruds.forEach(it => {
         auth[it] = checkPermission(this.control + '/' + it)
       })
 
@@ -458,7 +458,7 @@ export default {
       })
     },
     /**
-     * 判断是否有CURD权限
+     * 判断是否有Crud权限
      * @param name
      * @returns {*|boolean}
      */

@@ -1,14 +1,14 @@
-import curdIndex from '@/views/curd/index'
+import crudIndex from '@/views/crud/index'
 
 const indexMixin = {
   components: {
-    curdIndex
+    crudIndex
   },
   props: {},
   methods: {
     // 刷新页面
     flush() {
-      this.$refs.curd && this.$refs.curd.onFlush()
+      this.$refs.crud && this.$refs.crud.onFlush()
     }
   }
 }

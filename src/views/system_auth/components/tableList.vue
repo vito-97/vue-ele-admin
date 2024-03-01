@@ -63,7 +63,7 @@ export default {
   methods: {
     onTapHeadBtnFlushAuth(args) {
       showLoading('刷新权限中...')
-      this.curd.post('flush').then(res => {
+      this.crud.post('flush').then(res => {
         hideLoading()
         this.onTapHeadBtnFlush({})
       }, hideLoading)

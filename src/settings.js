@@ -58,9 +58,9 @@ module.exports = {
   pageSizes: [20, 50, 100, 150, 200/*, 300, 500, 1000*/],
 
   /**
-   * CURD操作
+   * CRUD操作
    */
-  curds: ['index', 'read', 'edit', 'save', 'update', 'change', 'delete'],
+  cruds: ['index', 'read', 'edit', 'save', 'update', 'change', 'delete'],
   /**
    * 控制器名称
    */

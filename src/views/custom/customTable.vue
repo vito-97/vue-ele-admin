@@ -1083,7 +1083,7 @@ export default {
 
       this.$emit('load', { query, init, first, excludeParams })
     },
-    // 是否有CURD权限
+    // 是否有Crud权限
     checkAuth(auth) {
       return this.checkPermission(this.getFullAuth(auth))
     },

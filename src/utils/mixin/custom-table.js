@@ -1,6 +1,6 @@
 import customTable from '@/views/custom/customTable'
 import checkPermission from '@/utils/permission'
-import curd from '@/api/curd'
+import crud from '@/api/crud'
 import { word2studly } from '@/utils'
 
 const tableMixin = {
@@ -51,11 +51,11 @@ const tableMixin = {
       })
       return id
     },
-    curd() {
+    crud() {
       var api
 
       if (this.$attrs?.control) {
-        api = curd(this.$attrs?.control)
+        api = crud(this.$attrs?.control)
       }
 
       return api

@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import curd from '@/api/curd'
+import crud from '@/api/crud'
 import checkPermission from '@/utils/permission'
 import { showLoading, hideLoading } from '@/utils'
 
 export default {
-  name: 'CurdDetail',
+  name: 'CrudDetail',
   data() {
     return {
       detail: {}
@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     api() {
-      return curd(this.control)
+      return crud(this.control)
     },
     hasReadAuth() {
       return checkPermission(this.control + '/read')

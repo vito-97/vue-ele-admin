@@ -45,7 +45,7 @@
 import formItemMixin from './form-item-mixin'
 import { getToken } from '@/utils/auth'
 import CONFIG from '@/utils/config'
-import { isImg } from '@/utils'
+import { getApiHost, isImg } from '@/utils'
 
 export default {
   name: 'UploadEl',
@@ -118,7 +118,7 @@ export default {
 
           if (url) {
             if (url.indexOf('http') !== 0) {
-              url = '//' + process.env.VUE_APP_BASE_HOST + url
+              url = '//' + getApiHost() + url
             }
 
             list.push({

@@ -1,19 +1,19 @@
 <template>
   <div class="content-box">
-    <curd-index
-      ref="curd"
+    <crud-index
+      ref="crud"
       :form-com="addForm"
       :table-com="tableList"
       :control="control"
       v-bind="$attrs"
       v-on="$listeners"
     >
-    </curd-index>
+    </crud-index>
   </div>
 </template>
 
 <script>
-import indexMixin from '@/utils/mixin/curd-index'
+import indexMixin from '@/utils/mixin/crud-index'
 import tableList from './components/tableList'
 import addForm from './components/addForm'
 
@@ -23,7 +23,7 @@ export default {
       tableList,
       addForm,
       control: 'admin',
-      curd: ['*']
+      crud: ['*']
     }
   },
   mixins: [indexMixin]
