@@ -26,7 +26,7 @@ export default {
         { name: '账号', field: 'username', opts: { required: true, maxlength: 20 } },
         { name: '密码', field: 'password', add_opts: { required: true } },
         { name: '昵称', field: 'nickname', opts: { required: true, maxlength: 20 } },
-        { name: '姓名', field: 'real_name', opts: { required: false, maxlength: 20 } },
+        { name: '姓名', field: 'name', opts: { required: false, maxlength: 20 } },
         {
           name: '性别',
           field: 'sex',

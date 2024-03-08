@@ -111,7 +111,7 @@ export const asyncRoutes = [
     meta: {
       title: '用户',
       icon: 'peoples',
-      auth: ['user', 'user_wallet', 'water_company', 'waterworks', 'customer', 'water_fetcher']
+      auth: ['user']
     },
     children: [
       {
