@@ -19,26 +19,6 @@
           <!--          <i class="el-icon-cpu card-panel-icon" />-->
           <svg-icon icon-class="component" class-name="card-panel-icon"/>
         </div>
-        <div class="card-panel-description hidden-xs-only">
-          <div class="card-panel-text text-danger">
-            故障
-          </div>
-          <count-to
-            :start-val="0"
-            :end-val="detail.count_fault_device"
-            :duration="3000"
-            class="card-panel-num text-danger"/>
-        </div>
-        <div class="card-panel-description hidden-xs-only">
-          <div class="card-panel-text text-primary">
-            在线
-          </div>
-          <count-to
-            :start-val="0"
-            :end-val="detail.count_online_device"
-            :duration="3000"
-            class="card-panel-num text-primary"/>
-        </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
             设备数
